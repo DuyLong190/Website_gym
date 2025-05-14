@@ -91,11 +91,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         <nav class="flex items-center">
             <ul class="flex space-x-8 text-lg font-medium">
-                <li><a href="#" class="hover:text-red-500 transition duration-300">Trang chủ</a></li>
-                <li><a href="app/views/package/showGoiTap.php" class="hover:text-red-500 transition duration-300">Gói Tập</a></li>
+                <li><a href="/Gym/" class="hover:text-red-500 transition duration-300">Trang chủ</a></li>
+                <li><a href="/Gym/app/views/package/showGoiTap.php" class="hover:text-red-500 transition duration-300">Gói Tập</a></li>
                 <li><a href="#" class="hover:text-red-500 transition duration-300">Dịch vụ</a></li>
-                <li><a href="/gym/account/login" class="hover:text-red-500 transition duration-300" >Đăng Nhập</a></li>
-                <li class="nav-item" id="nav-logout" style="display: none;"> <a class="nav-link" href="#" onclick="logout()">Logout</a> </li>
+                <li>
+                    <?php if (SessionHelper::isLoggedIn()) : ?>
+                        <a class="nav-link"><?php echo htmlspecialchars($_SESSION['username']); ?></a>
+                    <?php else: ?>
+                        <a class="hover:text-red-500 transition duration-300" href="/gym/app/views/account/login.php">Đăng Nhập</a>
+                    <?php endif; ?>
+                </li>
+                <li>
+                    <?php if (SessionHelper::isLoggedIn()) : ?>
+                        <a class="nav-link hover:text-red-500 transition duration-300" href="/Gym/app/controllers/AccountController.php?action=logout">Đăng Xuất</a>
+                    <?php endif; ?>
+                </li>
                 <li><a href="#" class="hover:text-red-500 transition duration-300">Liên hệ</a></li>
             </ul>
         </nav>
@@ -193,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="pass black-text">Quên mật khẩu?</div>
                 <input type="submit" value="Đăng nhập">
                 <div class="signup_link black-text">
-                    Bạn chưa có tài khoản? <a href="/app/views/account/signup.php" class="black-text">Đăng ký</a>
+                    Bạn chưa có tài khoản? <a href="/Gym/app/views/account/signup.php" class="black-text">Đăng ký</a>
                 </div>
             </form>
         </div>

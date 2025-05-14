@@ -72,7 +72,7 @@ class AccountController
     {
         unset($_SESSION['username']);
         unset($_SESSION['role']);
-        header('Location: /webbanhang/product');
+        header('Location: /Gym/package');
     }
     public function checkLogin()
     {
