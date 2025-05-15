@@ -22,7 +22,7 @@ class AccountModel
     function save($username, $name, $password, $role = "user")
     {
         $query = "INSERT INTO " . $this->table_name . "(username, password, role) VALUES (:username,:password, :role)";
-        
+
         $stmt = $this->conn->prepare($query);
 
         // Làm sạch dữ liệu
@@ -36,8 +36,6 @@ class AccountModel
 
         // Thực thi câu lệnh
         if ($stmt->execute()) {
-            $errorInfo = $stmt->errorInfo();
-            error_log("SQL Error: " . $errorInfo[2]);
             return true;
         }
         return false;

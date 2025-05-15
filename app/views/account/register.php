@@ -1,3 +1,13 @@
+<?php
+include_once __DIR__ . '/../share/header.php';
+if (isset($errors)) {
+    echo "<ul>";
+    foreach ($errors as $err) {
+        echo "<li class='text-danger'>$err</li>";
+    }
+    echo "</ul>";
+}
+?>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -84,14 +94,7 @@
 </head>
 
 <body>
-    <?php if (isset($errors)) {
-        echo "<ul>";
-        foreach ($errors as $err) {
-            echo "<li class='text-danger'>$err</li>";
-        }
-        echo "</ul>";
-    }
-    ?>
+
     <section class="vh-100 gradient-custom d-flex align-items-center">
         <div class="register-card w-100">
             <h2 class="register-title text-center">Đăng Ký Tài Khoản</h2>
@@ -117,12 +120,12 @@
                 </div>
 
                 <div class="d-grid mb-3">
-                    <button class="btn btn-register py-2">Tạo tài khoản</button>
+                    <button type="submit" class="btn btn-register py-2" id="submit" name="submit">Tạo tài khoản</button>
                 </div>
             </form>
 
             <div class="text-center">
-                <p>Đã có tài khoản? <a href="login.php" class="login-link">Đăng nhập<a> </p>
+                <p class="text-dark">Đã có tài khoản? <a href="login.php" class="login-link">Đăng nhập<a> </p>
             </div>
         </div>
     </section>

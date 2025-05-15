@@ -1,4 +1,6 @@
-
+<?php
+include_once __DIR__ . '/../share/header.php';
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>

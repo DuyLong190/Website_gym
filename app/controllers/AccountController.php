@@ -1,14 +1,15 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../models/AccountModel.php';
+require_once('app/config/database.php');
+require_once('app/models/AccountModel.php');
 
 class AccountController
 {
     private $accountModel;
     private $db;
-    
+
     public function __construct()
     {
+
         $this->db = (new Database())->getConnection();
         $this->accountModel = new AccountModel($this->db);
     }
@@ -23,7 +24,6 @@ class AccountController
         include_once 'app/views/account/login.php';
     }
 
-    // Hàm xử lý đăng ký
     function save()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -34,10 +34,10 @@ class AccountController
 
             $errors = [];
             if (empty($username)) {
-                $errors['username'] = "Vui long nhap userName!";
+                $errors['username'] = "Please enter userName!";
             }
             if (empty($fullName)) {
-                $errors['fullname'] = "Vui long nhap fullName!";
+                $errors['fullname'] = "Please enter fullName!";
             }
             if (empty($password)) {
                 $errors['password'] = "Vui long nhap password!";
@@ -51,51 +51,50 @@ class AccountController
             if ($account) {
                 $errors['account'] = "Tai khoan nay da co nguoi dang ky!";
             }
-
             if (count($errors) > 0) {
                 include_once 'app/views/account/register.php';
             } else {
                 $password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
-
                 $result = $this->accountModel->save($username, $fullName, $password);
 
                 if ($result) {
-                    header('Location: /Gym/account/login');
+                    header('Location: /gym/account/login');
                 }
             }
         }
     }
-
     function logout()
     {
+
         unset($_SESSION['username']);
+
         unset($_SESSION['role']);
-        header('Location: /Gym');
+
+        header('Location: /gym');
     }
+
     public function checkLogin()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
-
-            // Kiểm tra thông tin đăng nhập
-            $account = $this->accountModel->getAccountByUsername($username);
+            $account = $this->accountModel->getAccountByUserName($username);
 
             if ($account) {
-                $pwd_hash = $account->password;
-                if (password_verify($password, $pwd_hash)) {
+                $pwd_hashed = $account->password;
 
+                if (password_verify($password, $pwd_hashed)) {
                     session_start();
-                    // Lưu thông tin người dùng vào session
+                    // $_SESSION['user_id'] = $account->id;
+                    // $_SESSION['user_role'] = $account->role;
                     $_SESSION['username'] = $account->username;
-
-                    header('Location: /Gym');
+                    header('Location: /gym');
                     exit;
                 } else {
-                    echo "Mật khẩu không đúng!";
+                    echo "Password incorrect.";
                 }
             } else {
-                echo "Tài khoản không tồn tại!";
+                echo "Account not found.";
             }
         }
     }

@@ -20,13 +20,11 @@ class GoiTapController
         // Lấy danh sách gói tập từ database
         $goiTaps = $this->GoiTapmodel->getGoiTaps();
         
-        // Hiển thị header
         require_once __DIR__ . '/../views/share/header.php';
-        
+        require_once __DIR__ . '/../views/share/trangchu.php';
         // Hiển thị danh sách gói tập
         require_once __DIR__ . '/../views/package/listGoiTap.php';
         
-        // Hiển thị footer
         require_once __DIR__ . '/../views/share/footer.php';
     }
 
