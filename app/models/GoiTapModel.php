@@ -32,69 +32,97 @@ class GoiTapModel
     public function addGoiTap($Ten_goi, $Gia, $Thoi_gian, $Mo_ta)
     {
         $errors = [];
+        
+        // Validate dữ liệu
         if (empty($Ten_goi)) {
-            $errors['Ten_goi'] = 'Tên gói tập không được để trống';
+            $errors['ten_goi'] = 'Tên gói tập không được để trống';
         }
         if (!is_numeric($Gia) || $Gia < 0) {
-            $errors['Gia'] =   'Giá gói tập không hợp lệ';
+            $errors['gia'] = 'Giá gói tập không hợp lệ';
         }
         if (empty($Thoi_gian)) {
-            $errors['Thoi_gian'] = 'Thời gian không được để trống';
+            $errors['thoi_gian'] = 'Thời gian không được để trống';
         }
         if (empty($Mo_ta)) {
-            $errors['Mo_ta'] = 'Mô tả không được để trống';
+            $errors['mo_ta'] = 'Mô tả không được để trống';
         }
+
+        // Nếu có lỗi validation, trả về mảng lỗi
         if (count($errors) > 0) {
             return $errors;
         }
-        $query = "INSERT INTO " . $this->table_name . "(TenGoiTap, GiaTien, ThoiHan, MoTa) VALUES (:TenGoiTap, :GiaTien, :ThoiHan, :MoTa)";
-        $stmt = $this->conn->prepare($query);
 
-        $Ten_goi = htmlspecialchars(strip_tags($Ten_goi));
-        $Gia = htmlspecialchars(strip_tags($Gia));
-        $Thoi_gian = htmlspecialchars(strip_tags($Thoi_gian));
-        $Mo_ta = htmlspecialchars(strip_tags($Mo_ta));
+        try {
+            // Chuẩn bị câu query
+            $query = "INSERT INTO " . $this->table_name . " (TenGoiTap, GiaTien, ThoiHan, MoTa) 
+                     VALUES (:TenGoiTap, :GiaTien, :ThoiHan, :MoTa)";
+            $stmt = $this->conn->prepare($query);
 
-        $stmt->bindParam(':TenGoiTap', $Ten_goi);
-        $stmt->bindParam(':GiaTien', $Gia);
-        $stmt->bindParam(':ThoiHan', $Thoi_gian);
-        $stmt->bindParam(':MoTa', $Mo_ta);
+            // Làm sạch dữ liệu
+            $Ten_goi = htmlspecialchars(strip_tags($Ten_goi));
+            $Gia = htmlspecialchars(strip_tags($Gia));
+            $Thoi_gian = htmlspecialchars(strip_tags($Thoi_gian));
+            $Mo_ta = htmlspecialchars(strip_tags($Mo_ta));
 
-        if ($stmt->execute()) {
-            return true;
+            // Bind các tham số
+            $stmt->bindParam(':TenGoiTap', $Ten_goi);
+            $stmt->bindParam(':GiaTien', $Gia);
+            $stmt->bindParam(':ThoiHan', $Thoi_gian);
+            $stmt->bindParam(':MoTa', $Mo_ta);
+
+            // Thực thi query
+            if ($stmt->execute()) {
+                return true;
+            }
+            return false;
+        } catch (PDOException $e) {
+            // Log lỗi nếu cần
+            return false;
         }
-        return false;
     }
 
     // Cập nhật gói tập
     public function updateGoiTap($MaGoiTap, $Ten_goi, $Gia, $Thoi_gian, $Mo_ta)
     {
-        $query = "UPDATE " . $this->table_name . " SET Ten_goi = :Ten_goi, Gia = :Gia, Thoi_gian = :Thoi_gian, Mo_ta = :Mo_ta WHERE MaGoiTap = :MaGoiTap";
-        $stmt = $this->conn->prepare($query);
+        try {
+            $query = "UPDATE " . $this->table_name . " 
+                     SET TenGoiTap = :TenGoiTap, 
+                         GiaTien = :GiaTien, 
+                         ThoiHan = :ThoiHan, 
+                         MoTa = :MoTa 
+                     WHERE MaGoiTap = :MaGoiTap";
+            
+            $stmt = $this->conn->prepare($query);
 
-        $Ten_goi = htmlspecialchars(strip_tags($Ten_goi));
-        $Gia = htmlspecialchars(strip_tags($Gia));
-        $Thoi_gian = htmlspecialchars(strip_tags($Thoi_gian));
-        $Mo_ta = htmlspecialchars(strip_tags($Mo_ta));
+            // Làm sạch dữ liệu
+            $Ten_goi = htmlspecialchars(strip_tags($Ten_goi));
+            $Gia = htmlspecialchars(strip_tags($Gia));
+            $Thoi_gian = htmlspecialchars(strip_tags($Thoi_gian));
+            $Mo_ta = htmlspecialchars(strip_tags($Mo_ta));
 
-        $stmt->bindParam(':MaGoiTap', $MaGoiTap);
-        $stmt->bindParam(':Ten_goi', $Ten_goi);
-        $stmt->bindParam(':Gia', $Gia);
-        $stmt->bindParam(':Thoi_gian', $Thoi_gian);
-        $stmt->bindParam(':Mo_ta', $Mo_ta);
+            // Bind các tham số
+            $stmt->bindParam(':MaGoiTap', $MaGoiTap);
+            $stmt->bindParam(':TenGoiTap', $Ten_goi);
+            $stmt->bindParam(':GiaTien', $Gia);
+            $stmt->bindParam(':ThoiHan', $Thoi_gian);
+            $stmt->bindParam(':MoTa', $Mo_ta);
 
-        if ($stmt->execute()) {
-            return true;
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
         }
-        return false;
     }
 
     // Xóa gói tập
     public function deleteGoiTap($MaGoiTap)
     {
-        $query = "DELETE FROM " . $this->table_name . " WHERE MaGoiTap = :MaGoiTap";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':MaGoiTap', $MaGoiTap, PDO::PARAM_INT);
-        return $stmt->execute();
+        try {
+            $query = "DELETE FROM " . $this->table_name . " WHERE MaGoiTap = :MaGoiTap";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':MaGoiTap', $MaGoiTap);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 }

@@ -1,42 +1,32 @@
 <?php
 session_start();
+require_once 'app/controllers/AccountController.php';
+require_once 'app/controllers/GoiTapController.php';
+require_once 'app/models/GoiTapModel.php';
 
-// Định nghĩa hằng số cho thư mục gốc
-define('BASE_PATH', __DIR__);
-
-// Tải các file cần thiết
-require_once BASE_PATH . '/app/controllers/GoiTapController.php';
-require_once BASE_PATH . '/app/controllers/HomeController.php';
-require_once BASE_PATH . '/app/helpers/SessionHelper.php';
-
-// Lấy URL và làm sạch
 $url = $_GET['url'] ?? '';
 $url = rtrim($url, '/');
 $url = filter_var($url, FILTER_SANITIZE_URL);
-$urlParts = explode('/', $url);
+$url = explode('/', $url);
 
-// Kiểm tra phần đầu tiên của URL để xác định controller
-$controllerName = isset($url[0]) && $url[0] != '' ? ucfirst($url[0]) . 'Controller' : 'HomeController';
+// Check the first part of the URL to determine the controller
+$controllerName = isset($url[0]) && $url[0] != '' ? ucfirst($url[0]) . 'Controller' : 'GoiTapController';
 
-// Kiểm tra phần thứ hai của URL để xác định action
-$action = isset($url[1]) && $url[1] != '' ? $url[1] : 'index';
+// Check the second part of the URL to determine the action
+$action = isset($url[1]) && $url[1] != '' ? $url[1] : 'indexGoiTap';
 
-// Tạo instance của controller
-if (class_exists($controllerName)) {
-    $controller = new GoiTapController();
-} else {
-    $controller = new HomeController();
+// die ("controller=$controllerName - action=$action");
+// Check if controller and action exist
+if (!file_exists('app/controllers/' . $controllerName . '.php')) {
+    // Handle not finding controller
+    die('Controller not found '.$controllerName);
 }
+require_once 'app/controllers/' . $controllerName . '.php';
 
-// Lấy action từ URL (mặc định là 'indexGoiTap')
-$action = isset($_GET['action']) ? $_GET['action'] : 'indexGoiTap';
-$id = isset($_GET['id']) ? $_GET['id'] : null;
-
-// Gọi action tương ứng
-if (method_exists($controller, $action)) {
-    $controller->$action();
-} else {
-    // Nếu action không tồn tại, chuyển về trang chủ
-    $controller = new HomeController();
-    $controller->index();
+$controller = new $controllerName();
+if (!method_exists($controller, $action)) {
+    // Handle action not found
+    die('Action not found');
 }
+// Call action with remaining parameters (if any)
+call_user_func_array([$controller, $action], array_slice($url, 2));
