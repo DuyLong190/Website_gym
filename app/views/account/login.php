@@ -1,6 +1,6 @@
+
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <title>Đăng nhập - LD Gym & Fitness</title>
@@ -108,7 +108,7 @@
                     <div class="card bg-dark text-white rounded-4 shadow-lg">
                         <div class="card-body p-5">
                             <h2 class="fw-bold mb-4 text-uppercase text-center">Đăng nhập</h2>
-                            <form method="post" action="">
+                            <form action="/gym/account/checkLogin" method="post" >
                                 <div class="mb-5">
                                     <div class="input-group input-group-lg floating-label-group">
                                         <span class="input-group-text"><i class="fa fa-user"></i></span>
@@ -129,10 +129,10 @@
                                     <a class="text-white-50 small text-start" href="#">Quên mật khẩu?</a>
                                 </div>
                                 <div class="d-grid mb-4">
-                                    <button class="btn btn-outline-light btn-lg" type="submit">Đăng nhập</button>
+                                    <button type="submit" class="btn btn-outline-light btn-lg" id="submit" name="submit">Đăng nhập</button>
                                 </div>
                                 <div class="text-center">
-                                    <p>Chưa có tài khoản? <a href="signup.php" class="signup-link">Đăng ký</a>
+                                    <p>Chưa có tài khoản? <a href="register.php" class="signup-link">Đăng ký</a>
                                     </p>
                                 </div>
                             </form>

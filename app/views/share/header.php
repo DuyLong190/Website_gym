@@ -1,19 +1,3 @@
-<?php
-// Xử lý đăng nhập
-$loginMessage = '';
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
-
-    // Giả lập kiểm tra username và password (đây chỉ là ví dụ)
-    if ($username === 'admin' && $password === '123456') {
-        $loginMessage = "Đăng nhập thành công! Xin chào $username.";
-    } else {
-        $loginMessage = "Sai tên đăng nhập hoặc mật khẩu.";
-    }
-}
-?>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -103,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </li>
                 <li>
                     <?php if (SessionHelper::isLoggedIn()) : ?>
-                        <a class="nav-link hover:text-red-500 transition duration-300" href="/Gym/app/controllers/AccountController.php?action=logout">Đăng Xuất</a>
+                        <a class="nav-link hover:text-red-500 transition duration-300" href="/app/views/account/logout">Đăng Xuất</a>
                     <?php endif; ?>
                 </li>
                 <li><a href="#" class="hover:text-red-500 transition duration-300">Liên hệ</a></li>
@@ -184,45 +168,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </button>
         </div>
     </div>
-
-    <?php if ($loginMessage): ?>
-        <div class="message"><?= htmlspecialchars($loginMessage) ?></div>
-    <?php endif; ?>
-
-    <div class="overlay" id="overlay">
-        <div class="form-container">
-            <button class="close-btn" id="closeFormBtn">&times;</button>
-            <h2 class="login-title" style="font-size: 2em;">Đăng Nhập</h2>
-            <form action="" method=" POST">
-                <div class="input-box">
-                    <input type="text" name="username" placeholder="Nhập tài khoản" required>
-                </div>
-                <div class="input-box">
-                    <input type="password" placeholder="Nhập mật khẩu" required>
-                </div>
-                <div class="pass black-text">Quên mật khẩu?</div>
-                <input type="submit" value="Đăng nhập">
-                <div class="signup_link black-text">
-                    Bạn chưa có tài khoản? <a href="/Gym/app/views/account/signup.php" class="black-text">Đăng ký</a>
-                </div>
-            </form>
-        </div>
-    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        const openLoginFormBtn = document.getElementById('openLoginFormBtn');
-        const closeFormBtn = document.getElementById('closeFormBtn');
-        const overlay = document.getElementById('overlay');
-
-        openLoginFormBtn.addEventListener('click', function() {
-            overlay.style.display = 'flex';
-        });
-
-        closeFormBtn.addEventListener('click', function() {
-            overlay.style.display = 'none';
-        });
-    </script>
 </body>
 
 </html>

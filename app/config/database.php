@@ -1,7 +1,6 @@
 <?php
 
-class Database
-{
+class Database {
     private $host = "localhost";
     private $db_name = "gym_db";
     private $username = "root";

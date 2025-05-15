@@ -1,31 +1,30 @@
 <?php
-require_once ('app/config/database.php');
-require_once ('app/models/AccountModel.php');
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../models/AccountModel.php';
 
 class AccountController
 {
-    private $db;
     private $accountModel;
-    private $jwtHandler;
-
+    private $db;
+    
     public function __construct()
     {
-        $this->db = new Database();
-        $this->accountModel = new AccountModel($this->db->getConnection());
+        $this->db = (new Database())->getConnection();
+        $this->accountModel = new AccountModel($this->db);
     }
 
-    function login()
+    function register()
     {
-        include 'app/views/account/login.php';
+        include_once 'app/views/account/register.php';
     }
 
-    function signup()
+    public function login()
     {
-        include 'app/views/account/signup.php';
+        include_once 'app/views/account/login.php';
     }
 
-    // Hàm xử lý đăng nhập
-    public function save()
+    // Hàm xử lý đăng ký
+    function save()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = $_POST['username'] ?? '';
@@ -46,23 +45,22 @@ class AccountController
             if ($password != $confirmPassword) {
                 $errors['confirmPass'] = "Mat khau va xac nhan chua dung";
             }
-
             //kiểm tra username đã được đăng ký chưa?
-            $account = $this->accountModel->getUserByUsername($username);
+            $account = $this->accountModel->getAccountByUsername($username);
 
             if ($account) {
                 $errors['account'] = "Tai khoan nay da co nguoi dang ky!";
             }
 
             if (count($errors) > 0) {
-                include_once 'app/views/account/signup.php';
+                include_once 'app/views/account/register.php';
             } else {
                 $password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
                 $result = $this->accountModel->save($username, $fullName, $password);
 
                 if ($result) {
-                    header('Location: /app/views/account/login.php');
+                    header('Location: /Gym/account/login');
                 }
             }
         }
@@ -72,7 +70,7 @@ class AccountController
     {
         unset($_SESSION['username']);
         unset($_SESSION['role']);
-        header('Location: /Gym/package');
+        header('Location: /Gym');
     }
     public function checkLogin()
     {
@@ -81,20 +79,23 @@ class AccountController
             $password = $_POST['password'] ?? '';
 
             // Kiểm tra thông tin đăng nhập
-            $account = $this->accountModel->getUserByUsername($username);
+            $account = $this->accountModel->getAccountByUsername($username);
 
             if ($account) {
                 $pwd_hash = $account->password;
                 if (password_verify($password, $pwd_hash)) {
+
                     session_start();
                     // Lưu thông tin người dùng vào session
                     $_SESSION['username'] = $account->username;
-                    
-                    header('Location: /Gym/header.php');
+
+                    header('Location: /Gym');
+                    exit;
                 } else {
-                    $loginMessage = "Sai tên đăng nhập hoặc mật khẩu.";
-                    include 'app/views/account/login.php';
+                    echo "Mật khẩu không đúng!";
                 }
+            } else {
+                echo "Tài khoản không tồn tại!";
             }
         }
     }
