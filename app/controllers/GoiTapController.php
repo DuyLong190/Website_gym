@@ -4,40 +4,37 @@ require_once __DIR__ . '/../config/database.php';
 
 class GoiTapController
 {
-    private $GoiTapmodel;
+    private $GoiTapModel;
     private $db;
 
     public function __construct()
     {
         // Kết nối đến cơ sở dữ liệu
         $this->db = (new Database())->getConnection();
-        $this->GoiTapmodel = new GoiTapModel($this->db);
+        $this->GoiTapModel = new GoiTapModel($this->db);
     }
 
     // Hiển thị danh sách gói tập
     public function indexGoiTap()
     {
-        // Lấy danh sách gói tập từ database
-        $goiTaps = $this->GoiTapmodel->getGoiTaps();
+        $goiTaps = $this->GoiTapModel->getGoiTaps();
         
         require_once __DIR__ . '/../views/share/header.php';
         require_once __DIR__ . '/../views/share/trangchu.php';
-        // Hiển thị danh sách gói tập
         require_once __DIR__ . '/../views/package/listGoiTap.php';
-        
         require_once __DIR__ . '/../views/share/footer.php';
     }
 
     public function show($MaGoiTap)
     {
-        $goiTap = $this->GoiTapmodel->getByMaGoiTap($MaGoiTap);
-        if (!$goiTap) {
-            include_once __DIR__ . '/../views/package/show.php';
+        $goiTap = $this->GoiTapModel->getByMaGoiTap($MaGoiTap);
+        if ($goiTap) {
+            include_once __DIR__ . '/../views/package/showGoiTap.php';
         } else {
             echo "Gói tập không tồn tại.";
         }
     }
-    // Hiển thị form tạo mới gói tập
+
     public function add()
     {
         include_once __DIR__ . '/../views/package/addGoiTap.php';
@@ -46,21 +43,26 @@ class GoiTapController
     // Lưu gói tập mới
     public function save()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $Ten_Goi = $_POST['ten_goi'] ?? '';
-            $Gia = $_POST['gia'] ?? 0;
-            $Thoi_gian = $_POST['thoi_gian'] ?? '';
-            $Mo_ta = $_POST['mo_ta'] ?? '';
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $TenGoiTap = $_POST['TenGoiTap'] ?? '';
+            $GiaTien = $_POST['GiaTien'] ?? '';
+            $ThoiHan = $_POST['ThoiHan'] ?? '';
+            $MoTa = $_POST['MoTa'] ?? '';
 
-            $result = $this->GoiTapmodel->addGoiTap($Ten_Goi, $Gia, $Thoi_gian, $Mo_ta);
+            $result = $this->GoiTapModel->addGoiTap($TenGoiTap, $GiaTien, $ThoiHan, $MoTa);
+            
             if (is_array($result)) {
-                // Xử lý lỗi nếu có
-                foreach ($result as $error) {
-                    echo "<p style='color: red;'>$error</p>";
-                }
+                // Nếu có lỗi validation, hiển thị form lại với lỗi
+                require_once __DIR__ . '/../views/share/header.php';
+                require_once __DIR__ . '/../views/package/addGoiTap.php';
+                require_once __DIR__ . '/../views/share/footer.php';
+            } else if ($result === true) {
+                // Nếu thêm thành công, chuyển hướng về danh sách
+                header('Location: /gym/goitap');
+                exit();
             } else {
-                // Nếu không có lỗi, chuyển hướng về danh sách gói tập
-                header('Location: /app/views/package/listGoiTap.php');
+                // Nếu có lỗi khác
+                echo "Có lỗi xảy ra khi thêm gói tập. Vui lòng thử lại.";
             }
         }
     }
@@ -68,28 +70,27 @@ class GoiTapController
     // Hiển thị form chỉnh sửa gói tập
     public function edit($MaGoiTap)
     {
-        $goiTap = $this->GoiTapmodel->getByMaGoiTap($MaGoiTap);
-        if (!$goiTap) {
+        $goiTap = $this->GoiTapModel->getByMaGoiTap($MaGoiTap);
+        if ($goiTap) {
             include_once __DIR__ . '/../views/package/editGoiTap.php';
         } else {
             echo "Gói tập không tồn tại.";
-            return;
         }
     }
 
     // Cập nhật gói tập
     public function update()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $MaGoiTap = $_POST['MaGoiTap'];
-            $Ten_Goi = $_POST['ten_goi'];
-            $Gia = $_POST['gia'];
-            $Thoi_gian = $_POST['thoi_gian'];
-            $Mo_ta = $_POST['mo_ta'] ?? '';
+            $TenGoiTap = $_POST['TenGoiTap'];
+            $GiaTien = $_POST['GiaTien'];
+            $ThoiHan = $_POST['ThoiHan'];
+            $MoTa = $_POST['MoTa'] ?? '';
 
-            $edit = $this->GoiTapmodel->updateGoiTap($MaGoiTap, $Ten_Goi, $Gia, $Thoi_gian, $Mo_ta);
+            $edit = $this->GoiTapModel->updateGoiTap($MaGoiTap, $TenGoiTap, $GiaTien, $ThoiHan, $MoTa);
             if ($edit) {
-                header('Location: /..views/package/listGoiTap.php');
+                header('/gym/goitap');
             } else {
                 echo "Cập nhật gói tập không thành công.";
             }
@@ -99,8 +100,8 @@ class GoiTapController
     // Xóa gói tập
     public function delete($MaGoiTap)
     {
-        if ($this->GoiTapmodel->deleteGoiTap($MaGoiTap)) {
-            header('Location: /app/views/package/listGoiTap.php');
+        if ($this->GoiTapModel->deleteGoiTap($MaGoiTap)) {
+            header('/gym/goitap');
         } else {
             echo "Xóa gói tập không thành công.";
         }

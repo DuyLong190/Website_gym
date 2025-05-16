@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -41,7 +40,7 @@
         <nav class="flex items-center">
             <ul class="flex space-x-8 text-lg font-medium">
                 <li><a href="/gym/" class="hover:text-red-500 transition duration-300">Trang chủ</a></li>
-                <li><a href="/Gym/app/views/package/showGoiTap.php" class="hover:text-red-500 transition duration-300">Gói Tập</a></li>
+                <li><a href="/gym/goitap" class="hover:text-red-500 transition duration-300">Gói Tập</a></li>
                 <li><a href="#" class="hover:text-red-500 transition duration-300">Dịch vụ</a></li>
                 <li><a class="hover:text-red-500 transition duration-300" href="/gym/app/views/account/login.php">Đăng Nhập</a></li>
                 <li><a class="nav-link hover:text-red-500 transition duration-300" href="/app/views/account/logout">Đăng Xuất</a></li>

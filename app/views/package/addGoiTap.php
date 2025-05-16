@@ -25,26 +25,26 @@
                 <div class="card shadow">
                     <div class="card-body">
                         <h1 class="text-center mb-4">Thêm Gói Tập Mới</h1>
-                        <form method="POST" action="/gym/package/save" onsubmit="return validateForm()">
+                        <form method="POST" action="/gym/goitap/save" onsubmit="return validateForm()">
                             <div class="mb-3">
-                                <label for="ten_goi" class="form-label">Tên gói tập:</label>
-                                <input type="text" name="ten_goi" id="ten_goi" class="form-control" placeholder="Nhập tên gói tập" required>
+                                <label for="TenGoiTap" class="form-label">Tên gói tập:</label>
+                                <input type="text" name="TenGoiTap" id="TenGoiTap" class="form-control" placeholder="Nhập tên gói tập" required>
                             </div>
                             <div class="mb-3">
-                                <label for="gia" class="form-label">Giá:</label>
-                                <input type="number" name="gia" id="gia" class="form-control" step="0.01" placeholder="Nhập giá" required>
-                            </div>
-                            <div class=" mb-3">
-                                <label for="thoi_gian" class="form-label">Thời hạn:</label>
-                                <input type="text" name="thoi_gian" id="thoi_gian" class="form-control" placeholder="Nhập thời hạn" required>
+                                <label for="GiaTien" class="form-label">Giá tiền:</label>
+                                <input type="number" name="GiaTien" id="GiaTien" class="form-control" step="0.01" min="0" placeholder="Nhập giá tiền" required>
                             </div>
                             <div class="mb-3">
-                                <label for="mo_ta" class="form-label">Mô tả:</label>
-                                <textarea name="mo_ta" id="mo_ta" class="form-control" placeholder="Nhập mô tả"></textarea>
+                                <label for="ThoiHan" class="form-label">Thời hạn (ngày):</label>
+                                <input type="number" name="ThoiHan" id="ThoiHan" class="form-control" min="1" placeholder="Nhập thời hạn" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="MoTa" class="form-label">Mô tả:</label>
+                                <textarea name="MoTa" id="MoTa" class="form-control" placeholder="Nhập mô tả" required></textarea>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <button type="submit" class="btn btn-primary" id="submit" name="submit">Thêm gói tập</button>
-                                <a href="" class="btn btn-secondary">Quay lại danh sách gói tập</a>
+                                <a href="/gym/goitap" class="btn btn-secondary">Quay lại danh sách gói tập</a>
                             </div>
                         </form>
                     </div>

@@ -61,11 +61,11 @@
                                 <span class="price-badge"><?php echo number_format($goiTap->GiaTien); ?> VNĐ</span>
                                 <p class="card-text mb-1"><strong>Thời hạn:</strong> <?php echo htmlspecialchars($goiTap->ThoiHan); ?> ngày</p>
                                 <p class="card-text mb-3"><?php echo htmlspecialchars($goiTap->MoTa); ?></p>
-                                <a href="package/show/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-outline-primary w-100 mb-2">
+                                <a href="goitap/show/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-outline-primary w-100 mb-2">
                                     <i class="fa fa-info-circle"></i> Chi tiết
                                 </a>
                                 <div class="d-flex gap-2">
-                                    <a href="app/views/package/editGoiTap.php<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-warning flex-fill">
+                                    <a href="/gym/goitap/edit<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-warning flex-fill">
                                         <i class="fa fa-edit"></i> Sửa
                                     </a>
                                     <a href="app/views/package/delete <?php echo $goiTap->MaGoiTap; ?>" class="btn btn-danger flex-fill" onclick="return confirm('Bạn có chắc muốn xóa gói tập này?');">
