@@ -65,11 +65,8 @@ class AccountController
     }
     function logout()
     {
-
         unset($_SESSION['username']);
-
         unset($_SESSION['role']);
-
         header('Location: /gym');
     }
 

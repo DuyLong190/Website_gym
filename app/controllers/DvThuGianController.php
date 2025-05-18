@@ -1,36 +1,35 @@
 <?php
-require_once __DIR__ . '/../models/GoiTapModel.php';
+require_once __DIR__ . '/../models/DvThuGianModel.php';
 require_once __DIR__ . '/../config/database.php';
 
-class GoiTapController
+class DvThuGianController
 {
-    private $goitapModel;
+    private $dvtgModel;
     private $db;
 
     public function __construct()
     {
         // Kết nối đến cơ sở dữ liệu
         $this->db = (new Database())->getConnection();
-        $this->goitapModel = new GoiTapModel($this->db);
+        $this->dvtgModel = new DvThuGianModel($this->db);
     }
 
     // Hiển thị danh sách gói tập
-    public function indexGoiTap()
+    public function indexDVTG()
     {
-        $goiTaps = $this->goitapModel->getGoiTaps();
-        
+        $DVTGs = $this->dvtgModel->getDVTGs();
+
         require_once __DIR__ . '/../views/share/header.php';
         require_once __DIR__ . '/../views/share/trangchu.php';
         require_once __DIR__ . '/../views/package/listGoiTap.php';
-        require_once __DIR__ . '/../views/service/listDVTG.php';
         require_once __DIR__ . '/../views/share/footer.php';
     }
 
-    public function show($MaGoiTap)
+    public function show($id)
     {
-        $goiTap = $this->goitapModel->getByMaGoiTap($MaGoiTap);
-        if ($goiTap) {
-            include_once __DIR__ . '/../views/package/showGoiTap.php';
+        $DVTG = $this->dvtgModel->getDVTG_ByID($id);
+        if ($DVTG) {
+            include_once __DIR__ . '/../views/package/showDVTG.php';
         } else {
             echo "Gói tập không tồn tại.";
         }
@@ -38,28 +37,28 @@ class GoiTapController
 
     public function add()
     {
-        include_once __DIR__ . '/../views/package/addGoiTap.php';
+        include_once __DIR__ . '/../views/service/addDVTG.php';
     }
 
     // Lưu gói tập mới
     public function save()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $TenGoiTap = $_POST['TenGoiTap'] ?? '';
-            $GiaTien = $_POST['GiaTien'] ?? '';
-            $ThoiHan = $_POST['ThoiHan'] ?? '';
-            $MoTa = $_POST['MoTa'] ?? '';
+            $TenTG = $_POST['TenTG'] ?? '';
+            $GiaTG = $_POST['GiaTG'] ?? '';
+            $ThoiGianTG = $_POST['ThoiGianTG'] ?? '';
+            $MoTaTG = $_POST['MoTaTG'] ?? '';
 
-            $result = $this->goitapModel->addGoiTap($TenGoiTap, $GiaTien, $ThoiHan, $MoTa);
-            
+            $result = $this->dvtgModel->addDVTG($TenTG, $GiaTG, $ThoiGianTG, $MoTaTG);
+
             if (is_array($result)) {
                 // Nếu có lỗi validation, hiển thị form lại với lỗi
                 require_once __DIR__ . '/../views/share/header.php';
-                require_once __DIR__ . '/../views/package/addGoiTap.php';
+                require_once __DIR__ . '/../views/package/addDVTG.php';
                 require_once __DIR__ . '/../views/share/footer.php';
             } else if ($result === true) {
                 // Nếu thêm thành công, chuyển hướng về danh sách
-                header('Location: /gym/goitap');
+                header('Location: /gym/DvThuGian');
                 exit();
             } else {
                 // Nếu có lỗi khác
@@ -68,30 +67,28 @@ class GoiTapController
         }
     }
 
-    // Hiển thị form chỉnh sửa gói tập
-    public function edit($MaGoiTap)
+    public function edit($id)
     {
-        $goiTap = $this->goitapModel->getByMaGoiTap($MaGoiTap);
-        if ($goiTap) {
-            include_once __DIR__ . '/../views/package/editGoiTap.php';
+        $DVTG = $this->dvtgModel->getDVTG_ByID($id);
+        if ($DVTG) {
+            include_once __DIR__ . '/../views/package/editDVTG.php';
         } else {
             echo "Gói tập không tồn tại.";
         }
     }
 
-    // Cập nhật gói tập
     public function update()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $MaGoiTap = $_POST['MaGoiTap'];
-            $TenGoiTap = $_POST['TenGoiTap'];
-            $GiaTien = $_POST['GiaTien'];
-            $ThoiHan = $_POST['ThoiHan'];
-            $MoTa = $_POST['MoTa'] ?? '';
+            $id = $_POST['id'];
+            $TenTG = $_POST['TenTG'];
+            $GiaTG = $_POST['GiaTG'];
+            $ThoiGianTG = $_POST['ThoiGianTG'];
+            $MoTaTG = $_POST['MoTaTG'] ?? '';
 
-            $edit = $this->goitapModel->updateGoiTap($MaGoiTap, $TenGoiTap, $GiaTien, $ThoiHan, $MoTa);
+            $edit = $this->dvtgModel->updateDVTG($id, $TenTG, $GiaTG, $ThoiGianTG, $MoTaTG);
             if ($edit) {
-                header('Location: /gym/goitap');
+                header('Location: /gym/DvThuGian');
             } else {
                 echo "Cập nhật gói tập không thành công.";
             }
@@ -99,13 +96,12 @@ class GoiTapController
     }
 
     // Xóa gói tập
-    public function delete($MaGoiTap)
+    public function delete($id)
     {
-        if ($this->goitapModel->deleteGoiTap($MaGoiTap)) {
-            header('Location: /gym/goitap');
+        if ($this->dvtgModel->deleteDVTG($id)) {
+            header('Location: /gym/DvThuGian');
         } else {
             echo "Xóa gói tập không thành công.";
         }
     }
 }
-?>

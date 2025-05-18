@@ -21,11 +21,11 @@ class GoiTapModel
     // Lấy gói tập theo ID
     public function getByMaGoiTap($MaGoiTap)
     {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE MaGoiTap = :MaGoiTap";
-        $stmt = $this->conn->prepare($query);
+        $query  = "SELECT * FROM " . $this->table_name . " WHERE MaGoiTap = :MaGoiTap";
+        $stmt  = $this->conn->prepare($query);
         $stmt->bindParam(':MaGoiTap', $MaGoiTap,);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
         return $result;
     }
 
@@ -91,7 +91,6 @@ class GoiTapModel
             $stmt = $this->conn->prepare($query);
 
             // Làm sạch dữ liệu
-            $MaGoiTap = htmlspecialchars(strip_tags($MaGoiTap));
             $TenGoiTap = htmlspecialchars(strip_tags($TenGoiTap));
             $GiaTien = htmlspecialchars(strip_tags($GiaTien));
             $ThoiHan = htmlspecialchars(strip_tags($ThoiHan));

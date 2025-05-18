@@ -98,7 +98,7 @@ if (isset($errors)) {
     <section class="vh-100 gradient-custom d-flex align-items-center">
         <div class="register-card w-100">
             <h2 class="register-title text-center">Đăng Ký Tài Khoản</h2>
-            <form method="POST" action="save" autocomplete="off">
+            <form method="POST" action="/gym/account/save" autocomplete="off">
                 <div class="mb-3 form-floating">
                     <input type="text" class="form-control" id="username" name="username" placeholder="Nhập tên tài khoản">
                     <label for="username" class="form-label">Nhập tên tài khoản</label>

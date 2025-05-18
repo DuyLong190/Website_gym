@@ -45,31 +45,31 @@
 
 <body>
     <div class="container py-5">
-        <h1 class="text-center mb-5 fw-bold text-primary">Danh sách gói tập</h1>
+        <h1 class="text-center mb-5 fw-bold text-primary">Các dịch vụ thư giãn</h1>
         <div class="mb-4 d-flex justify-content-end">
-            <a href="goitap/add" class="btn btn-success btn-lg">
-                <i class="fa fa-plus"></i> Thêm gói tập
+            <a href="DvThuGian/add" class="btn btn-success btn-lg">
+                <i class="fa fa-plus"></i> Thêm dịch vụ thư giãn
             </a>
         </div>
-        <?php if (!empty($goiTaps)): ?>
+        <?php if (!empty($DVTGs)): ?>
             <div class="row">
-                <?php foreach ($goiTaps as $goiTap): ?>
+                <?php foreach ($DVTGs as $DVTG): ?>
                     <div class="col-md-6 col-lg-4 d-flex">
                         <div class="card package-card flex-fill">
                             <div class="card-body">
-                                <h5 class="card-title mb-2"><?php echo htmlspecialchars($goiTap->TenGoiTap); ?></h5>
-                                <span class="price-badge"><?php echo number_format($goiTap->GiaTien); ?> VNĐ</span>
-                                <p class="card-text mb-1"><strong>Thời hạn:</strong> <?php echo htmlspecialchars($goiTap->ThoiHan); ?> ngày</p>
-                                <p class="card-text mb-3"><?php echo htmlspecialchars($goiTap->MoTa); ?></p>
-                                <a href="goitap/show/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-outline-primary w-100 mb-2">
+                                <h5 class="card-title mb-2"><?php echo htmlspecialchars($DVTG->TenTG); ?></h5>
+                                <span class="price-badge"><?php echo number_format($DVTG->GiaTG); ?> VNĐ</span>
+                                <p class="card-text mb-1"><strong>Thời hạn sử dụng:</strong> <?php echo htmlspecialchars($DVTG->ThoiGianTG); ?> phút</p>
+                                <p class="card-text mb-3"><?php echo htmlspecialchars($DVTG->MoTaTG); ?></p>
+                                <a href="DvThuGian/show/<?php echo $DVTG->id; ?>" class="btn btn-outline-primary w-100 mb-2">
                                     <i class="fa fa-info-circle"></i> Chi tiết
                                 </a>
                                 <div class="d-flex gap-2">
-                                    <a href="/gym/goitap/edit/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-warning flex-fill">
+                                    <a href="/gym/DvThuGian/edit/<?php echo $DVTG->id; ?>" class="btn btn-warning flex-fill">
                                         <i class="fa fa-edit"></i> Sửa
                                     </a>
-                                    <a href="/gym/goitap/delete/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-danger flex-fill" 
-                                    onclick="return confirm('Bạn có chắc muốn xóa gói tập này?');">
+                                    <a href="/gym/DvThuGian/delete/<?php echo $DVTG->id; ?>" class="btn btn-danger flex-fill"
+                                        onclick="return confirm('Bạn có chắc muốn xóa gói tập này?');">
                                         <i class="fa fa-trash"></i> Xóa
                                     </a>
                                 </div>
