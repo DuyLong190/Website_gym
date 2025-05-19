@@ -4,6 +4,7 @@ require_once 'app/controllers/AccountController.php';
 require_once 'app/controllers/GoiTapController.php';
 require_once 'app/controllers/DvThuGianController.php';
 require_once 'app/models/GoiTapModel.php';
+require_once 'app/models/DvThuGianModel.php';
 
 $url = $_GET['url'] ?? '';
 $url = rtrim($url, '/');
@@ -14,9 +15,25 @@ $url = explode('/', $url);
 $controllerName = isset($url[0]) && $url[0] != '' ? ucfirst($url[0]) . 'Controller' : 'GoiTapController';
 
 // Kiểm tra phần thứ hai của URL để xác định action
-$action = isset($url[1]) && $url[1] != '' ? $url[1] : 'indexGoiTap';
+$action = isset($url[1]) && $url[1] != '' ? $url[1] : '';
 
-// die ("controller=$controllerName - action=$action");
+// Xác định action mặc định dựa trên controller
+if (empty($action)) {
+    switch ($controllerName) {
+        case 'GoiTapController':
+            $action = 'indexGoiTap';
+            break;
+        case 'DvThuGianController':
+            $action = 'indexDVTG';
+            break;
+        case 'AccountController':
+            $action = 'index';
+            break;
+        default:
+            $action = 'indexGoiTap';
+    }
+}
+
 // Kiểm tra xem controller và action có tồn tại không
 if (!file_exists('app/controllers/' . $controllerName . '.php')) {
     // Xử lý khi không tìm thấy controller
@@ -27,7 +44,7 @@ require_once 'app/controllers/' . $controllerName . '.php';
 $controller = new $controllerName();
 if (!method_exists($controller, $action)) {
     // Xử lý khi không tìm thấy action
-    die('Không tìm thấy Action');
+    die('Không tìm thấy Action '.$action.' trong Controller '.$controllerName);
 }
 // Gọi action với các tham số còn lại (nếu có)
 call_user_func_array([$controller, $action], array_slice($url, 2));

@@ -31,4 +31,4 @@ CREATE TABLE DichVuThuGian (
 );
 INSERT INTO dichvuthugian (id, TenTG, GiaTG, ThoiGianTG, MoTaTG) VALUES
 	('1', 'Massage', 10000.0, 90, 'Massage y học cổ truyền')
-	
+SELECT id, TenTG, GiaTG, ThoiGianTG, MoTaTG FROM dichvuthugian

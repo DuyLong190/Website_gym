@@ -21,7 +21,7 @@ class DvThuGianController
 
         require_once __DIR__ . '/../views/share/header.php';
         require_once __DIR__ . '/../views/share/trangchu.php';
-        require_once __DIR__ . '/../views/package/listGoiTap.php';
+        require_once __DIR__ . '/../views/service/listDVTG.php';
         require_once __DIR__ . '/../views/share/footer.php';
     }
 
@@ -29,9 +29,9 @@ class DvThuGianController
     {
         $DVTG = $this->dvtgModel->getDVTG_ByID($id);
         if ($DVTG) {
-            include_once __DIR__ . '/../views/package/showDVTG.php';
+            include_once __DIR__ . '/../views/service/showDVTG.php';
         } else {
-            echo "Gói tập không tồn tại.";
+            echo "Dịch vụ này không tồn tại.";
         }
     }
 
@@ -54,7 +54,7 @@ class DvThuGianController
             if (is_array($result)) {
                 // Nếu có lỗi validation, hiển thị form lại với lỗi
                 require_once __DIR__ . '/../views/share/header.php';
-                require_once __DIR__ . '/../views/package/addDVTG.php';
+                require_once __DIR__ . '/../views/service/addDVTG.php';
                 require_once __DIR__ . '/../views/share/footer.php';
             } else if ($result === true) {
                 // Nếu thêm thành công, chuyển hướng về danh sách
@@ -62,7 +62,7 @@ class DvThuGianController
                 exit();
             } else {
                 // Nếu có lỗi khác
-                echo "Có lỗi xảy ra khi thêm gói tập. Vui lòng thử lại.";
+                echo "Có lỗi xảy ra khi thêm dịch vụ. Vui lòng thử lại.";
             }
         }
     }
@@ -71,9 +71,9 @@ class DvThuGianController
     {
         $DVTG = $this->dvtgModel->getDVTG_ByID($id);
         if ($DVTG) {
-            include_once __DIR__ . '/../views/package/editDVTG.php';
+            include_once __DIR__ . '/../views/service/editDVTG.php';
         } else {
-            echo "Gói tập không tồn tại.";
+            echo "Dịch vụ này không tồn tại.";
         }
     }
 
@@ -90,7 +90,7 @@ class DvThuGianController
             if ($edit) {
                 header('Location: /gym/DvThuGian');
             } else {
-                echo "Cập nhật gói tập không thành công.";
+                echo "Cập nhật dịch vụ không thành công.";
             }
         }
     }
@@ -101,7 +101,7 @@ class DvThuGianController
         if ($this->dvtgModel->deleteDVTG($id)) {
             header('Location: /gym/DvThuGian');
         } else {
-            echo "Xóa gói tập không thành công.";
+            echo "Xóa dịch vụ không thành công.";
         }
     }
 }

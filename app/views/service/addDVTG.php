@@ -24,7 +24,7 @@
             <div class="col-md-6">
                 <div class="card shadow">
                     <div class="card-body">
-                        <h1 class="text-center mb-4">Thêm Dịch vụ thư giãn Mới</h1>
+                        <h1 class="text-center mb-4">Thêm Dịch vụ thư giãn mới</h1>
                         <form method="POST" action="/gym/DvThuGian/save" onsubmit="return validateForm()">
                             <div class="mb-3">
                                 <label for="TenTG" class="form-label">Tên dịch vụ thư giãn:</label>
@@ -37,7 +37,7 @@
                                     placeholder="Nhập giá tiền" required>
                             </div>
                             <div class="mb-3">
-                                <label for="ThoiGianTG" class="form-label">Thời gian sử dụng (tiếng):</label>
+                                <label for="ThoiGianTG" class="form-label">Thời gian sử dụng (phút):</label>
                                 <input type="number" name="ThoiGianTG" id="ThoiGianTG" class="form-control" min="1"
                                     placeholder="Nhập thời gian sử dụng" required>
                             </div>

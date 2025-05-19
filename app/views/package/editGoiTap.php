@@ -11,7 +11,6 @@ if (!isset($goiTap) || !is_object($goiTap)) {
 ?>
 <?php include_once __DIR__ . '/../share/header.php'; ?>
 
-<!-- Thêm Bootstrap CDN -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
 <div class="container mt-5">

@@ -48,7 +48,7 @@
                         data-bs-toggle="dropdown" aria-expanded="false">Dịch vụ
                     </a>
                     <ul class="dropdown-menu absolute bg-gray-800 text-white rounded-lg mt-2" aria-labelledby="dichvuDropdown">
-                        <li><a class="dropdown-item" href="DvThuGian/list">Dịch vụ thư giãn</a></li>
+                        <li><a class="dropdown-item" href="DvThuGian">Dịch vụ thư giãn</a></li>
                         <li><a class="dropdown-item" href="#">Dịch vụ tập luyện</a></li>
 
                     </ul>

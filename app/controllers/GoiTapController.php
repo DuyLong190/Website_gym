@@ -22,7 +22,6 @@ class GoiTapController
         require_once __DIR__ . '/../views/share/header.php';
         require_once __DIR__ . '/../views/share/trangchu.php';
         require_once __DIR__ . '/../views/package/listGoiTap.php';
-        require_once __DIR__ . '/../views/service/listDVTG.php';
         require_once __DIR__ . '/../views/share/footer.php';
     }
 

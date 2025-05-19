@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách gói tập</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="public/css/header.css">
     <style>
         .package-card {
             transition: transform 0.3s, box-shadow 0.3s;
@@ -59,7 +59,7 @@
                             <div class="card-body">
                                 <h5 class="card-title mb-2"><?php echo htmlspecialchars($DVTG->TenTG); ?></h5>
                                 <span class="price-badge"><?php echo number_format($DVTG->GiaTG); ?> VNĐ</span>
-                                <p class="card-text mb-1"><strong>Thời hạn sử dụng:</strong> <?php echo htmlspecialchars($DVTG->ThoiGianTG); ?> phút</p>
+                                <p class="card-text mb-1"><strong>Thời gian sử dụng:</strong> <?php echo htmlspecialchars($DVTG->ThoiGianTG); ?> phút</p>
                                 <p class="card-text mb-3"><?php echo htmlspecialchars($DVTG->MoTaTG); ?></p>
                                 <a href="DvThuGian/show/<?php echo $DVTG->id; ?>" class="btn btn-outline-primary w-100 mb-2">
                                     <i class="fa fa-info-circle"></i> Chi tiết
