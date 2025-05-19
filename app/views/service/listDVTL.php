@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh sách các dịch vụ thư giãn</title>
+    <title>Danh sách các dịch vụ</title>
 
     <style>
         .package-card {
@@ -44,30 +44,30 @@
 
 <body>
     <div class="container py-5">
-        <h1 class="text-center mb-5 fw-bold text-primary">Các dịch vụ thư giãn</h1>
+        <h1 class="text-center mb-5 fw-bold text-primary">Các dịch vụ tập luyện</h1>
         <div class="mb-4 d-flex justify-content-end">
-            <a href="DvThuGian/add" class="btn btn-success btn-lg">
-                <i class="fa fa-plus"></i> Thêm dịch vụ thư giãn
+            <a href="DvTapLuyen/add" class="btn btn-success btn-lg">
+                <i class="fa fa-plus"></i> Thêm dịch vụ tập luyện
             </a>
         </div>
-        <?php if (!empty($DVTGs)): ?>
+        <?php if (!empty($DVTLs)): ?>
             <div class="row">
-                <?php foreach ($DVTGs as $DVTG): ?>
+                <?php foreach ($DVTLs as $DVTL): ?>
                     <div class="col-md-6 col-lg-4 d-flex">
                         <div class="card package-card flex-fill">
                             <div class="card-body">
-                                <h5 class="card-title mb-2"><?php echo htmlspecialchars($DVTG->TenTG); ?></h5>
-                                <span class="price-badge"><?php echo number_format($DVTG->GiaTG); ?> VNĐ</span>
-                                <p class="card-text mb-1"><strong>Thời gian sử dụng:</strong> <?php echo htmlspecialchars($DVTG->ThoiGianTG); ?> phút</p>
-                                <p class="card-text mb-3"><?php echo htmlspecialchars($DVTG->MoTaTG); ?></p>
-                                <a href="DvThuGian/show/<?php echo $DVTG->id; ?>" class="btn btn-outline-primary w-100 mb-2">
+                                <h5 class="card-title mb-2"><?php echo htmlspecialchars($DVTL->TenTL); ?></h5>
+                                <span class="price-badge"><?php echo number_format($DVTL->GiaTL); ?> VNĐ</span>
+                                <p class="card-text mb-1"><strong>Thời gian sử dụng:</strong> <?php echo htmlspecialchars($DVTL->ThoiGianTL); ?> phút</p>
+                                <p class="card-text mb-3"><?php echo htmlspecialchars($DVTL->MoTaTL); ?></p>
+                                <a href="DvTapLuyen/show/<?php echo $DVTL->id; ?>" class="btn btn-outline-primary w-100 mb-2">
                                     <i class="fa fa-info-circle"></i> Chi tiết
                                 </a>
                                 <div class="d-flex gap-2">
-                                    <a href="/gym/DvThuGian/edit/<?php echo $DVTG->id; ?>" class="btn btn-warning flex-fill">
+                                    <a href="/gym/DvTapLuyen/edit/<?php echo $DVTL->id; ?>" class="btn btn-warning flex-fill">
                                         <i class="fa fa-edit"></i> Sửa
                                     </a>
-                                    <a href="/gym/DvThuGian/delete/<?php echo $DVTG->id; ?>" class="btn btn-danger flex-fill"
+                                    <a href="/gym/DvTapLuyen/delete/<?php echo $DVTL->id; ?>" class="btn btn-danger flex-fill"
                                         onclick="return confirm('Bạn có chắc muốn xóa gói tập này?');">
                                         <i class="fa fa-trash"></i> Xóa
                                     </a>

@@ -3,6 +3,7 @@ session_start();
 require_once 'app/controllers/AccountController.php';
 require_once 'app/controllers/GoiTapController.php';
 require_once 'app/controllers/DvThuGianController.php';
+require_once 'app/controllers/DvTapLuyenController.php';
 require_once 'app/models/GoiTapModel.php';
 require_once 'app/models/DvThuGianModel.php';
 
@@ -12,7 +13,7 @@ $url = filter_var($url, FILTER_SANITIZE_URL);
 $url = explode('/', $url);
 
 // Kiểm tra phần đầu tiên của URL để xác định controller
-$controllerName = isset($url[0]) && $url[0] != '' ? ucfirst($url[0]) . 'Controller' : 'GoiTapController';
+$controllerName = isset($url[0]) && $url[0] != '' ? ucfirst($url[0]) . 'Controller' : 'HomeController';
 
 // Kiểm tra phần thứ hai của URL để xác định action
 $action = isset($url[1]) && $url[1] != '' ? $url[1] : '';
@@ -20,14 +21,14 @@ $action = isset($url[1]) && $url[1] != '' ? $url[1] : '';
 // Xác định action mặc định dựa trên controller
 if (empty($action)) {
     switch ($controllerName) {
-        case 'GoiTapController':
-            $action = 'indexGoiTap';
+        case 'HomeController':
+            $action = 'indexHome';
             break;
         case 'DvThuGianController':
             $action = 'indexDVTG';
             break;
-        case 'AccountController':
-            $action = 'index';
+        case 'DvTapLuyenController':
+            $action ='indexDVTL';
             break;
         default:
             $action = 'indexGoiTap';

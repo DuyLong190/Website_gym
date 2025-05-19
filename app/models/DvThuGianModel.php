@@ -58,10 +58,10 @@ class DvThuGianModel
             $stmt = $this->conn->prepare($query);
 
             // Làm sạch dữ liệu
-            $TenGoiTap = htmlspecialchars(strip_tags($TenTG));
-            $GiaTien = htmlspecialchars(strip_tags($GiaTG));
-            $ThoiHan = htmlspecialchars(strip_tags($ThoiGianTG));
-            $MoTa = htmlspecialchars(strip_tags($MoTaTG));
+            $TenTG = htmlspecialchars(strip_tags($TenTG));
+            $GiaTG = htmlspecialchars(strip_tags($GiaTG));
+            $ThoiGianTG = htmlspecialchars(strip_tags($ThoiGianTG));
+            $MoTaTG = htmlspecialchars(strip_tags($MoTaTG));
 
             // Bind các tham số
             $stmt->bindParam(':TenTG', $TenTG);

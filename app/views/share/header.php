@@ -48,13 +48,13 @@
                         data-bs-toggle="dropdown" aria-expanded="false">Dịch vụ
                     </a>
                     <ul class="dropdown-menu absolute bg-gray-800 text-white rounded-lg mt-2" aria-labelledby="dichvuDropdown">
-                        <li><a class="dropdown-item" href="DvThuGian">Dịch vụ thư giãn</a></li>
-                        <li><a class="dropdown-item" href="#">Dịch vụ tập luyện</a></li>
+                        <li><a class="dropdown-item" href="/gym/DvThuGian">Dịch vụ thư giãn</a></li>
+                        <li><a class="dropdown-item" href="/gym/DvTapLuyen">Dịch vụ tập luyện</a></li>
 
                     </ul>
                 </li>
                 <li><a class="hover:text-red-500 transition duration-300" href="/gym/app/views/account/login.php">Đăng Nhập</a></li>
-                <li><a class="nav-link hover:text-red-500 transition duration-300" href="/app/views/account/logout">Đăng Xuất</a></li>
+                
                 <li><a href="#" class="hover:text-red-500 transition duration-300">Liên hệ</a></li>
             </ul>
         </nav>

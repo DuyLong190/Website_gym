@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,10 +37,36 @@
         margin-right: -50vw;
     }
 
-    .hero-section h1,
     .hero-section p {
         color: #fff;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .carousel-item img {
+        width: 100%;
+        height: 85vh;
+        object-fit: cover;
+    }
+
+    .carousel-caption {
+        background: rgba(115, 110, 110, 0.7);
+        border-radius: 10px;
+        padding: 20px;
+        bottom: 30px;
+    }
+
+    .carousel-caption h5 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .carousel-caption p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 0;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
     }
 </style>
 
@@ -62,7 +89,7 @@
                 Hãy cùng chúng tôi khám phá những gói tập đa dạng và phong phú, được thiết kế riêng cho bạn. Từ những bài tập cơ bản đến những chương trình huấn luyện chuyên sâu, chúng tôi cam kết mang đến cho bạn trải nghiệm tập luyện tuyệt vời nhất.
             </p>
         </section>
-        <div class="container px-4 mt-5">
+        <div class="container py-5 mb-5">
             <div id="carouselExampleCaptions" class="carousel slide rounded-4 shadow-lg overflow-hidden" data-bs-ride="carousel">
                 <div class="carousel-indicators">
                     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -76,7 +103,8 @@
                         <img src="/Gym/public/images/equip1.webp" class="d-block w-100 carousel-img" alt="...">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>Chào mừng bạn đến với LD Fitness</h5>
-                            <p>LD Fitness tin rằng mọi người, ở mọi nơi, đều nên được tiếp cận với hoạt động thể chất và những lợi ích tuyệt vời về thể chất, tinh thần và cảm xúc mà nó mang lại.</p>
+                            <p>LD Fitness tin rằng mọi người, ở mọi nơi, đều nên được tiếp cận với hoạt động thể chất <br>
+                                và những lợi ích tuyệt vời về thể chất, tinh thần và cảm xúc mà nó mang lại.</p>
                         </div>
                     </div>
                     <div class="carousel-item">
@@ -90,21 +118,24 @@
                         <img src="/Gym/public/images/equip3.jpg" class="d-block w-100" alt="...">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>Trải nghiệm các dịch vụ</h5>
-                            <p>Chúng tôi cung cấp những dịch vụ thư giản như xông hơi, massage, giãn cơ..., giúp bạn thư giãn sau những giờ tập năng động</p>
+                            <p>Chúng tôi cung cấp những dịch vụ thư giản như xông hơi, massage, giãn cơ..., <br>
+                                giúp bạn thư giãn sau những giờ tập năng động</p>
                         </div>
                     </div>
                     <div class="carousel-item">
                         <img src="/Gym/public/images/equip4.jpg" class="d-block w-100" alt="...">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>Huấn luyện viên luôn đồng hành cùng bạn</h5>
-                            <p>Đội ngũ huấn luyện viên của chúng tôi được chứng nhận và có nhiều năm kinh nghiệm, sẵn sàng hỗ trợ bạn đạt được mục tiêu.</p>
+                            <p>Đội ngũ huấn luyện viên của chúng tôi được chứng nhận và có nhiều năm kinh nghiệm,<br>
+                                sẵn sàng hỗ trợ bạn đạt được mục tiêu.</p>
                         </div>
                     </div>
                     <div class="carousel-item">
                         <img src="/Gym/public/images/equip5.jpg" class="d-block w-100" alt="...">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>Cộng đồng tập luyện và truyền cảm hứng</h5>
-                            <p>Cùng hàng ngàn hội viên lan toả lối sống lành mạnh ngay hôm nay! Đã đến lúc bạn nên thử những điều mới mẻ, hướng tới cuộc sống hứng khởi và tự tin toả sáng.</p>
+                            <p>Cùng hàng ngàn hội viên lan toả lối sống lành mạnh ngay hôm nay! <br>
+                                Đã đến lúc bạn nên thử những điều mới mẻ, hướng tới cuộc sống hứng khởi và tự tin toả sáng.</p>
                         </div>
                     </div>
                 </div>
@@ -121,5 +152,6 @@
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
 </style>

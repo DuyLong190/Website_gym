@@ -32,3 +32,14 @@ CREATE TABLE DichVuThuGian (
 INSERT INTO dichvuthugian (id, TenTG, GiaTG, ThoiGianTG, MoTaTG) VALUES
 	('1', 'Massage', 10000.0, 90, 'Massage y học cổ truyền')
 SELECT id, TenTG, GiaTG, ThoiGianTG, MoTaTG FROM dichvuthugian
+
+CREATE TABLE DichVuTapLuyen (
+	id int AUTO_INCREMENT PRIMARY KEY,
+	TenTL VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+	GiaTL DECIMAL(10,2) CHECK (GiaTL >= 0),
+	ThoiGianTL int CHECK (ThoiGianTL > 0),
+	MoTaTL VARCHAR(200) CHARACTER SET utf8mb4
+);
+
+INSERT INTO dichvutapluyen (id, TenTL, GiaTL, ThoiGianTL, MoTaTL) VALUES
+	('1', 'Boxing', 10000.0, 90, 'Boxing thái')

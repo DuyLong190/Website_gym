@@ -3,13 +3,15 @@ include_once __DIR__ . '/../share/header.php';
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>Đăng nhập - LD Gym & Fitness</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <style>
         .gradient-custom {
             background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
@@ -110,7 +112,7 @@ include_once __DIR__ . '/../share/header.php';
                     <div class="card bg-dark text-white rounded-4 shadow-lg">
                         <div class="card-body p-5">
                             <h2 class="fw-bold mb-4 text-uppercase text-center">Đăng nhập</h2>
-                            <form action="/gym/account/checkLogin" method="post" >
+                            <form action="/gym/account/checkLogin" method="post">
                                 <div class="mb-5">
                                     <div class="input-group input-group-lg floating-label-group">
                                         <span class="input-group-text"><i class="fa fa-user"></i></span>
@@ -145,7 +147,7 @@ include_once __DIR__ . '/../share/header.php';
         </div>
     </section>
 
-    <!-- Bootstrap 5 JS -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
