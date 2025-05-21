@@ -21,7 +21,7 @@ class AccountModel
 
     function save($username, $name, $password, $role = "user")
     {
-        $query = "INSERT INTO " . $this->table_name . "(username, password, role) VALUES (:username,:password, :role)";
+        $query = "INSERT INTO " . $this->table_name . "(username, password, role) VALUES (:username, :password, :role)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -34,7 +34,7 @@ class AccountModel
         $stmt->bindParam(':password', $password);
         $stmt->bindParam(':role', $role);
 
-        // Thực thi câu lệnh
+
         if ($stmt->execute()) {
             return true;
         }

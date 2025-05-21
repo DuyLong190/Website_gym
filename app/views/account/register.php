@@ -125,7 +125,7 @@ if (isset($errors)) {
             </form>
 
             <div class="text-center">
-                <p class="text-dark">Đã có tài khoản? <a href="login.php" class="login-link">Đăng nhập<a> </p>
+                <p class="text-dark">Đã có tài khoản? <a href="login" class="login-link">Đăng nhập<a> </p>
             </div>
         </div>
     </section>

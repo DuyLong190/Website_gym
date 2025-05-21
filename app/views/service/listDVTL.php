@@ -39,12 +39,41 @@
         .card-text {
             color: #374151;
         }
+
+        .hero-section {
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            position: relative;
+            background-image: url('/Gym/public/images/banner.png');
+            background-size: cover;
+            background-position: center;
+            width: 100vw;
+            min-height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            border: 5px solid transparent;
+            border-image: linear-gradient(deg, #ff4500, #ff8c00, #ff4500) 1;
+            box-shadow:
+                0 0 10px rgb(243, 73, 11),
+                0 0 30px rgb(233, 124, 85),
+                0 0 50px #ff8c00,
+                0 0 70px rgb(235, 177, 107);
+            border-radius: 10px;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container py-5">
-        <h1 class="text-center mb-5 fw-bold text-primary">Các dịch vụ tập luyện</h1>
+    <div class="container">
+        <section class="hero-section text-white py-5 mb-5">
+            <div class="container px-4">
+                <h1 class=" text-center">DỊCH VỤ TẬP LUYỆN</h1>
+            </div>
+        </section>
         <div class="mb-4 d-flex justify-content-end">
             <a href="DvTapLuyen/add" class="btn btn-success btn-lg">
                 <i class="fa fa-plus"></i> Thêm dịch vụ tập luyện
@@ -59,7 +88,7 @@
                                 <h5 class="card-title mb-2"><?php echo htmlspecialchars($DVTL->TenTL); ?></h5>
                                 <span class="price-badge"><?php echo number_format($DVTL->GiaTL); ?> VNĐ</span>
                                 <p class="card-text mb-1"><strong>Thời gian sử dụng:</strong> <?php echo htmlspecialchars($DVTL->ThoiGianTL); ?> phút</p>
-                                <p class="card-text mb-3"><?php echo htmlspecialchars($DVTL->MoTaTL); ?></p>
+                                <p class="card-text mb-3"><strong>Mô tả: </strong><?php echo htmlspecialchars($DVTL->MoTaTL); ?></p>
                                 <a href="DvTapLuyen/show/<?php echo $DVTL->id; ?>" class="btn btn-outline-primary w-100 mb-2">
                                     <i class="fa fa-info-circle"></i> Chi tiết
                                 </a>
@@ -68,7 +97,7 @@
                                         <i class="fa fa-edit"></i> Sửa
                                     </a>
                                     <a href="/gym/DvTapLuyen/delete/<?php echo $DVTL->id; ?>" class="btn btn-danger flex-fill"
-                                        onclick="return confirm('Bạn có chắc muốn xóa gói tập này?');">
+                                        onclick="return confirm('Bạn có chắc muốn xóa dịch vụ này?');">
                                         <i class="fa fa-trash"></i> Xóa
                                     </a>
                                 </div>

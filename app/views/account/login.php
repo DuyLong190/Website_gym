@@ -129,6 +129,10 @@ include_once __DIR__ . '/../share/header.php';
                                         <label for="password">Mật khẩu</label>
                                     </div>
                                 </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
+                                    <label class="form-check-label" for="form2Example31"> Remember me </label>
+                                </div>
                                 <div class="mb-4">
                                     <a class="text-white-50 small text-start" href="#">Quên mật khẩu?</a>
                                 </div>
@@ -136,7 +140,7 @@ include_once __DIR__ . '/../share/header.php';
                                     <button type="submit" class="btn btn-outline-light btn-lg" id="submit" name="submit">Đăng nhập</button>
                                 </div>
                                 <div class="text-center">
-                                    <p>Chưa có tài khoản? <a href="register.php" class="signup-link">Đăng ký</a>
+                                    <p>Chưa có tài khoản? <a href="register" class="signup-link">Đăng ký</a>
                                     </p>
                                 </div>
                             </form>

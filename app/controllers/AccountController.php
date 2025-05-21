@@ -9,7 +9,6 @@ class AccountController
 
     public function __construct()
     {
-
         $this->db = (new Database())->getConnection();
         $this->accountModel = new AccountModel($this->db);
     }
@@ -49,7 +48,7 @@ class AccountController
             $account = $this->accountModel->getAccountByUsername($username);
 
             if ($account) {
-                $errors['account'] = "Tai khoan nay da co nguoi dang ky!";
+                $errors['account'] = "Tài khoản này đã có người đăng ký!";
             }
             if (count($errors) > 0) {
                 include_once 'app/views/account/register.php';
@@ -79,7 +78,6 @@ class AccountController
 
             if ($account) {
                 $pwd_hashed = $account->password;
-
                 if (password_verify($password, $pwd_hashed)) {
                     session_start();
                     // $_SESSION['user_id'] = $account->id;
@@ -88,10 +86,10 @@ class AccountController
                     header('Location: /gym');
                     exit;
                 } else {
-                    echo "Password incorrect.";
+                    echo "<script>alert('Mật khẩu không đúng.'); window.history.back();</script>";
                 }
             } else {
-                echo "Account not found.";
+                echo "<script>alert('Không tìm thấy tài khoản.'); window.history.back();</script>";
             }
         }
     }

@@ -20,7 +20,7 @@ class GoiTapController
         $goiTaps = $this->goitapModel->getGoiTaps();
         
         require_once __DIR__ . '/../views/share/header.php';
-        require_once __DIR__ . '/../views/share/trangchu.php';
+
         require_once __DIR__ . '/../views/package/listGoiTap.php';
         require_once __DIR__ . '/../views/share/footer.php';
     }

@@ -6,6 +6,7 @@ require_once 'app/controllers/DvThuGianController.php';
 require_once 'app/controllers/DvTapLuyenController.php';
 require_once 'app/models/GoiTapModel.php';
 require_once 'app/models/DvThuGianModel.php';
+require_once 'app/helpers/SessionHelper.php';
 
 $url = $_GET['url'] ?? '';
 $url = rtrim($url, '/');

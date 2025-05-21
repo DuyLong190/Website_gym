@@ -7,6 +7,7 @@
         </ul>
     </div>
 <?php endif; ?>
+<?php include_once __DIR__ . '/../share/header.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,7 +19,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body>
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -47,8 +48,8 @@
                                     placeholder="Nhập mô tả" required></textarea>
                             </div>
                             <div class="d-flex justify-content-between">
-                                <button type="submit" class="btn btn-primary" id="submit" name="submit">Thêm dịch vụ tập luyện</button>
-                                <a href="/gym/DvTapLuyen" class="btn btn-secondary">Quay lại danh sách dịch vụ</a>
+                                <button type="submit" class="btn btn-primary" id="submit" name="submit">Thêm</button>
+                                <a href="/gym/DvTapLuyen" class="btn btn-secondary">Quay lại</a>
                             </div>
                         </form>
                     </div>

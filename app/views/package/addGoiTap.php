@@ -7,6 +7,7 @@
         </ul>
     </div>
 <?php endif; ?>
+<?php include_once __DIR__ . '/../share/header.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,17 +15,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thêm Gói Tập</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 
-<body class="bg-light">
+<body>
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card shadow">
                     <div class="card-body">
-                        <h1 class="text-center mb-4">Thêm Gói Tập Mới</h1>
+                        <h1 class="text-center mb-4">Thêm gói tập mới</h1>
                         <form method="POST" action="/gym/goitap/save" onsubmit="return validateForm()">
                             <div class="mb-3">
                                 <label for="TenGoiTap" class="form-label">Tên gói tập:</label>
@@ -43,8 +43,8 @@
                                 <textarea name="MoTa" id="MoTa" class="form-control" placeholder="Nhập mô tả" required></textarea>
                             </div>
                             <div class="d-flex justify-content-between">
-                                <button type="submit" class="btn btn-primary" id="submit" name="submit">Thêm gói tập</button>
-                                <a href="/gym/goitap" class="btn btn-secondary">Quay lại danh sách gói tập</a>
+                                <button type="submit" class="btn btn-primary" id="submit" name="submit">Thêm</button>
+                                <a href="/gym/goitap" class="btn btn-secondary">Quay lại</a>
                             </div>
                         </form>
                     </div>
@@ -53,8 +53,7 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </body>
 
 </html>

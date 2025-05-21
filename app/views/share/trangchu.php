@@ -35,6 +35,7 @@
         right: 50%;
         margin-left: -50vw;
         margin-right: -50vw;
+        
     }
 
     .hero-section p {
@@ -75,7 +76,7 @@
         <section class="hero-section text-white py-5 mb-5">
             <div class="container px-4">
                 <h1 class="display-4 fw-bold mb-3 text-left">Giới thiệu về L&D CENTER</h1>
-                <p class="lead text-left">Tìm hiểu thêm về chúng tôi và sứ mệnh xây dựng cộng đồng khỏe mạnh</p>
+                <p class="lead text-left">THÂN KHỎE / TRÍ SÁNG / TÂM AN</p>
             </div>
         </section>
         <section class="bg-light text-dark text-center rounded-4 py-5 px-4 mt-5 shadow">
