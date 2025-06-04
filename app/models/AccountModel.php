@@ -19,7 +19,7 @@ class AccountModel
         return $result;
     }
 
-    function save($username, $name, $password, $role = "user")
+    function save($username, $name, $password, $role = "0")
     {
         $query = "INSERT INTO " . $this->table_name . "(username, password, role) VALUES (:username, :password, :role)";
 
@@ -40,4 +40,5 @@ class AccountModel
         }
         return false;
     }
+    
 }

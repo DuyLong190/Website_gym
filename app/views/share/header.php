@@ -86,7 +86,12 @@
                             <span class="inline-block align-middle"><?php echo $_SESSION['username']; ?></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end bg-gray-800 text-white" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item hover:bg-gray-700" href="/gym/account/profile">Thông tin cá nhân</a></li>
+
+                            <?php if (SessionHelper::isAdmin()): ?>
+                                <?php if (isset($_SESSION['role']) && ($_SESSION['role']) == 1 )?>
+                                <li><a class="dropdown-item hover:bg-gray-700 !important" href="app/views/sidebar/sidebarQL.php">Quản lý</a></li>
+                            <?php endif; ?>
+                            <li><a class="dropdown-item hover:bg-gray-7 00" href="app/views/sidebar/sidebarInfo.php">Thông tin cá nhân</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

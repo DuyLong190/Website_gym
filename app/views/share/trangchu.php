@@ -7,69 +7,99 @@
     <title>LD Gym & Fitness</title>
     <link rel="stylesheet" href="/public/css/header.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .message {
+            text-align: center;
+            margin: 20px;
+            color: red;
+            font-weight: bold;
+        }
+
+        .hero-section {
+            background-image: url('/Gym/public/images/bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-blend-mode: overlay;
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 100vw;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+
+        }
+
+        .hero-section p {
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 85vh;
+            object-fit: cover;
+        }
+
+        .carousel-caption {
+            background: rgba(115, 110, 110, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            bottom: 30px;
+        }
+
+        .carousel-caption h5 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .carousel-caption p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-container {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card-custom img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (min-width: 768px) {
+            .card-container {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+                max-width: 1000px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
 </head>
-<style>
-    .message {
-        text-align: center;
-        margin: 20px;
-        color: red;
-        font-weight: bold;
-    }
-
-    .hero-section {
-        background-image: url('/Gym/public/images/bg.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-blend-mode: overlay;
-        background-color: rgba(0, 0, 0, 0.5);
-        width: 100vw;
-        min-height: 60vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        box-sizing: border-box;
-        position: relative;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
-        
-    }
-
-    .hero-section p {
-        color: #fff;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    }
-
-    .carousel-item img {
-        width: 100%;
-        height: 85vh;
-        object-fit: cover;
-    }
-
-    .carousel-caption {
-        background: rgba(115, 110, 110, 0.7);
-        border-radius: 10px;
-        padding: 20px;
-        bottom: 30px;
-    }
-
-    .carousel-caption h5 {
-        font-size: 2rem;
-        font-weight: bold;
-        margin-bottom: 15px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
-
-    .carousel-caption p {
-        font-size: 1.1rem;
-        line-height: 1.6;
-        margin-bottom: 0;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    }
-</style>
 
 <body>
     <main class="container">
@@ -90,7 +120,48 @@
                 Hãy cùng chúng tôi khám phá những gói tập đa dạng và phong phú, được thiết kế riêng cho bạn. Từ những bài tập cơ bản đến những chương trình huấn luyện chuyên sâu, chúng tôi cam kết mang đến cho bạn trải nghiệm tập luyện tuyệt vời nhất.
             </p>
         </section>
-        <div class="container py-5 mb-5">
+
+        <section class="py-5">
+            <div class="header">
+                <h1>Lý do chọn chúng tôi</h1>
+            </div>
+            <div class="container card-container">
+                <div class="card-custom">
+                    <img src="https://img.icons8.com/ios-filled/50/8f2121/credit-card-front.png" alt="Credit Card">
+                    <p>299k 1 tháng lẻ, 897k 4 tháng</p>
+                </div>
+                <div class="card-custom">
+                    <img src="https://img.icons8.com/ios-filled/50/8f2121/contract.png" alt="Contract">
+                    <p>Không hợp đồng<br>Không phí quản lý</p>
+                </div>
+                <div class="card-custom">
+                    <img src="https://img.icons8.com/ios-filled/50/8f2121/clock.png" alt="Clock">
+                    <p>Mở cửa 24/7<br>(sau 22h, trước 6h nhấn chuông)</p>
+                </div>
+                <div class="card-custom">
+                    <img src="https://img.icons8.com/ios-filled/50/8f2121/personal-trainer.png" alt="Personal Trainer">
+                    <p>Chào đón PT Freelancer<br>Cấm chèo kéo</p>
+                </div>
+                <div class="card-custom">
+                    <img src="https://img.icons8.com/ios-filled/50/8f2121/network.png" alt="System">
+                    <p>Tập toàn hệ thống không phụ phí</p>
+                </div>
+                <div class="card-custom">
+                    <img src="https://img.icons8.com/ios-filled/50/8f2121/water-bottle.png" alt="Water bottle">
+                    <p>FREE: Nước, giữ xe, khăn tập</p>
+                </div>
+                <div class="card-custom">
+                    <img src="https://img.icons8.com/ios-filled/50/8f2121/air-conditioner.png" alt="Air Conditioner">
+                    <p>Máy lạnh mát mẻ</p>
+                </div>
+                <div class="card-custom">
+                    <img src="https://img.icons8.com/ios-filled/50/8f2121/dumbbell.png" alt="Air Conditioner">
+                    <p>Phòng tập sạch sẽ</p>
+                </div>
+            </div>
+
+        </section>
+        <div class="container  py-4 mb-5">
             <div id="carouselExampleCaptions" class="carousel slide rounded-4 shadow-lg overflow-hidden" data-bs-ride="carousel">
                 <div class="carousel-indicators">
                     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -150,6 +221,7 @@
                 </button>
             </div>
         </div>
+
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

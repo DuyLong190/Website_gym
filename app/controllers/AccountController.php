@@ -74,7 +74,7 @@ class AccountController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
-            $account = $this->accountModel->getAccountByUserName($username);
+            $account = $this->accountModel->getAccountByUsername($username);
 
             if ($account) {
                 $pwd_hashed = $account->password;
@@ -83,6 +83,7 @@ class AccountController
                     // $_SESSION['user_id'] = $account->id;
                     // $_SESSION['user_role'] = $account->role;
                     $_SESSION['username'] = $account->username;
+                    $_SESSION['role'] = $account->role;
                     header('Location: /gym');
                     exit;
                 } else {
@@ -92,5 +93,9 @@ class AccountController
                 echo "<script>alert('Không tìm thấy tài khoản.'); window.history.back();</script>";
             }
         }
+    }
+    public function profile()
+    {
+        include_once 'app/views/account/profile.php';
     }
 }

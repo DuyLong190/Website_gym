@@ -28,7 +28,7 @@
 
 <style>
     .footer {
-        background-color: rgb(143, 33, 33);
+        background-color: #8f2121;
         color: #fff;
         padding: 20px 0;
     }

@@ -14,6 +14,13 @@ class GoiTapController
         $this->goitapModel = new GoiTapModel($this->db);
     }
 
+    // Hiển thị trang quản lý gói tập cho admin
+    public function adminGoiTap()
+    {
+        $goiTaps = $this->goitapModel->getGoiTaps();
+        require_once __DIR__ . '/../views/admin/adminGoitap.php';
+    }
+
     // Hiển thị danh sách gói tập
     public function indexGoiTap()
     {

@@ -1,4 +1,5 @@
-aUSE gym_db;
+USE gym_db;
+
 CREATE TABLE GoiTap (
 	MaGoiTap int AUTO_INCREMENT PRIMARY KEY,
 	TenGoiTap VARCHAR(40) CHARACTER SET utf8mb4 NOT NULL,
@@ -15,9 +16,10 @@ CREATE TABLE ACCOUNT (
 	PASSWORD VARCHAR(255) NOT NULL,
 	created_at TIMESTAMP DEFAULT current_timestamp
 	);
-	ALTER TABLE ACCOUNT ADD role VARCHAR(50) DEFAULT 'user';
+	ALTER TABLE account add role TINYINT(1) NOT NULL DEFAULT 0;
 
-INSERT INTO GoiTap (MaGoiTap, TenGoiTap, GiaTien, ThoiHan, MoTa)
+
+INSERT INTO GoiTap (TenGoiTap, GiaTien, ThoiHan, MoTa)
 VALUES ('GT003', 'Gói Nâng Cao', 1000000.0, 90, 'Dành cho hội viên tiềm năng, có thể sử dụng tất cả cơ sở vật chất mà trung tâm đang có')
 INSERT INTO GoiTap (MaGoiTap, TenGoiTap, GiaTien, ThoiHan, MoTa)
 VALUES ('GT002', 'Gói kèm cặp', 600000.00, 60, 'Gói tập luyện 1:1 với PT.');USE gym_db;
@@ -43,3 +45,4 @@ CREATE TABLE DichVuTapLuyen (
 
 INSERT INTO dichvutapluyen (id, TenTL, GiaTL, ThoiGianTL, MoTaTL) VALUES
 	('1', 'Boxing', 10000.0, 90, 'Boxing thái')
+	

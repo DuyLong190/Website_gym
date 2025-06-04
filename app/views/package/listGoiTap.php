@@ -26,7 +26,7 @@
 
         .package-badge {
             font-size: 1.1rem;
-            background: linear-gradient(90deg, rgb(167, 108, 40) 0%, rgb(187, 197, 121) 100%);
+            background: #8f2121;
             color: #fff;
             font-weight: 600;
             border-radius: 8px;
@@ -70,13 +70,9 @@
             right: 50%;
             margin-left: -50vw;
             margin-right: -50vw;
-            border: 5px solid transparent;
-            border-image: linear-gradient(deg, #ff4500, #ff8c00, #ff4500) 1;
             box-shadow:
-                0 0 10px rgb(243, 73, 11),
-                0 0 30px rgb(233, 124, 85),
-                0 0 50px #ff8c00,
-                0 0 70px rgb(235, 177, 107);
+                0 0 10px rgb(255, 255, 255),
+                0 0 30px rgb(253, 253, 253);
             border-radius: 10px;
         }
 
