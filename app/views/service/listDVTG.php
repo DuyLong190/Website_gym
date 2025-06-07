@@ -8,6 +8,9 @@
 
     <style>
         .package-card {
+            padding-left: 25px;
+            padding-right: 25px;
+            background: linear-gradient(rgba(45, 4, 0, 0.88), rgba(47, 45, 45, 0.96));
             transition: transform 0.3s, box-shadow 0.3s;
             margin-bottom: 24px;
             border-radius: 18px;
@@ -20,24 +23,34 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
         }
 
-        .price-badge {
+        .package-badge {
             font-size: 1.1rem;
-            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            background: #8f2121;
             color: #fff;
             font-weight: 600;
             border-radius: 8px;
             padding: 0.4em 1em;
             margin-bottom: 1em;
-            display: inline-block;
+            display: inline-flex;
+            text-align: center;
+            justify-content: center;
+            font-size: 1.5rem;
         }
 
-        .card-title {
-            font-weight: 700;
-            color: #2d3748;
+        .package-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+        }
+
+        .currency-symbol {
+            font-size: 1rem;
+            vertical-align: super;
         }
 
         .card-text {
-            color: #374151;
+            color: rgb(255, 255, 255);
         }
 
         .hero-section {
@@ -55,12 +68,16 @@
             right: 50%;
             margin-left: -50vw;
             margin-right: -50vw;
-            border: 5px solid transparent;
-            border-image: linear-gradient(deg, #ff4500, #ff8c00, #ff4500) 1;
             box-shadow:
                 0 0 10px rgb(255, 255, 255),
                 0 0 30px rgb(253, 253, 253);
             border-radius: 10px;
+        }
+
+        .line-custom {
+            border: 1px solid #fff !important;
+            margin: 10px 0;
+            opacity: 0.5;
         }
     </style>
 </head>
@@ -69,34 +86,37 @@
     <div class="container">
         <section class="hero-section text-white py-5 mb-5">
             <div class="container px-4">
-                <h1 class=" text-center">DỊCH VỤ THƯ GIÃN</h1>
+                <h1 class="text-center">DỊCH VỤ THƯ GIÃN</h1>
             </div>
         </section>
-        <div class="mb-4 d-flex justify-content-end">
-            <a href="DvThuGian/add" class="btn btn-success btn-lg">
-                <i class="fa fa-plus"></i> Thêm dịch vụ thư giãn
-            </a>
-        </div>
         <?php if (!empty($DVTGs)): ?>
             <div class="row">
                 <?php foreach ($DVTGs as $DVTG): ?>
                     <div class="col-md-6 col-lg-4 d-flex">
-                        <div class="card package-card flex-fill">
-                            <div class="card-body">
-                                <h5 class="card-title mb-2"><?php echo htmlspecialchars($DVTG->TenTG); ?></h5>
-                                <span class="price-badge"><?php echo number_format($DVTG->GiaTG); ?> VNĐ</span>
-                                <p class="card-text mb-1"><strong>Thời gian sử dụng:</strong> <?php echo htmlspecialchars($DVTG->ThoiGianTG); ?> phút</p>
-                                <p class="card-text mb-3"><strong>Mô tả: </strong><?php echo htmlspecialchars($DVTG->MoTaTG); ?></p>
-                                <a href="DvThuGian/show/<?php echo $DVTG->id; ?>" class="btn btn-outline-primary w-100 mb-2">
-                                    <i class="fa fa-info-circle"></i> Chi tiết
-                                </a>
-                                <div class="d-flex gap-2">
-                                    <a href="/gym/DvThuGian/edit/<?php echo $DVTG->id; ?>" class="btn btn-warning flex-fill">
-                                        <i class="fa fa-edit"></i> Sửa
-                                    </a>
-                                    <a href="/gym/DvThuGian/delete/<?php echo $DVTG->id; ?>" class="btn btn-danger flex-fill"
-                                        onclick="return confirm('Bạn có chắc muốn xóa dịch vụ này?');">
-                                        <i class="fa fa-trash"></i> Xóa
+                        <div class="card package-card flex-fill d-flex flex-column">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="package-badge card-text mb-2">
+                                    <?php echo htmlspecialchars($DVTG->TenTG); ?>
+                                </h5>
+                                <span class="package-price">
+                                    <?php echo number_format($DVTG->GiaTG); ?>
+                                    <span class="currency-symbol">Đ</span>
+                                </span>
+                                <hr class="line-custom">
+                                <p class="card-text mb-1"><strong>Thời gian sử dụng:</strong>
+                                    <?php echo htmlspecialchars($DVTG->ThoiGianTG); ?> phút
+                                </p>
+                                <p class="card-text mb-3">
+                                    <?php $moTa = htmlspecialchars($DVTG->MoTaTG);
+                                    $cauArr = array_filter(array_map('trim', explode('.', $moTa)));
+                                    foreach ($cauArr as $cau) {
+                                        echo '• ' . $cau . '.<br>';
+                                    } ?>
+                                </p>
+                                <hr class="line-custom">
+                                <div class="mt-auto">
+                                    <a href="DvThuGian/show/<?php echo $DVTG->id; ?>" class="btn btn-outline-primary w-100 mb-2">
+                                        <i class="fa fa-info-circle"></i> Chi tiết
                                     </a>
                                 </div>
                             </div>
@@ -105,7 +125,7 @@
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
-            <div class="alert alert-warning text-center">Không có gói tập nào.</div>
+            <div class="alert alert-warning text-center">Không có dịch vụ thư giãn nào.</div>
         <?php endif; ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

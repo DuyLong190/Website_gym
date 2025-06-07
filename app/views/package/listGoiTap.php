@@ -91,11 +91,6 @@
                 <h1 class=" text-center">GÓI TẬP</h1>
             </div>
         </section>
-        <div class="mb-4 d-flex justify-content-end">
-            <a href="goitap/add" class="btn btn-success btn-lg">
-                <i class="fa fa-plus"></i> Thêm gói tập
-            </a>
-        </div>
         <?php if (!empty($goiTaps)): ?>
             <div class="row">
                 <?php foreach ($goiTaps as $goiTap): ?>
@@ -125,15 +120,7 @@
                                     <a href="goitap/show/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-outline-primary w-100 mb-2">
                                         <i class="fa fa-info-circle"></i> Chi tiết
                                     </a>
-                                    <div class="d-flex gap-2">
-                                        <a href="/gym/goitap/edit/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-warning flex-fill">
-                                            <i class="fa fa-edit"></i> Sửa
-                                        </a>
-                                        <a href="/gym/goitap/delete/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-danger flex-fill"
-                                            onclick="return confirm('Bạn có chắc muốn xóa gói tập này?');">
-                                            <i class="fa fa-trash"></i> Xóa
-                                        </a>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>

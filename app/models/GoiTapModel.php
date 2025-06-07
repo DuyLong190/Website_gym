@@ -12,10 +12,15 @@ class GoiTapModel
     // Lấy tất cả các gói tập
     public function getGoiTaps()
     {
-        $query = "SELECT MaGoiTap, TenGoiTap, GiaTien, ThoiHan, MoTa FROM " . $this->table_name;
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
+        try {
+            $query = "SELECT MaGoiTap, TenGoiTap, GiaTien, ThoiHan, MoTa FROM " . $this->table_name;
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Error in getGoiTaps: " . $e->getMessage());
+            return [];
+        }
     }
 
     // Lấy gói tập theo ID

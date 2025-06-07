@@ -65,9 +65,6 @@
                             <div class="detail-label">Mô tả:</div>
                             <div class="detail-value"><?php echo nl2br(htmlspecialchars($goiTap->MoTa ?? '', ENT_QUOTES, 'UTF-8')); ?></div>
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="/gym/goitap/edit/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-warning">
-                                    <i class="fa fa-edit"></i> Sửa gói tập
-                                </a>
                                 <a href="/gym/goitap" class="btn btn-secondary">
                                     <i class="fa fa-arrow-left"></i> Quay lại
                                 </a>

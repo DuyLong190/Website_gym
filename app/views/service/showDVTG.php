@@ -73,9 +73,6 @@
                                 <?php echo nl2br(htmlspecialchars($DVTG->MoTaTG ?? '', ENT_QUOTES, 'UTF-8')); ?>
                             </div>
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="/gym/goitap/edit/<?php echo $DVTG->MaGoiTap; ?>" class="btn btn-warning">
-                                    <i class="fa fa-edit"></i> Sửa gói tập
-                                </a>
                                 <a href="/gym/goitap" class="btn btn-secondary">
                                     <i class="fa fa-arrow-left"></i> Quay lại
                                 </a>

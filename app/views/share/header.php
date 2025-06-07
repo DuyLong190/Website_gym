@@ -26,7 +26,7 @@
             padding: 5px 15px;
             display: inline-block;
             margin-right: 15px;
-            font-size: 0.9em;
+            font-size: 1.1em;
         }
 
         .navbar img {
@@ -86,10 +86,8 @@
                             <span class="inline-block align-middle"><?php echo $_SESSION['username']; ?></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end bg-gray-800 text-white" aria-labelledby="userDropdown">
-
                             <?php if (SessionHelper::isAdmin()): ?>
-                                <?php if (isset($_SESSION['role']) && ($_SESSION['role']) == 1 )?>
-                                <li><a class="dropdown-item hover:bg-gray-700 !important" href="app/views/sidebar/sidebarQL.php">Quản lý</a></li>
+                                <li><a class="dropdown-item hover:bg-gray-700 !important" href="app/views/admin/sidebarQL.php">Quản lý</a></li>
                             <?php endif; ?>
                             <li><a class="dropdown-item hover:bg-gray-7 00" href="app/views/sidebar/sidebarInfo.php">Thông tin cá nhân</a></li>
                             <li>

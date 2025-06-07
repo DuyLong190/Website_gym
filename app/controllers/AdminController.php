@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../models/GoiTapModel.php';
 require_once __DIR__ . '/../config/database.php';
 
-class GoiTapController
+class AdminController
 {
     private $goitapModel;
     private $db;
@@ -13,14 +13,11 @@ class GoiTapController
         $this->db = (new Database())->getConnection();
         $this->goitapModel = new GoiTapModel($this->db);
     }
-
-    // Hiển thị danh sách gói tập
-    public function indexGoiTap()
+    public function indexGoitap()
     {
         $goiTaps = $this->goitapModel->getGoiTaps();
-        require_once __DIR__ . '/../views/share/header.php';
-        require_once __DIR__ . '/../views/package/listGoiTap.php';
-        require_once __DIR__ . '/../views/share/footer.php';
+        require_once __DIR__ . '/../views/admin/sidebarQL.php';
+        require_once __DIR__ . '/../views/admin/goitap/adminGoiTap.php';
     }
 
     public function show($MaGoiTap)
@@ -37,7 +34,6 @@ class GoiTapController
     {
         include_once __DIR__ . '/../views/package/addGoiTap.php';
     }
-
     // Lưu gói tập mới
     public function save()
     {
@@ -48,7 +44,7 @@ class GoiTapController
             $MoTa = $_POST['MoTa'] ?? '';
 
             $result = $this->goitapModel->addGoiTap($TenGoiTap, $GiaTien, $ThoiHan, $MoTa);
-            
+
             if (is_array($result)) {
                 // Nếu có lỗi validation, hiển thị form lại với lỗi
                 require_once __DIR__ . '/../views/share/header.php';
