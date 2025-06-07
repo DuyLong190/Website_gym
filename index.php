@@ -20,14 +20,22 @@ if (isset($url[0]) && $url[0] === 'admin') {
     // Nếu có phần thứ 3 trong URL (ví dụ: admin/goitap/edit/1)
     if (isset($url[2])) {
         $action = $url[2];
+        // Nếu có phần thứ 4 trong URL (ví dụ: admin/goitap/edit/1)
+        if (isset($url[3])) {
+            $params = array_slice($url, 3);
+        } else {
+            $params = [];
+        }
     } 
     // Nếu có phần thứ 2 trong URL (ví dụ: admin/goitap)
     else if (isset($url[1])) {
         $action = 'index' . ucfirst($url[1]);
+        $params = [];
     } 
     // Mặc định 
     else {
         $action = 'indexGoiTap';
+        $params = [];
     }
 } else {
     // Xử lý routing thông thường
@@ -69,7 +77,9 @@ if (!method_exists($controller, $action)) {
 }
 
 // Gọi action với các tham số còn lại (nếu có)
-if (isset($url[2])) {
+if (isset($params)) {
+    call_user_func_array([$controller, $action], $params);
+} else if (isset($url[2])) {
     call_user_func_array([$controller, $action], array_slice($url, 2));
 } else {
     call_user_func_array([$controller, $action], []);

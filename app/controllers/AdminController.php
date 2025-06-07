@@ -1,10 +1,14 @@
 <?php
 require_once __DIR__ . '/../models/GoiTapModel.php';
+require_once __DIR__ . '/../models/DvThuGianModel.php';
+require_once __DIR__ . '/../models/DvTapLuyenModel.php';
 require_once __DIR__ . '/../config/database.php';
 
 class AdminController
 {
+    private $dvtgModel;
     private $goitapModel;
+    private $lophocModel;
     private $db;
 
     public function __construct()
@@ -12,7 +16,10 @@ class AdminController
         // Kết nối đến cơ sở dữ liệu
         $this->db = (new Database())->getConnection();
         $this->goitapModel = new GoiTapModel($this->db);
+        $this->dvtgModel = new DvThuGianModel($this->db);
+        $this->lophocModel = new DvTapLuyenModel($this->db);
     }
+    //Gói tập----------------------------------------------------------------------------------------------------------------------
     public function indexGoitap()
     {
         $goiTaps = $this->goitapModel->getGoiTaps();
@@ -20,22 +27,23 @@ class AdminController
         require_once __DIR__ . '/../views/admin/goitap/adminGoiTap.php';
     }
 
-    public function show($MaGoiTap)
+    public function showGoiTap($MaGoiTap)
     {
         $goiTap = $this->goitapModel->getByMaGoiTap($MaGoiTap);
         if ($goiTap) {
-            include_once __DIR__ . '/../views/package/showGoiTap.php';
+            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/goitap/showGoiTap.php';
         } else {
             echo "Gói tập không tồn tại.";
         }
     }
 
-    public function add()
+    public function addGoiTap()
     {
-        include_once __DIR__ . '/../views/package/addGoiTap.php';
+        include_once __DIR__ . '/../views/admin/goitap/addGoiTap.php';
     }
-    // Lưu gói tập mới
-    public function save()
+
+    public function saveGoiTap()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $TenGoiTap = $_POST['TenGoiTap'] ?? '';
@@ -47,12 +55,10 @@ class AdminController
 
             if (is_array($result)) {
                 // Nếu có lỗi validation, hiển thị form lại với lỗi
-                require_once __DIR__ . '/../views/share/header.php';
-                require_once __DIR__ . '/../views/package/addGoiTap.php';
-                require_once __DIR__ . '/../views/share/footer.php';
+                require_once __DIR__ . '/../views/admin/sidebarQL.php';
             } else if ($result === true) {
                 // Nếu thêm thành công, chuyển hướng về danh sách
-                header('Location: /gym/goitap');
+                header('Location: /gym/admin/goitap');
                 exit();
             } else {
                 // Nếu có lỗi khác
@@ -62,18 +68,19 @@ class AdminController
     }
 
     // Hiển thị form chỉnh sửa gói tập
-    public function edit($MaGoiTap)
+    public function editGoiTap($MaGoiTap)
     {
         $goiTap = $this->goitapModel->getByMaGoiTap($MaGoiTap);
         if ($goiTap) {
-            include_once __DIR__ . '/../views/package/editGoiTap.php';
+            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/goitap/editGoiTap.php';
         } else {
             echo "Gói tập không tồn tại.";
         }
     }
 
     // Cập nhật gói tập
-    public function update()
+    public function updateGoiTap()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $MaGoiTap = $_POST['MaGoiTap'];
@@ -84,7 +91,7 @@ class AdminController
 
             $edit = $this->goitapModel->updateGoiTap($MaGoiTap, $TenGoiTap, $GiaTien, $ThoiHan, $MoTa);
             if ($edit) {
-                header('Location: /gym/goitap');
+                header('Location: /gym/admin/goitap');
             } else {
                 echo "Cập nhật gói tập không thành công.";
             }
@@ -92,13 +99,184 @@ class AdminController
     }
 
     // Xóa gói tập
-    public function delete($MaGoiTap)
+    public function deleteGoiTap($MaGoiTap)
     {
         if ($this->goitapModel->deleteGoiTap($MaGoiTap)) {
-            header('Location: /gym/goitap');
+            header('Location: /gym/admin/goitap');
         } else {
             echo "Xóa gói tập không thành công.";
         }
     }
+
+    //Dịch vụ thư giãn---------------------------------------------------------------------------------------------------------------
+    public function indexDvThuGian()
+    {
+        $DVTGs = $this->dvtgModel->getDVTGs();
+
+        require_once __DIR__ . '/../views/admin/sidebarQL.php';
+        require_once __DIR__ . '/../views/admin/dvtg/adminDVTG.php';
+    }
+    public function showDVTG($id)
+    {
+        $DVTG = $this->dvtgModel->getDVTG_ByID($id);
+        if ($DVTG) {
+            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            include_once __DIR__ . '/../views/admin/dvtg/showDVTG.php';
+        } else {
+            echo "Dịch vụ này không tồn tại.";
+        }
+    }
+
+    public function addDVTG()
+    {
+        include_once __DIR__ . '/../views/admin/dvtg/addDVTG.php';
+    }
+
+    public function saveDVTG()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $TenTG = $_POST['TenTG'] ?? '';
+            $GiaTG = $_POST['GiaTG'] ?? '';
+            $ThoiGianTG = $_POST['ThoiGianTG'] ?? '';
+            $MoTaTG = $_POST['MoTaTG'] ?? '';
+
+            $result = $this->dvtgModel->addDVTG($TenTG, $GiaTG, $ThoiGianTG, $MoTaTG);
+
+            if (is_array($result)) {
+                // Nếu có lỗi validation, hiển thị form lại với lỗi
+                require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            } else if ($result === true) {
+                // Nếu thêm thành công, chuyển hướng về danh sách
+                header('Location: /gym/admin/DvThuGian');
+                exit();
+            } else {
+                // Nếu có lỗi khác
+                echo "Có lỗi xảy ra khi thêm dịch vụ. Vui lòng thử lại.";
+            }
+        }
+    }
+
+    public function editDVTG($id)
+    {
+        $DVTG = $this->dvtgModel->getDVTG_ByID($id);
+        if ($DVTG) {
+            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            include_once __DIR__ . '/../views/admin/dvtg/editDVTG.php';
+        } else {
+            echo "Dịch vụ này không tồn tại.";
+        }
+    }
+
+    public function updateDVTG()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $TenTG = $_POST['TenTG'];
+            $GiaTG = $_POST['GiaTG'];
+            $ThoiGianTG = $_POST['ThoiGianTG'];
+            $MoTaTG = $_POST['MoTaTG'] ?? '';
+
+            $edit = $this->dvtgModel->updateDVTG($id, $TenTG, $GiaTG, $ThoiGianTG, $MoTaTG);
+            if ($edit) {
+                header('Location: /gym/admin/DvThuGian');
+            } else {
+                echo "Cập nhật dịch vụ không thành công.";
+            }
+        }
+    }
+
+    public function deleteDVTG($id)
+    {
+        if ($this->dvtgModel->deleteDVTG($id)) {
+            header('Location: /gym/admin/DvThuGian');
+        } else {
+            echo "Xóa dịch vụ không thành công.";
+        }
+    }
+
+    //Lớp học---------------------------------------------------------------------------------------------------------------
+    public function indexLopHoc()
+    {
+        $lophocs = $this->lophocModel->getDVTLs();
+
+        require_once __DIR__ . '/../views/admin/sidebarQL.php';
+        require_once __DIR__ . '/../views/admin/lophoc/adminLopHoc.php';
+    }
+    public function showLopHoc($id)
+    {
+        $lophoc = $this->lophocModel->getDVTL_ByID($id);
+        if ($lophoc) {
+            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/lophoc/showLopHoc.php';
+        } else {
+            echo "Lớp học không tồn tại.";
+        }
+    }
+
+    public function addLopHoc()
+    {
+        include_once __DIR__ . '/../views/admin/goitap/addLopHoc.php';
+    }
+
+    public function saveLopHoc()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $TenTL = $_POST['TenTL'] ?? '';
+            $GiaTL = $_POST['GiaTL'] ?? '';
+            $ThoiGianTL = $_POST['ThoiGianTL'] ?? '';
+            $MoTaTL = $_POST['MoTaTL'] ?? '';
+
+            $result = $this->lophocModel->addDVTL($TenTL, $GiaTL, $ThoiGianTL, $MoTaTL);
+
+            if (is_array($result)) {
+                // Nếu có lỗi validation, hiển thị form lại với lỗi
+                require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            } else if ($result === true) {
+                // Nếu thêm thành công, chuyển hướng về danh sách
+                header('Location: /gym/admin/lophoc');
+                exit();
+            } else {
+                // Nếu có lỗi khác
+                echo "Có lỗi xảy ra khi thêm lớp học. Vui lòng thử lại.";
+            }
+        }
+    }
+
+    public function editLopHoc($id)
+    {
+        $lophoc = $this->lophocModel->getDVTL_ByID($id);
+        if ($lophoc) {
+            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/lophoc/editLopHoc.php';
+        } else {
+            echo "Lớp học không tồn tại.";
+        }
+    }
+
+    public function updateLopHoc()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $TenTL = $_POST['TenTL'] ?? '';
+            $GiaTL = $_POST['GiaTL'] ?? '';
+            $ThoiGianTL = $_POST['ThoiGianTL'] ?? '';
+            $MoTaTL = $_POST['MoTaTL'] ?? '';
+
+            $edit = $this->lophocModel->updateDVTL($id, $TenTL, $GiaTL, $ThoiGianTL, $MoTaTL);
+            if ($edit) {
+                header('Location: /gym/admin/lophoc');
+            } else {
+                echo "Cập nhật lớp học không thành công.";
+            }
+        }
+    }
+
+    public function deleteLopHoc($id)
+    {
+        if ($this->lophocModel->deleteDVTL($id)) {
+            header('Location: /gym/admin/lophoc');
+        } else {
+            echo "Xóa lớp học không thành công.";
+        }
+    }
 }
-?>

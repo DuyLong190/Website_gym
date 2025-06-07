@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Dịch Vụ Thư Giãn - Admin</title>
+    <title>Quản lý Lớp học - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -12,15 +12,12 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <?php include_once __DIR__ . '/sidebarQL.php'; ?>
-
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Quản lý Dịch Vụ Thư Giãn</h1>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDvThuGianModal">
-                        <i class="fas fa-plus"></i> Thêm Dịch Vụ Mới
+                    <h1 class="h2">Quản lý lớp học</h1>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDvTapLuyenModal">
+                        <i class="fas fa-plus"></i> Thêm mới
                     </button>
                 </div>
 
@@ -29,33 +26,30 @@
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Tên Dịch Vụ</th>
+                                <th>Mã lớp học</th>
+                                <th>Tên lớp học</th>
                                 <th>Giá</th>
                                 <th>Thời Gian</th>
                                 <th>Mô Tả</th>
-                                <th>Trạng Thái</th>
                                 <th>Thao Tác</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($dvThuGians as $dv): ?>
+                            <?php foreach ($lophocs as $lh): ?>
                                 <tr>
-                                    <td><?php echo $dv['id']; ?></td>
-                                    <td><?php echo $dv['ten_dich_vu']; ?></td>
-                                    <td><?php echo number_format($dv['gia'], 0, ',', '.'); ?> VNĐ</td>
-                                    <td><?php echo $dv['thoi_gian']; ?> phút</td>
-                                    <td><?php echo $dv['mo_ta']; ?></td>
+                                    <td><?php echo $lh->id ?></td>
+                                    <td><?php echo $lh->TenTL ?></td>
+                                    <td><?php echo number_format($lh->GiaTL, 0, ',', '.'); ?> VNĐ</td>
+                                    <td><?php echo $lh->ThoiGianTL; ?> phút</td>
+                                    <td><?php echo $lh->MoTaTL ?></td>
                                     <td>
-                                        <span class="badge <?php echo $dv['trang_thai'] ? 'bg-success' : 'bg-danger'; ?>">
-                                            <?php echo $dv['trang_thai'] ? 'Hoạt động' : 'Không hoạt động'; ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-info" onclick="editDvThuGian(<?php echo $dv['id']; ?>)">
+                                        <button class="btn btn-sm btn-success" onclick="showLopHoc(<?php echo $lh->id ?>)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-info" onclick="editLopHoc(<?php echo $lh->id ?>)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-danger" onclick="deleteDvThuGian(<?php echo $dv['id']; ?>)">
+                                        <button class="btn btn-sm btn-danger" onclick="deleteLopHoc(<?php echo $lh->id ?>)">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -68,38 +62,31 @@
         </div>
     </div>
 
-    <!-- Add DvThuGian Modal -->
-    <div class="modal fade" id="addDvThuGianModal" tabindex="-1">
+    <!-- Add DvTapLuyen Modal -->
+    <div class="modal fade" id="addDvTapLuyenModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Thêm Dịch Vụ Thư Giãn Mới</h5>
+                    <h5 class="modal-title">Thêm Lớp Học Mới</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/admin/dvthugian/add" method="POST">
+                <form action="/gym/admin/lophoc/saveLopHoc" method="POST">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">Tên Dịch Vụ</label>
-                            <input type="text" class="form-control" name="ten_dich_vu" required>
+                            <label class="form-label">Tên Lớp Học</label>
+                            <input type="text" class="form-control" name="TenTL" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Giá</label>
-                            <input type="number" class="form-control" name="gia" required>
+                            <input type="number" class="form-control" name="GiaTL" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Thời Gian (phút)</label>
-                            <input type="number" class="form-control" name="thoi_gian" required>
+                            <input type="number" class="form-control" name="ThoiGianTL" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Mô Tả</label>
-                            <textarea class="form-control" name="mo_ta" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Trạng Thái</label>
-                            <select class="form-select" name="trang_thai">
-                                <option value="1">Hoạt động</option>
-                                <option value="0">Không hoạt động</option>
-                            </select>
+                            <textarea class="form-control" name="MoTaTL" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -113,13 +100,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function editDvThuGian(id) {
-            window.location.href = `/admin/dvthugian/edit/${id}`;
+        function showLopHoc(id) {
+            window.location.href = `/gym/admin/lophoc/showLopHoc/${id}`;
         }
 
-        function deleteDvThuGian(id) {
+        function editLopHoc(id) {
+            window.location.href = `/gym/admin/lophoc/editLopHoc/${id}`;
+        }
+
+        function deleteLopHoc(id) {
             if (confirm('Bạn có chắc chắn muốn xóa dịch vụ này?')) {
-                window.location.href = `/admin/dvthugian/delete/${id}`;
+                window.location.href = `/gym/admin/lophoc/deleteLopHoc/${id}`;
             }
         }
     </script>

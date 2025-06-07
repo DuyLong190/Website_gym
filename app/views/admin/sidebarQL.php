@@ -71,14 +71,16 @@
                     <span>Hội viên</span></a>
                 <a href="/gym/admin/goitap" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-chart-bar fa-fw me-3"></i>
                     <span>Gói tập</span></a>
-                <a href="../admin/adminDvThuGian.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-heart fa-fw me-3"></i>
+                <a href="/gym/admin/DvThuGian" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-heart fa-fw me-3"></i>
                     <span>Dịch vụ thư giãn</span></a>
-                <a href="../admin/adminDvTapLuyen.php" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-hand-fist fa-fw me-3"></i>
+                <a href="/gym/admin/lophoc" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-hand-fist fa-fw me-3"></i>
                     <span>Lớp học</span></a>
                 <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-user-tie fa-fw me-3"></i>
                     <span>Huấn luyện viên</span></a>
                 <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-calendar fa-fw me-3"></i>
                     <span>Lịch lớp học</span></a>
+                <a href="/gym" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-home fa-fw me-3"></i>
+                    <span>Về trang chủ</span></a>
 
             </div>
         </div>

@@ -1,17 +1,3 @@
-<?php
-if (!isset($DVTG) || !is_object($DVTG)) {
-    $DVTG = (object)[
-        'id' => '',
-        'TenTG' => '',
-        'GiaTG' => '',
-        'ThoiGianTG' => '',
-        'MoTaTG' => ''
-    ];
-}
-?>
-
-<?php include_once __DIR__ . '/../share/header.php'; ?>
-
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -29,7 +15,7 @@ if (!isset($DVTG) || !is_object($DVTG)) {
                                     </ul>
                                 </div>
                             <?php endif; ?>
-                            <form method="POST" action="/gym/DvThuGian/update" onsubmit="return validateForm()">
+                            <form method="POST" action="/gym/admin/DvThuGian/updateDVTG" onsubmit="return validateForm()">
                                 <input type="hidden" name="id" value="<?php echo $DVTG->id; ?>">
                                 <div class="form-group mb-3">
                                     <label for="TenTG">Tên dịch vụ:</label>
@@ -52,7 +38,7 @@ if (!isset($DVTG) || !is_object($DVTG)) {
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <button type="submit" class="btn btn-primary">Cập nhật</button>
-                                    <a href="/gym/DvThuGian" class="btn btn-secondary">Quay lại</a>
+                                    <a href="/gym/admin/DvThuGian" class="btn btn-secondary">Quay lại</a>
                                 </div>
                             </form>
                         </div>
