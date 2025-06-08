@@ -86,7 +86,7 @@
     <div class="container">
         <section class="hero-section text-white py-5 mb-5">
             <div class="container px-4">
-                <h1 class="text-center">DỊCH VỤ TẬP LUYỆN</h1>
+                <h1 class="text-center">LỚP HỌC</h1>
             </div>
         </section>
         <?php if (!empty($DVTLs)): ?>

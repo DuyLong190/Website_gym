@@ -65,7 +65,7 @@
                     </a>
                     <ul class="dropdown-menu absolute bg-gray-800 text-white rounded-lg mt-2" aria-labelledby="dichvuDropdown">
                         <li><a class="dropdown-item" href="/gym/DvThuGian">Dịch vụ thư giãn</a></li>
-                        <li><a class="dropdown-item" href="/gym/DvTapLuyen">Dịch vụ tập luyện</a></li>
+                        <li><a class="dropdown-item" href="/gym/DvTapLuyen">Lớp học</a></li>
                     </ul>
                 </li>
                 <li><a href="#" class="hover:text-red-500 transition duration-300">Ưu đãi</a></li>
