@@ -16,7 +16,7 @@ class GoiTapModel
             $query = "SELECT MaGoiTap, TenGoiTap, GiaTien, ThoiHan, MoTa FROM " . $this->table_name;
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_OBJ);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Error in getGoiTaps: " . $e->getMessage());
             return [];

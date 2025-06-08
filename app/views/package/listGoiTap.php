@@ -116,11 +116,13 @@
                                     } ?>
                                 </p>
                                 <hr class="line-custom">
-                                <div class="mt-auto">
-                                    <a href="goitap/show/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-outline-primary w-100 mb-2">
+                                <div class="mt-auto gap-2 d-flex ">
+                                    <a href="#" class="btn btn-outline-warning flex-fill">
+                                        <i class="fa fa-edit"></i> Đăng ký
+                                    </a> 
+                                    <a href="goitap/show/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-outline-info flex-fill">
                                         <i class="fa fa-info-circle"></i> Chi tiết
                                     </a>
-                                    
                                 </div>
                             </div>
                         </div>

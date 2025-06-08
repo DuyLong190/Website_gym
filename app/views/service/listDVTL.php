@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách các dịch vụ</title>
-
     <style>
         .package-card {
             padding-left: 25px;
@@ -114,8 +112,11 @@
                                     } ?>
                                 </p>
                                 <hr class="line-custom">
-                                <div class="mt-auto">
-                                    <a href="DvTapLuyen/show/<?php echo $DVTL->id; ?>" class="btn btn-outline-primary w-100 mb-2">
+                                <div class="mt-auto gap-2 d-flex">
+                                    <a href="#" class="btn btn-outline-warning flex-fill">
+                                        <i class="fa fa-edit"></i> Đăng ký
+                                    </a>
+                                    <a href="DvTapLuyen/show/<?php echo $DVTL->id; ?>" class="btn btn-outline-info flex-fill">
                                         <i class="fa fa-info-circle"></i> Chi tiết
                                     </a>
                                 </div>
@@ -125,7 +126,7 @@
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
-            <div class="alert alert-warning text-center">Không có dịch vụ tập luyện nào.</div>
+            <div class="alert alert-warning text-center">Không có lớp học nào.</div>
         <?php endif; ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

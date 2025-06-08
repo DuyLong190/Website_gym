@@ -7,6 +7,8 @@ require_once 'app/controllers/DvTapLuyenController.php';
 require_once 'app/controllers/AdminController.php';
 require_once 'app/models/GoiTapModel.php';
 require_once 'app/models/DvThuGianModel.php';
+require_once 'app/models/DvTapLuyenModel.php';
+require_once 'app/models/HoiVienModel.php';
 require_once 'app/helpers/SessionHelper.php';
 
 $url = $_GET['url'] ?? '';

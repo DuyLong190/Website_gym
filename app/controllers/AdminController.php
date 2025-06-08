@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../models/GoiTapModel.php';
 require_once __DIR__ . '/../models/DvThuGianModel.php';
 require_once __DIR__ . '/../models/DvTapLuyenModel.php';
+require_once __DIR__ . '/../models/HoiVienModel.php';
 require_once __DIR__ . '/../config/database.php';
 
 class AdminController
@@ -10,6 +11,7 @@ class AdminController
     private $goitapModel;
     private $lophocModel;
     private $db;
+    private $hoiVienModel;
 
     public function __construct()
     {
@@ -18,6 +20,7 @@ class AdminController
         $this->goitapModel = new GoiTapModel($this->db);
         $this->dvtgModel = new DvThuGianModel($this->db);
         $this->lophocModel = new DvTapLuyenModel($this->db);
+        $this->hoiVienModel = new HoiVienModel($this->db);
     }
     //Gói tập----------------------------------------------------------------------------------------------------------------------
     public function indexGoitap()
@@ -278,5 +281,124 @@ class AdminController
         } else {
             echo "Xóa lớp học không thành công.";
         }
+    }
+//Hội viên---------------------------------------------------------------------------------------------------------------
+
+    public function indexUser() 
+    {
+        $hoiVien = $this->hoiVienModel->getAllHoiVien();
+        $goiTap = $this->goitapModel->getGoiTaps();
+        require_once __DIR__ . '/../views/admin/sidebarQL.php';
+        require_once __DIR__ . '/../views/admin/user/adminHoiVien.php';
+    }
+    public function showUser($maHV)
+    {
+        $hoiVien = $this->hoiVienModel->getHoiVienById($maHV);
+        if ($hoiVien) {
+            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/user/showHoiVien.php';
+        } else {
+            echo "Hội viên không tồn tại.";
+        }
+    }
+    public function addUser() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $HoTen = $_POST['HoTen'];
+            $NgaySinh = $_POST['NgaySinh'];
+            $GioiTinh = $_POST['GioiTinh'];
+            $SDT = $_POST['SDT'];
+            $Email = $_POST['Email'];
+            $DiaChi = $_POST['DiaChi'];
+            $MaGoiTap = $_POST['MaGoiTap'];
+            if ($this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $MaGoiTap)) {
+                header('Location: /gym/admin/user');
+                exit;
+            }
+        }
+
+        $goiTap = $this->goitapModel->getGoiTaps();
+        require_once __DIR__ . '/../views/admin/user/addHoiVien.php';
+        require_once __DIR__ . '/../views/admin/sidebarQL.php';
+    }
+    public function saveUser()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $HoTen = $_POST['HoTen'];
+            $NgaySinh = $_POST['NgaySinh'];
+            $GioiTinh = $_POST['GioiTinh'];
+            $SDT = $_POST['SDT'];
+            $Email = $_POST['Email'];
+            $DiaChi = $_POST['DiaChi'];
+            $MaGoiTap = $_POST['MaGoiTap'];
+
+            $result = $this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $MaGoiTap);
+
+            if (is_array($result)) {
+                // Nếu có lỗi validation, hiển thị form lại với lỗi
+                require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            } else if ($result === true) {
+                // Nếu thêm thành công, chuyển hướng về danh sách
+                header('Location: /gym/admin/user');
+                exit();
+            } else {
+                // Nếu có lỗi khác
+                echo "Có lỗi xảy ra khi thêm lớp học. Vui lòng thử lại.";
+            }
+        }
+    }
+
+    public function editUser($maHV) {
+        try {
+            // Lấy thông tin hội viên
+            $hoiVien = $this->hoiVienModel->getHoiVienById($maHV);
+            if (!$hoiVien) {
+                // Nếu không tìm thấy hội viên, chuyển hướng về trang danh sách
+                header('Location: /gym/admin/user');
+                exit;
+            }
+
+            // Lấy danh sách gói tập
+            $goiTap = $this->goitapModel->getGoiTaps();
+
+            // Load view
+            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/user/editHoiVien.php';
+        } catch (Exception $e) {
+            // Xử lý lỗi nếu có
+            error_log("Error in editUser: " . $e->getMessage());
+            header('Location: /gym/admin/user');
+            exit;
+        }
+    }
+    public function updateUser($maHV) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $HoTen = $_POST['HoTen'];
+            $NgaySinh = $_POST['NgaySinh'];
+            $GioiTinh = $_POST['GioiTinh'];
+            $SDT = $_POST['SDT'];
+            $Email = $_POST['Email'];
+            $DiaChi = $_POST['DiaChi'];
+            $MaGoiTap = $_POST['MaGoiTap'];
+            $TrangThai = $_POST['TrangThai'];
+
+            if ($this->hoiVienModel->updateHoiVien($maHV, $HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $MaGoiTap, $TrangThai)) {
+                header('Location: /gym/admin/user');
+            } else {
+                echo "Cập nhật hội viên không thành công.";
+            }
+        }
+    }
+
+    public function deleteUser($maHV) {
+        if ($this->hoiVienModel->deleteHoiVien($maHV)) {
+            header('Location: /gym/admin/user');
+            exit;
+        }
+    }
+
+    public function searchUser() {
+        $keyword = $_GET['keyword'] ?? '';
+        $hoiVien = $this->hoiVienModel->searchHoiVien($keyword);
+        require_once __DIR__ . '/../views/admin/user/adminHoiVien.php';
     }
 }
