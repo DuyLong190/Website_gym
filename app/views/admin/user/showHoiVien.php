@@ -116,7 +116,9 @@
                     <div class="row">
                         <div class="col-md-6 mb-4">
                             <div class="info-label">Gói tập</div>
-                            <div class="info-value"><?= htmlspecialchars($hoiVien->TenGoiTap) ?></div>
+                            <div class="info-value">
+                                <?= !empty($hoiVien->TenGoiTap) ? htmlspecialchars($hoiVien->TenGoiTap) : '' ?>
+                            </div>
                         </div>
                         <div class="col-md-6 mb-4">
                             <div class="info-label">Trạng thái</div>

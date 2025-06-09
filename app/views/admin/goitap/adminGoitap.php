@@ -107,19 +107,19 @@
                                         <?php if (!empty($goiTaps)): ?>
                                             <?php foreach ($goiTaps as $goiTap): ?>
                                                 <tr>
-                                                    <td><?php echo $goiTap['MaGoiTap']; ?></td>
-                                                    <td><?php echo $goiTap['TenGoiTap']; ?></td>
-                                                    <td><?php echo number_format($goiTap['GiaTien'], 0, ',', '.'); ?> VNĐ</td>
-                                                    <td><?php echo $goiTap['ThoiHan']; ?> ngày</td>
-                                                    <td><?php echo $goiTap['MoTa']; ?></td>
+                                                    <td><?php echo $goiTap['MaGoiTap'] ?? 'N/A'; ?></td>
+                                                    <td><?php echo htmlspecialchars($goiTap['TenGoiTap'] ?? 'Chưa có gói tập'); ?></td>
+                                                    <td><?php echo isset($goiTap['GiaTien']) ? number_format($goiTap['GiaTien'], 0, ',', '.') . ' VNĐ' : 'N/A'; ?></td>
+                                                    <td><?php echo isset($goiTap['ThoiHan']) ? $goiTap['ThoiHan'] . ' ngày' : 'N/A'; ?></td>
+                                                    <td><?php echo htmlspecialchars($goiTap['MoTa'] ?? 'Không có mô tả'); ?></td>
                                                     <td class="text-center">
-                                                        <button class="btn btn-sm btn-success me-1" onclick="showGoiTap(<?php echo $goiTap['MaGoiTap']; ?>)" title="Xem chi tiết">
+                                                        <button class="btn btn-sm btn-success me-1" onclick="showGoiTap(<?php echo $goiTap['MaGoiTap'] ?? 0; ?>)" title="Xem chi tiết">
                                                             <i class="fas fa-eye"></i>
                                                         </button>
-                                                        <button class="btn btn-sm btn-info me-1" onclick="editGoiTap(<?php echo $goiTap['MaGoiTap']; ?>)" title="Sửa">
+                                                        <button class="btn btn-sm btn-info me-1" onclick="editGoiTap(<?php echo $goiTap['MaGoiTap'] ?? 0; ?>)" title="Sửa">
                                                             <i class="fas fa-edit"></i>
                                                         </button>
-                                                        <button class="btn btn-sm btn-danger me-1" onclick="deleteGoiTap(<?php echo $goiTap['MaGoiTap']; ?>)" title="Xóa">
+                                                        <button class="btn btn-sm btn-danger me-1" onclick="deleteGoiTap(<?php echo $goiTap['MaGoiTap'] ?? 0; ?>)" title="Xóa">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </td>

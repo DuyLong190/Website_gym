@@ -1,10 +1,12 @@
 <?php
 require_once __DIR__ . '/../models/GoiTapModel.php';
+require_once __DIR__ . '/../models/HoiVienModel.php';
 require_once __DIR__ . '/../config/database.php';
 
 class GoiTapController
 {
     private $goitapModel;
+    private $hoiVienModel;
     private $db;
 
     public function __construct()
@@ -12,6 +14,7 @@ class GoiTapController
         // Kết nối đến cơ sở dữ liệu
         $this->db = (new Database())->getConnection();
         $this->goitapModel = new GoiTapModel($this->db);
+        $this->hoiVienModel = new HoiVienModel($this->db);
     }
 
     // Hiển thị danh sách gói tập
@@ -103,6 +106,51 @@ class GoiTapController
         } else {
             echo "Xóa gói tập không thành công.";
         }
+    }
+
+    public function register($MaGoiTap)
+    {
+        // Kiểm tra đăng nhập
+        if (!isset($_SESSION['username'])) {
+            $_SESSION['error'] = "Vui lòng đăng nhập để đăng ký gói tập";
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        // Lấy thông tin hội viên
+        $username = $_SESSION['username'];
+        $hoiVien = $this->hoiVienModel->getHoiVienByUsername($username);
+
+        if (!$hoiVien) {
+            $_SESSION['error'] = "Không tìm thấy thông tin hội viên";
+            header('Location: /gym/goitap');
+            exit;
+        }
+
+        // Kiểm tra nếu hội viên đã có gói tập
+        if (!empty($hoiVien->MaGoiTap)) {
+            $_SESSION['error'] = "Bạn đã đăng ký gói tập. Vui lòng liên hệ admin để thay đổi gói tập.";
+            header('Location: /gym/goitap');
+            exit;
+        }
+
+        // Kiểm tra gói tập có tồn tại không
+        $goiTap = $this->goitapModel->getByMaGoiTap($MaGoiTap);
+        if (!$goiTap) {
+            $_SESSION['error'] = "Gói tập không tồn tại";
+            header('Location: /gym/goitap');
+            exit;
+        }
+
+        // Cập nhật gói tập cho hội viên
+        if ($this->hoiVienModel->updateGoiTap($hoiVien->MaHV, $MaGoiTap)) {
+            $_SESSION['success'] = "Đăng ký gói tập thành công";
+        } else {
+            $_SESSION['error'] = "Đăng ký gói tập thất bại";
+        }
+
+        header('Location: /gym/user/profile');
+        exit;
     }
 }
 ?>

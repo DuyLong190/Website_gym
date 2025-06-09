@@ -46,20 +46,41 @@ INSERT INTO dichvutapluyen (id, TenTL, GiaTL, ThoiGianTL, MoTaTL) VALUES
 	('1', 'Boxing', 10000.0, 90, 'Boxing thái')
 
 CREATE TABLE HoiVien (
-    MaHV INT AUTO_INCREMENT PRIMARY KEY,
-    HoTen VARCHAR(100) CHARACTER SET utf8mb4 NOT NULL,
-    NgaySinh DATE,
-    GioiTinh ENUM('Nam', 'Nữ', 'Khác'),
-    SDT VARCHAR(15),
-    Email VARCHAR(100),
-    DiaChi VARCHAR(200) CHARACTER SET utf8mb4,
-    NgayDangKy Datetime DEFAULT CURRENT_timestamp,
-    TrangThai ENUM('Đang hoạt động', 'Tạm ngưng', 'Đã hủy') DEFAULT 'Đang hoạt động',
-    MaGoiTap INT,
-    FOREIGN KEY (MaGoiTap) REFERENCES GoiTap(MaGoiTap)
+   MaHV INT AUTO_INCREMENT PRIMARY KEY,
+   HoTen VARCHAR(100) CHARACTER SET utf8mb4 NOT NULL,
+   NgaySinh DATE,
+   GioiTinh ENUM('Nam', 'Nữ', 'Khác'),
+   SDT VARCHAR(15),
+   Email VARCHAR(100),
+   DiaChi VARCHAR(200) CHARACTER SET utf8mb4,
+   NgayDangKy Datetime DEFAULT CURRENT_timestamp,
+   TrangThai ENUM('Đang hoạt động', 'Tạm ngưng', 'Đã hủy') DEFAULT 'Đang hoạt động',
+   MaGoiTap INT,
+   FOREIGN KEY (MaGoiTap) REFERENCES GoiTap(MaGoiTap)
 );
 INSERT INTO HoiVien (HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, NgayDangKy, MaGoiTap)
 VALUES ('Bùi Duy Long', '2004-10-19', 'Nam', '0961054672', 'bduylong1910@gmail.com', 'BR-VT',CURDATE(), 3)
 VALUES ('Nguyen Van A', '2000-01-01', 'Nam', '0123456789', 'a@gmail.com', 'Hanoi', CURDATE(), 1);
 
-	
+CREATE TABLE Role (
+   role_id TINYINT PRIMARY KEY CHECK (role_id IN (0, 1)),
+   role_name VARCHAR(10) NOT NULL UNIQUE CHECK (role_name IN ('admin', 'user'))
+);
+
+INSERT INTO role (role_id, role_name) VALUES
+ (0, 'admin'),
+ (1, 'user');
+);
+ALTER TABLE account
+DROP COLUMN role,
+ADD COLUMN role_id TINYINT NOT NULL DEFAULT 1,
+ADD CONSTRAINT fk_account_role FOREIGN KEY (role_id) REFERENCES Role(role_id);
+
+ALTER TABLE ACCOUNT
+ADD COLUMN MaHV INT,
+ADD CONSTRAINT fk_account_hoivien FOREIGN KEY (MaHV) REFERENCES HoiVien(MaHV);
+
+SELECT *
+FROM HoiVien h
+JOIN ACCOUNT a ON h.MaHV = a.MaHV
+WHERE h.MaHV = 3;

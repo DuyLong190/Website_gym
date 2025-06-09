@@ -85,10 +85,10 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label for="MaGoiTap" class="form-label">Gói tập <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="MaGoiTap" name="MaGoiTap" required>
-                                                <option value="">Chọn gói tập</option>
+                                            <select class="form-select" id="MaGoiTap" name="MaGoiTap">
+                                                <option value="" <?= empty($hoiVien->MaGoiTap) ? 'selected' : '' ?>>Chọn gói tập</option>
                                                 <?php foreach ($goiTap as $goitap): ?>
-                                                    <option value="<?= $goitap['MaGoiTap'] ?>" <?php echo $hoiVien->MaGoiTap == $goitap['MaGoiTap'] ? 'selected' : '' ?>>
+                                                    <option value="<?= $goitap['MaGoiTap'] ?>" <?= (!empty($hoiVien->MaGoiTap) && $hoiVien->MaGoiTap == $goitap['MaGoiTap']) ? 'selected' : '' ?>>
                                                         <?= htmlspecialchars($goitap['TenGoiTap']) ?>
                                                     </option>
                                                 <?php endforeach; ?>

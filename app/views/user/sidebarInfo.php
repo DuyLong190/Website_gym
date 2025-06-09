@@ -1,5 +1,6 @@
 <style>
     body {
+        margin-left: 15%;
         background-color: #fbfbfb;
     }
 
@@ -58,11 +59,11 @@
                     class="rounded-circle"
                     style="width: 90px; height: 90px; object-fit: cover; border: 3px solid #eee; margin-top: 10px;">
                 <div class="fw-bold mt-2" style="font-size: 1.1rem;">
-                    <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Tài khoản'; ?>
+                    <?php echo isset($_SESSION['HoTen']) ? htmlspecialchars($_SESSION['HoTen']) : 'Tài khoản'; ?>
                 </div>
             </div>
             <div class="list-group list-group-flush mx-3 mt-4">
-                <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-user fa-fw me-3"></i>
+                <a href="/gym/user/profile" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-user fa-fw me-3"></i>
                     <span>Thông tin cá nhân</span>
                 </a>
                 <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-dumbbell fa-fw me-3"></i>
@@ -77,9 +78,13 @@
                 <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-clock-rotate-left fa-fw me-3"></i>
                     <span>Lịch sử hoạt động</span>
                 </a>
+                <a href="/gym" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-home fa-fw me-3"></i>
+                    <span>Về trang chủ</span>
+                </a>
                 <a href="/gym/account/logout" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-arrow-right-from-bracket fa-fw me-3"></i>
-                    <span>Đăng xuất</span></a>
-
+                    <span>Đăng xuất</span>
+                </a>
             </div>
         </div>
     </nav>

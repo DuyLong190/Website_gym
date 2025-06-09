@@ -133,7 +133,7 @@
                                                 <td><?= htmlspecialchars($hv->GioiTinh) ?></td>
                                                 <td><?= htmlspecialchars($hv->SDT) ?></td>
                                                 <td><?= htmlspecialchars($hv->Email) ?></td>
-                                                <td><?= htmlspecialchars($hv->TenGoiTap) ?></td>
+                                                <td><?= !empty($hv->TenGoiTap) ? htmlspecialchars($hv->TenGoiTap) : '' ?></td>
                                                 <td>
                                                     <?php
                                                     $badgeClass = 'danger';
