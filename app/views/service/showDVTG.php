@@ -43,12 +43,6 @@
         }
     </style>
 </head>
-<style>
-    body {
-        background-color: rgba(2, 16, 23, 0.92) !important;
-        color: #fff !important;
-    }
-</style>
 
 <body>
     <div class="container py-5">
@@ -73,7 +67,7 @@
                                 <?php echo nl2br(htmlspecialchars($DVTG->MoTaTG ?? '', ENT_QUOTES, 'UTF-8')); ?>
                             </div>
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="/gym/goitap" class="btn btn-secondary">
+                                <a href="/gym/DvThuGian" class="btn btn-secondary">
                                     <i class="fa fa-arrow-left"></i> Quay lại
                                 </a>
                             </div>
@@ -82,7 +76,7 @@
                 </div>
             </div>
         <?php else: ?>
-            <div class="alert alert-warning text-center">Không tìm thấy thông tin gói tập.</div>
+            <div class="alert alert-warning text-center">Không tìm thấy thông tin dịch vụ.</div>
         <?php endif; ?>
     </div>
 </body>

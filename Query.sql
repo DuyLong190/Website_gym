@@ -18,7 +18,6 @@ CREATE TABLE ACCOUNT (
 	);
 	ALTER TABLE account add role TINYINT(1) NOT NULL DEFAULT 0;
 
-
 INSERT INTO GoiTap (TenGoiTap, GiaTien, ThoiHan, MoTa)
 VALUES ('GT003', 'Gói Nâng Cao', 1000000.0, 90, 'Dành cho hội viên tiềm năng, có thể sử dụng tất cả cơ sở vật chất mà trung tâm đang có')
 INSERT INTO GoiTap (MaGoiTap, TenGoiTap, GiaTien, ThoiHan, MoTa)
@@ -45,4 +44,22 @@ CREATE TABLE DichVuTapLuyen (
 
 INSERT INTO dichvutapluyen (id, TenTL, GiaTL, ThoiGianTL, MoTaTL) VALUES
 	('1', 'Boxing', 10000.0, 90, 'Boxing thái')
+
+CREATE TABLE HoiVien (
+    MaHV INT AUTO_INCREMENT PRIMARY KEY,
+    HoTen VARCHAR(100) CHARACTER SET utf8mb4 NOT NULL,
+    NgaySinh DATE,
+    GioiTinh ENUM('Nam', 'Nữ', 'Khác'),
+    SDT VARCHAR(15),
+    Email VARCHAR(100),
+    DiaChi VARCHAR(200) CHARACTER SET utf8mb4,
+    NgayDangKy Datetime DEFAULT CURRENT_timestamp,
+    TrangThai ENUM('Đang hoạt động', 'Tạm ngưng', 'Đã hủy') DEFAULT 'Đang hoạt động',
+    MaGoiTap INT,
+    FOREIGN KEY (MaGoiTap) REFERENCES GoiTap(MaGoiTap)
+);
+INSERT INTO HoiVien (HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, NgayDangKy, MaGoiTap)
+VALUES ('Bùi Duy Long', '2004-10-19', 'Nam', '0961054672', 'bduylong1910@gmail.com', 'BR-VT',CURDATE(), 3)
+VALUES ('Nguyen Van A', '2000-01-01', 'Nam', '0123456789', 'a@gmail.com', 'Hanoi', CURDATE(), 1);
+
 	

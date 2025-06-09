@@ -1,4 +1,3 @@
-<?php include_once __DIR__ . '/../share/header.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -43,31 +42,30 @@
         }
     </style>
 </head>
-
 <body>
     <div class="container py-5">
-        <h1 class="text-center mb-5 fw-bold text-primary">Chi tiết lớp học</h1>
-        <?php if (isset($DVTL) && is_object($DVTL)): ?>
+        <h1 class="text-center mb-5 fw-bold text-primary">Chi tiết dịch vụ</h1>
+        <?php if (isset($DVTG) && is_object($DVTG)): ?>
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6">
                     <div class="card package-detail-card">
                         <div class="card-body">
                             <h2 class="card-title mb-4">
-                                <?php echo htmlspecialchars($DVTL->TenTL, ENT_QUOTES, 'UTF-8'); ?>
+                                <?php echo htmlspecialchars($DVTG->TenTG, ENT_QUOTES, 'UTF-8'); ?>
                             </h2>
                             <div class="price-badge">
-                                <?php echo number_format($DVTL->GiaTL); ?> VNĐ
+                                <?php echo number_format($DVTG->GiaTG); ?> VNĐ
                             </div>
                             <div class="detail-label">Thời hạn:</div>
                             <div class="detail-value">
-                                <?php echo htmlspecialchars($DVTL->ThoiGianTL, ENT_QUOTES, 'UTF-8'); ?> ngày
+                                <?php echo htmlspecialchars($DVTG->ThoiGianTG, ENT_QUOTES, 'UTF-8'); ?> ngày
                             </div>
                             <div class="detail-label">Mô tả:</div>
                             <div class="detail-value">
-                                <?php echo nl2br(htmlspecialchars($loDVTLphoc->MoTaTL ?? '', ENT_QUOTES, 'UTF-8')); ?>
+                                <?php echo nl2br(htmlspecialchars($DVTG->MoTaTG ?? '', ENT_QUOTES, 'UTF-8')); ?>
                             </div>
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="/gym/DvTapLuyen" class="btn btn-secondary">
+                                <a href="/gym/admin/DvThuGian" class="btn btn-secondary">
                                     <i class="fa fa-arrow-left"></i> Quay lại
                                 </a>
                             </div>
@@ -76,7 +74,7 @@
                 </div>
             </div>
         <?php else: ?>
-            <div class="alert alert-warning text-center">Không tìm thấy thông tin lớp học.</div>
+            <div class="alert alert-warning text-center">Không tìm thấy thông tin dịch vụ.</div>
         <?php endif; ?>
     </div>
 </body>

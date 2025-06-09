@@ -1,4 +1,3 @@
-<?php include_once __DIR__ . '/../share/header.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -98,7 +97,7 @@
                             </div>
 
                             <div class="d-flex justify-content-end mt-4">
-                                <a href="/gym/goitap" class="btn btn-outline-primary btn-back">
+                                <a href="/gym/admin/goitap" class="btn btn-outline-primary btn-back">
                                     <i class="fas fa-arrow-left me-1"></i> Quay lại
                                 </a>
                             </div>

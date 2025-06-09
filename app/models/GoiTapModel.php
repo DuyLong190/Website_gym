@@ -16,7 +16,7 @@ class GoiTapModel
             $query = "SELECT MaGoiTap, TenGoiTap, GiaTien, ThoiHan, MoTa FROM " . $this->table_name;
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_OBJ);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Error in getGoiTaps: " . $e->getMessage());
             return [];
@@ -26,11 +26,23 @@ class GoiTapModel
     // Lấy gói tập theo ID
     public function getByMaGoiTap($MaGoiTap)
     {
+        // Debug
+        error_log("GoiTapModel::getByMaGoiTap - Input MaGoiTap: " . $MaGoiTap);
+        
+        // Chuyển đổi MaGoiTap thành số nếu có thể
+        if (is_numeric($MaGoiTap)) {
+            $MaGoiTap = (int)$MaGoiTap;
+        }
+        
         $query  = "SELECT * FROM " . $this->table_name . " WHERE MaGoiTap = :MaGoiTap";
         $stmt  = $this->conn->prepare($query);
-        $stmt->bindParam(':MaGoiTap', $MaGoiTap,);
+        $stmt->bindParam(':MaGoiTap', $MaGoiTap, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_OBJ);
+        
+        // Debug
+        error_log("GoiTapModel::getByMaGoiTap - Query result: " . print_r($result, true));
+        
         return $result;
     }
 

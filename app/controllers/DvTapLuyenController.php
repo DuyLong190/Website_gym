@@ -20,7 +20,6 @@ class DvTapLuyenController
         $DVTLs = $this->dvtlModel->getDVTLs();
 
         require_once __DIR__ . '/../views/share/header.php';
-        
         require_once __DIR__ . '/../views/service/listDVTL.php';
         require_once __DIR__ . '/../views/share/footer.php';
     }
