@@ -323,26 +323,27 @@ class AdminController
     public function saveUser()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $HoTen = $_POST['HoTen'];
-            $NgaySinh = $_POST['NgaySinh'];
-            $GioiTinh = $_POST['GioiTinh'];
-            $SDT = $_POST['SDT'];
-            $Email = $_POST['Email'];
-            $DiaChi = $_POST['DiaChi'];
-            $MaGoiTap = $_POST['MaGoiTap'];
+            try {
+                $HoTen = $_POST['HoTen'] ?? '';
+                $NgaySinh = $_POST['NgaySinh'] ?? null;
+                $GioiTinh = $_POST['GioiTinh'] ?? null;
+                $SDT = $_POST['SDT'] ?? null;
+                $Email = $_POST['Email'] ?? null;
+                $DiaChi = $_POST['DiaChi'] ?? null;
+                $MaGoiTap = $_POST['MaGoiTap'] ?? null;
 
-            $result = $this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $MaGoiTap);
+                $result = $this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $MaGoiTap);
 
-            if (is_array($result)) {
-                // Nếu có lỗi validation, hiển thị form lại với lỗi
+                if ($result) {
+                    $_SESSION['success'] = "Thêm hội viên thành công";
+                    header('Location: /gym/admin/user');
+                    exit();
+                }
+            } catch (Exception $e) {
+                $_SESSION['error'] = $e->getMessage();
+                $goiTap = $this->goitapModel->getGoiTaps();
                 require_once __DIR__ . '/../views/admin/sidebarQL.php';
-            } else if ($result === true) {
-                // Nếu thêm thành công, chuyển hướng về danh sách
-                header('Location: /gym/admin/user');
-                exit();
-            } else {
-                // Nếu có lỗi khác
-                echo "Có lỗi xảy ra khi thêm lớp học. Vui lòng thử lại.";
+                require_once __DIR__ . '/../views/admin/user/addHoiVien.php';
             }
         }
     }

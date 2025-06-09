@@ -133,9 +133,6 @@
                             <a href="/gym/user/edit_profile" class="btn btn-primary">
                                 <i class="fas fa-edit me-2"></i>Chỉnh sửa thông tin
                             </a>
-                            <a href="/gym/user/change-password" class="btn btn-secondary">
-                                <i class="fas fa-key me-2"></i>Đổi mật khẩu
-                            </a>
                         </div>
                     <?php else: ?>
                         <div class="alert alert-warning">

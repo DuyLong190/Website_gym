@@ -84,7 +84,13 @@
                         <a class="nav-link dropdown-toggle flex items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="/Gym/public/images/user.png" class="h-10 inline-block align-middle" alt="<?php echo $_SESSION['HoTen'] ?? $_SESSION['username']; ?>">
                             <span class="inline-block align-middle">
-                                <?php echo $_SESSION['HoTen'] ?? $_SESSION['username']; ?>
+                                <?php
+                                if (SessionHelper::isAdmin()) {
+                                    echo 'admin';
+                                } else {
+                                    echo $_SESSION['HoTen'] ?? 'Tài khoản';
+                                }
+                                ?>
                             </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end bg-gray-800 text-white" aria-labelledby="userDropdown">

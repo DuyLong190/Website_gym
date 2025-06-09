@@ -50,6 +50,18 @@
                                 Thông tin hội viên
                             </div>
                             <div class="card-body">
+                                <?php if (isset($_SESSION['error'])): ?>
+                                    <div class="alert alert-danger">
+                                        <?= htmlspecialchars($_SESSION['error']) ?>
+                                        <?php unset($_SESSION['error']); ?>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if (isset($_SESSION['success'])): ?>
+                                    <div class="alert alert-success">
+                                        <?= htmlspecialchars($_SESSION['success']) ?>
+                                        <?php unset($_SESSION['success']); ?>
+                                    </div>
+                                <?php endif; ?>
                                 <?php if (!empty($errors)): ?>
                                     <div class="alert alert-danger">
                                         <ul class="mb-0">

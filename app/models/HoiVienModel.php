@@ -23,7 +23,7 @@ class HoiVienModel
         try {
             $query = "SELECT h.*, g.TenGoiTap 
                      FROM HoiVien h 
-                     JOIN ACCOUNT a ON h.MaHV = a.MaHV
+                     LEFT JOIN ACCOUNT a ON h.MaHV = a.MaHV
                      LEFT JOIN GoiTap g ON h.MaGoiTap = g.MaGoiTap 
                      WHERE h.MaHV = ?";
             $stmt = $this->conn->prepare($query);
@@ -37,8 +37,13 @@ class HoiVienModel
 
     public function addHoiVien($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $MaGoiTap) {
         try {
+            // Validate required fields
+            if (empty($HoTen)) {
+                throw new Exception("Họ tên không được để trống");
+            }
+
             // Chuẩn bị câu query
-            $query = "INSERT INTO " . $this->table_name . " (HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, MaGoiTap) 
+            $query = "INSERT INTO HoiVien (HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, MaGoiTap) 
                      VALUES (:HoTen, :NgaySinh, :GioiTinh, :SDT, :Email, :DiaChi, :MaGoiTap)";
             $stmt = $this->conn->prepare($query);
 
@@ -64,10 +69,18 @@ class HoiVienModel
             if ($stmt->execute()) {
                 return $this->conn->lastInsertId(); // Trả về MaHV vừa được tạo
             }
-            return false;
+            
+            // If execution fails but no exception is thrown
+            $error = $stmt->errorInfo();
+            error_log("Error in addHoiVien execution: " . print_r($error, true));
+            throw new Exception("Không thể thêm hội viên: " . $error[2]);
+            
         } catch (PDOException $e) {
+            error_log("PDO Error in addHoiVien: " . $e->getMessage());
+            throw new Exception("Lỗi cơ sở dữ liệu: " . $e->getMessage());
+        } catch (Exception $e) {
             error_log("Error in addHoiVien: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -166,6 +179,19 @@ class HoiVienModel
             return $stmt->execute([$HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $maHV]);
         } catch (PDOException $e) {
             error_log("Error in updateHoiVienProfile: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function updateGoiTap($maHV, $maGoiTap) {
+        try {
+            $query = "UPDATE HoiVien 
+                     SET MaGoiTap = ?, NgayDangKy = CURRENT_TIMESTAMP 
+                     WHERE MaHV = ?";
+            $stmt = $this->conn->prepare($query);
+            return $stmt->execute([$maGoiTap, $maHV]);
+        } catch (PDOException $e) {
+            error_log("Error in updateGoiTap: " . $e->getMessage());
             return false;
         }
     }

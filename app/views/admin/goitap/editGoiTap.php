@@ -24,7 +24,7 @@
                                     </ul>
                                 </div>
                             <?php endif; ?>
-                            <form method="POST" action="/gym/admin/goitap/update" onsubmit="return validateForm()">
+                            <form method="POST" action="/gym/admin/goitap/updateGoiTap" onsubmit="return validateForm()">
                                 <input type="hidden" name="MaGoiTap" value="<?php echo $goiTap->MaGoiTap; ?>">
                                 <div class="form-group mb-3">
                                     <label for="TenGoiTap">Tên gói tập:</label>

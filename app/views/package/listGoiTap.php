@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách gói tập</title>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/gym/public/css/style.css">
+    <!-- Thêm SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
     <style>
         .package-card {
             padding-left: 25px;
@@ -98,29 +102,56 @@
                         <div class="card package-card flex-fill d-flex flex-column">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="package-badge card-text mb-2">
-                                    <?php echo htmlspecialchars($goiTap->TenGoiTap); ?>
+                                    <?php echo htmlspecialchars($goiTap['TenGoiTap'] ?? ''); ?>
                                 </h5>
                                 <span class="package-price ">
-                                    <?php echo number_format($goiTap->GiaTien); ?>
-                                    <span class="currency-symbol">Đ</span>
+                                    <?php
+                                    $giaTien = $goiTap['GiaTien'] ?? 0;
+                                    echo $giaTien ? number_format((float)$giaTien) : '';
+                                    ?>
+                                    <?php if ($giaTien): ?>
+                                        <span class="currency-symbol">Đ</span>
+                                    <?php endif; ?>
                                 </span>
                                 <hr class="line-custom">
                                 <p class="card-text mb-1"><strong>Thời hạn:</strong>
-                                    <?php echo htmlspecialchars($goiTap->ThoiHan); ?> ngày
+                                    <?php 
+                                    $thoiHan = $goiTap['ThoiHan'] ?? '';
+                                    echo $thoiHan ? htmlspecialchars($thoiHan) . ' ngày' : '';
+                                    ?>
                                 </p>
-                                <p class="card-text mb-3"> <br>
-                                    <?php $moTa = htmlspecialchars($goiTap->MoTa);
+                                <p class="card-text mb-3"><br>
+                                    <?php
+                                    $moTa = $goiTap['MoTa'] ?? '';
+                                    $moTa = htmlspecialchars($moTa);
                                     $cauArr = array_filter(array_map('trim', explode('.', $moTa)));
                                     foreach ($cauArr as $cau) {
                                         echo '• ' . $cau . '.<br>';
-                                    } ?>
+                                    }
+                                    ?>
                                 </p>
                                 <hr class="line-custom">
                                 <div class="mt-auto gap-2 d-flex ">
-                                    <a href="#" class="btn btn-outline-warning flex-fill">
-                                        <i class="fa fa-edit"></i> Đăng ký
-                                    </a> 
-                                    <a href="goitap/show/<?php echo $goiTap->MaGoiTap; ?>" class="btn btn-outline-info flex-fill">
+                                    <?php if (isset($_SESSION['username'])): ?>
+                                        <?php 
+                                        $username = $_SESSION['username'];
+                                        $hoiVien = $this->hoiVienModel->getHoiVienByUsername($username);
+                                        if (empty($hoiVien->MaGoiTap)): 
+                                        ?>
+                                            <a href="/gym/goitap/register/<?php echo $goiTap['MaGoiTap']; ?>" class="btn btn-outline-warning flex-fill">
+                                                <i class="fa fa-edit"></i> Đăng ký
+                                            </a>
+                                        <?php else: ?>
+                                            <button class="btn btn-outline-warning flex-fill" onclick="showAlreadyRegisteredAlert()">
+                                                <i class="fa fa-edit"></i> Đăng ký
+                                            </button>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <a href="/gym/account/login" class="btn btn-outline-warning flex-fill">
+                                            <i class="fa fa-sign-in"></i> Đăng nhập để đăng ký
+                                        </a>
+                                    <?php endif; ?>
+                                    <a href="/gym/goitap/show/<?php echo $goiTap['MaGoiTap']; ?>" class="btn btn-outline-info flex-fill">
                                         <i class="fa fa-info-circle"></i> Chi tiết
                                     </a>
                                 </div>
@@ -134,6 +165,19 @@
         <?php endif; ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Thêm SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script>
+    function showAlreadyRegisteredAlert() {
+        Swal.fire({
+            title: 'Thông báo',
+            text: 'Bạn đã đăng ký gói tập',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6'
+        });
+    }
+    </script>
 </body>
 
 </html>
