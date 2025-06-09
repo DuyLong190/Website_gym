@@ -6,7 +6,7 @@
     }
     public static function isAdmin()
     {
-        return isset($_SESSION['username']) && intval($_SESSION['role']) === 1;
+        return isset($_SESSION['username']) && intval($_SESSION['role_id']) === 0;
     }
 }
 ?>

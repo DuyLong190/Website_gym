@@ -82,14 +82,16 @@
                 <?php if (SessionHelper::isLoggedIn()): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle flex items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="/Gym/public/images/user.png" class="h-10 inline-block align-middle" alt="<?php echo $_SESSION['username']; ?>">
-                            <span class="inline-block align-middle"><?php echo $_SESSION['username']; ?></span>
+                            <img src="/Gym/public/images/user.png" class="h-10 inline-block align-middle" alt="<?php echo $_SESSION['HoTen'] ?? $_SESSION['username']; ?>">
+                            <span class="inline-block align-middle">
+                                <?php echo $_SESSION['HoTen'] ?? $_SESSION['username']; ?>
+                            </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end bg-gray-800 text-white" aria-labelledby="userDropdown">
                             <?php if (SessionHelper::isAdmin()): ?>
                                 <li><a class="dropdown-item hover:bg-gray-700 !important" href="/gym/admin">Quản lý</a></li>
                             <?php endif; ?>
-                            <li><a class="dropdown-item hover:bg-gray-7 00" href="app/views/sidebar/sidebarInfo.php">Thông tin cá nhân</a></li>
+                            <li><a class="dropdown-item hover:bg-gray-7 00" href="/gym/user">Thông tin cá nhân</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

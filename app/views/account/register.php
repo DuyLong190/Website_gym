@@ -105,8 +105,8 @@ if (isset($errors)) {
                 </div>
 
                 <div class=" mb-3 form-floating">
-                    <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Nhập họ và tên">
-                    <label for="fullname " class="form-label">Họ và tên</label>
+                    <input type="text" class="form-control" id="HoTen" name="HoTen" placeholder="Nhập họ và tên">
+                    <label for="HoTen " class="form-label">Họ và tên</label>
                 </div>
 
                 <div class=" mb-3 form-floating">
@@ -125,7 +125,7 @@ if (isset($errors)) {
             </form>
 
             <div class="text-center">
-                <p class="text-dark">Đã có tài khoản? <a href="login" class="login-link">Đăng nhập<a> </p>
+                <p class="text-dark">Đã có tài khoản? <a href="login" class="login-link">Đăng nhập</a></p>
             </div>
         </div>
     </section>

@@ -5,6 +5,7 @@ require_once 'app/controllers/GoiTapController.php';
 require_once 'app/controllers/DvThuGianController.php';
 require_once 'app/controllers/DvTapLuyenController.php';
 require_once 'app/controllers/AdminController.php';
+require_once 'app/controllers/UserController.php';
 require_once 'app/models/GoiTapModel.php';
 require_once 'app/models/DvThuGianModel.php';
 require_once 'app/models/DvTapLuyenModel.php';
@@ -59,6 +60,9 @@ if (isset($url[0]) && $url[0] === 'admin') {
             case 'GoiTapController':
                 $action = 'indexGoiTap';
                 break;
+            case 'UserController':
+                $action = 'profile';
+                break;
             default:
                 $action = 'indexGoiTap';
         }
@@ -68,7 +72,7 @@ if (isset($url[0]) && $url[0] === 'admin') {
 // Kiểm tra xem controller và action có tồn tại không
 if (!file_exists('app/controllers/' . $controllerName . '.php')) {
     // Xử lý khi không tìm thấy controller
-    die('Không tìm thấy Controller '.$controllerName);
+    die('Không tìm thấy Controller: '.$controllerName);
 }
 require_once 'app/controllers/' . $controllerName . '.php';
 
