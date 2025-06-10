@@ -78,9 +78,9 @@ ADD CONSTRAINT fk_account_role FOREIGN KEY (role_id) REFERENCES Role(role_id);
 
 ALTER TABLE ACCOUNT
 ADD COLUMN MaHV INT,
-ADD CONSTRAINT fk_account_hoivien FOREIGN KEY (MaHV) REFERENCES HoiVien(MaHV);
+ADD CONSTRAINT fk_account_hoivien FOREIGN KEY (MaHV) REFERENCES HoiVien(MaHV);`account`
 
-SELECT *
-FROM HoiVien h
-JOIN ACCOUNT a ON h.MaHV = a.MaHV
-WHERE h.MaHV = 3;
+ALTER TABLE hoivien
+ADD COLUMN ChieuCao INT,
+ADD COLUMN CanNang INT
+

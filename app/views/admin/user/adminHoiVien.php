@@ -7,10 +7,14 @@
     <title>Quản lý Hội viên - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css" rel="stylesheet">
     <style>
         body {
             background: linear-gradient(120deg, #f8fafc 0%, #dbeafe 100%);
             min-height: 100vh;
+            margin-left: 15%;
+            
         }
 
         .admin-card {
@@ -26,32 +30,30 @@
             font-size: 2rem;
         }
 
-        .btn-primary,
-        .btn-success,
-        .btn-warning,
-        .btn-danger {
-            font-weight: 600;
-        }
-
         .btn-primary {
             background: linear-gradient(90deg, #6366f1 0%, #0ea5e9 100%);
             border: none;
         }
 
-        .btn-primary:hover {
-            background: linear-gradient(90deg, #0ea5e9 0%, #6366f1 100%);
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
         }
 
-        .badge-success {
-            background: #22c55e !important;
+        .status-active {
+            background-color: #d1fae5;
+            color: #065f46;
         }
 
-        .badge-warning {
-            background: #f59e42 !important;
+        .status-pause {
+            background-color: #fef3c7;
+            color: #92400e;
         }
 
-        .badge-danger {
-            background: #ef4444 !important;
+        .status-cancel {
+            background-color: #fee2e2;
+            color: #991b1b;
         }
 
         .table thead {
@@ -63,23 +65,22 @@
             background-color: #f3f4f6;
         }
 
-        @media (max-width: 768px) {
-            .admin-title {
-                font-size: 1.3rem;
-            }
+        .profile-label {
+            font-weight: 600;
+            color: #666;
+        }
 
-            .table-responsive {
-                font-size: 0.95rem;
-            }
+        .profile-value {
+            color: #333;
         }
     </style>
 </head>
 
-<body>  
+<body>
     <div class="container-fluid">
         <div class="row">
             <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <main>
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
                     <h1 class="mb-4 admin-title text-center">
                         <i class="fa-solid fa-users me-2"></i>Quản lý hội viên
@@ -99,48 +100,46 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form action="/gym/admin/user/search" method="GET" class="mb-3">
-                                <div class="input-group">
-                                    <input type="text" name="keyword" class="form-control"
-                                        placeholder="Tìm kiếm theo tên, số điện thoại, email..."
-                                        value="<?= htmlspecialchars($_GET['keyword'] ?? '') ?>">
-                                    <button class="btn btn-primary" type="submit">
-                                        <i class="fas fa-search"></i> Tìm kiếm
-                                    </button>
-                                </div>
-                            </form>
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped align-middle">
+                                <table id="hoiVienTable" class="table table-bordered table-striped align-middle">
                                     <thead>
                                         <tr>
-                                            <th>Mã HV</th>
-                                            <th>Họ tên</th>
-                                            <th>Ngày sinh</th>
-                                            <th>Giới tính</th>
-                                            <th>Số điện thoại</th>
-                                            <th>Email</th>
-                                            <th>Gói tập</th>
-                                            <th>Trạng thái</th>
+                                            <th class="text-center">Họ và tên</th>
+                                            <th class="text-center">Ngày sinh</th>
+                                            <th class="text-center">Giới tính</th>
+                                            <th class="text-center">SĐT</th>
+                                            <th class="text-center">Email</th>
+                                            <th class="text-center">Gói tập</th>
+                                            <th class="text-center">Trạng thái</th>
                                             <th class="text-center">Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($hoiVien as $hv): ?>
                                             <tr>
-                                                <td><?= htmlspecialchars($hv->MaHV) ?></td>
-                                                <td><?= htmlspecialchars($hv->HoTen) ?></td>
-                                                <td><?= date('d/m/Y', strtotime($hv->NgaySinh)) ?></td>
-                                                <td><?= htmlspecialchars($hv->GioiTinh) ?></td>
-                                                <td><?= htmlspecialchars($hv->SDT) ?></td>
-                                                <td><?= htmlspecialchars($hv->Email) ?></td>
-                                                <td><?= !empty($hv->TenGoiTap) ? htmlspecialchars($hv->TenGoiTap) : '' ?></td>
+                                                <td class="profile-value"><?= htmlspecialchars($hv->HoTen) ?></td>
+                                                <td class="profile-value">
+                                                    <?= $hv->NgaySinh ? date('d/m/Y', strtotime($hv->NgaySinh)) : '' ?>
+                                                </td>
+                                                <td class="profile-value">
+                                                    <?= $hv->GioiTinh ? htmlspecialchars($hv->GioiTinh) : '' ?>
+                                                </td>
+                                                <td class="profile-value">
+                                                    <?= $hv->SDT ? htmlspecialchars($hv->SDT) : '' ?>
+                                                </td>
+                                                <td class="profile-value">
+                                                    <?= $hv->Email ? htmlspecialchars($hv->Email) : '' ?>
+                                                </td>
+                                                <td class="profile-value">
+                                                    <?= !empty($hv->TenGoiTap) ? htmlspecialchars($hv->TenGoiTap) : '' ?>
+                                                </td>
                                                 <td>
-                                                    <?php
-                                                    $badgeClass = 'danger';
-                                                    if ($hv->TrangThai === 'Đang hoạt động') $badgeClass = 'success';
-                                                    elseif ($hv->TrangThai === 'Tạm ngưng') $badgeClass = 'warning';
-                                                    ?>
-                                                    <span class="badge badge-<?= $badgeClass ?>">
+                                                    <span class="status-badge 
+                                                        <?php
+                                                        if ($hv->TrangThai === 'Đang hoạt động') echo 'status-active';
+                                                        elseif ($hv->TrangThai === 'Tạm ngưng') echo 'status-pause';
+                                                        else echo 'status-cancel';
+                                                        ?>">
                                                         <?= htmlspecialchars($hv->TrangThai) ?>
                                                     </span>
                                                 </td>
@@ -148,6 +147,7 @@
                                                     <a href="/gym/admin/user/showUser/<?= $hv->MaHV ?>"
                                                         class="btn btn-sm btn-success me-1" title="Xem chi tiết">
                                                         <i class="fas fa-eye"></i>
+                                                    </a>
                                                     <a href="/gym/admin/user/editUser/<?= $hv->MaHV ?>"
                                                         class="btn btn-sm btn-info me-1" title="Sửa">
                                                         <i class="fas fa-edit"></i>
@@ -163,7 +163,7 @@
                                         <?php endforeach; ?>
                                         <?php if (empty($hoiVien)): ?>
                                             <tr>
-                                                <td colspan="9" class="text-center text-muted">Không có hội viên nào.</td>
+                                                <td colspan="11" class="text-center text-muted">Không có hội viên nào.</td>
                                             </tr>
                                         <?php endif; ?>
                                     </tbody>
@@ -175,6 +175,34 @@
             </main>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#hoiVienTable').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/vi.json',
+                },
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Tất cả"]
+                ],
+                order: [
+                    [0, 'asc']
+                ],
+                columnDefs: [{
+                        orderable: false,
+                        targets: 7
+                    } // Disable sorting for action column
+                ]
+            });
+        });
+    </script>
 </body>
 
 </html>

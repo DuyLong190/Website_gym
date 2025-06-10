@@ -306,11 +306,13 @@ class AdminController
             $HoTen = $_POST['HoTen'];
             $NgaySinh = $_POST['NgaySinh'];
             $GioiTinh = $_POST['GioiTinh'];
+            $ChieuCao = $_POST['ChieuCao'];
+            $CanNang = $_POST['CanNang'];
             $SDT = $_POST['SDT'];
             $Email = $_POST['Email'];
             $DiaChi = $_POST['DiaChi'];
             $MaGoiTap = $_POST['MaGoiTap'];
-            if ($this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $MaGoiTap)) {
+            if ($this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap)) {
                 header('Location: /gym/admin/user');
                 exit;
             }
@@ -327,12 +329,14 @@ class AdminController
                 $HoTen = $_POST['HoTen'] ?? '';
                 $NgaySinh = $_POST['NgaySinh'] ?? null;
                 $GioiTinh = $_POST['GioiTinh'] ?? null;
+                $ChieuCao = $_POST['ChieuCao'] ?? null;
+                $CanNang = $_POST['CanNang'] ?? null;
                 $SDT = $_POST['SDT'] ?? null;
                 $Email = $_POST['Email'] ?? null;
                 $DiaChi = $_POST['DiaChi'] ?? null;
                 $MaGoiTap = $_POST['MaGoiTap'] ?? null;
 
-                $result = $this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $MaGoiTap);
+                $result = $this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap);
 
                 if ($result) {
                     $_SESSION['success'] = "Thêm hội viên thành công";
@@ -357,8 +361,6 @@ class AdminController
                 header('Location: /gym/admin/user');
                 exit;
             }
-
-            // Lấy danh sách gói tập
             $goiTap = $this->goitapModel->getGoiTaps();
 
             // Load view
@@ -376,13 +378,15 @@ class AdminController
             $HoTen = $_POST['HoTen'];
             $NgaySinh = $_POST['NgaySinh'];
             $GioiTinh = $_POST['GioiTinh'];
+            $ChieuCao = $_POST['ChieuCao'];
+            $CanNang = $_POST['CanNang'];
             $SDT = $_POST['SDT'];
             $Email = $_POST['Email'];
             $DiaChi = $_POST['DiaChi'];
             $MaGoiTap = $_POST['MaGoiTap'];
             $TrangThai = $_POST['TrangThai'];
 
-            if ($this->hoiVienModel->updateHoiVien($maHV, $HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $MaGoiTap, $TrangThai)) {
+            if ($this->hoiVienModel->updateHoiVien($maHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $TrangThai)) {
                 header('Location: /gym/admin/user');
             } else {
                 echo "Cập nhật hội viên không thành công.";

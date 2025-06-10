@@ -11,6 +11,7 @@
         body {
             background: linear-gradient(120deg, #f8fafc 0%, #dbeafe 100%);
             min-height: 100vh;
+            margin-top: -60px;
         }
 
         .admin-card {
@@ -127,4 +128,5 @@
         </div>
     </div>
 </body>
+
 </html>

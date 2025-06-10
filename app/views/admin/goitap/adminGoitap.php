@@ -11,6 +11,7 @@
         body {
             background: linear-gradient(120deg, #f8fafc 0%, #dbeafe 100%);
             min-height: 100vh;
+            margin-left: 15%;
         }
 
         .admin-card {
@@ -24,13 +25,6 @@
             color: #6366f1;
             font-weight: 800;
             font-size: 2rem;
-        }
-
-        .btn-primary,
-        .btn-success,
-        .btn-warning,
-        .btn-danger {
-            font-weight: 600;
         }
 
         .btn-primary {
@@ -66,9 +60,9 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <main>
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                    <h1 class="mb-4 admin-title text-center">
+                    <h1 class="mb-3 admin-title text-center">
                         <i class="fa-solid fa-dumbbell me-2"></i>Quản lý gói tập
                     </h1>
                 </div>

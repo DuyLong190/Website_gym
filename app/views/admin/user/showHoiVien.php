@@ -87,7 +87,12 @@
                         </div>
                         <div class="col-md-6 mb-4">
                             <div class="info-label">Ngày sinh</div>
-                            <div class="info-value"><?= date('d/m/Y', strtotime($hoiVien->NgaySinh)) ?></div>
+                            <div class="info-value">
+                                <?php
+                                $ngaySinh = $hoiVien->NgaySinh ?? '';
+                                echo $ngaySinh ? date('d/m/Y', strtotime($ngaySinh)) : '';
+                                ?>
+                            </div>
                         </div>
                     </div>
 
@@ -104,12 +109,21 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-4">
+                            <div class="info-label">Chiều cao</div>
+                            <div class="info-value"><?= htmlspecialchars((string)($hoiVien->ChieuCao ?? '')) ?> cm</div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="info-label">Cân nặng</div>
+                            <div class="info-value"><?= htmlspecialchars((string)($hoiVien->CanNang ?? '')) ?> kg</div>
+                        </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
                             <div class="info-label">Email</div>
-                            <div class="info-value"><?= htmlspecialchars($hoiVien->Email) ?></div>
+                            <div class="info-value"><?= htmlspecialchars((string)($hoiVien->Email ?? '')) ?></div>
                         </div>
                         <div class="col-md-6 mb-4">
                             <div class="info-label">Địa chỉ</div>
-                            <div class="info-value"><?= htmlspecialchars($hoiVien->DiaChi) ?></div>
+                            <div class="info-value"><?= htmlspecialchars((string)($hoiVien->DiaChi ?? '')) ?></div>
                         </div>
                     </div>
 
