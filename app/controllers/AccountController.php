@@ -62,7 +62,7 @@ class AccountController
 
                     // Thêm hội viên trước
                     $hoiVienModel = new HoiVienModel($this->db);
-                    $maHV = $hoiVienModel->addHoiVien($HoTen, null, null, null, null, null, null);
+                    $maHV = $hoiVienModel->addHoiVien($HoTen, null, null, null, null, null, null, null, null);
 
                     if (!$maHV) {
                         throw new Exception("Không thể thêm thông tin hội viên");

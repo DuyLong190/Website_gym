@@ -11,6 +11,7 @@
         body {
             background: linear-gradient(120deg, #f8fafc 0%, #dbeafe 100%);
             min-height: 100vh;
+            margin-left: 15%;
         }
 
         .admin-card {
@@ -24,13 +25,6 @@
             color: #6366f1;
             font-weight: 800;
             font-size: 2rem;
-        }
-
-        .btn-primary,
-        .btn-success,
-        .btn-warning,
-        .btn-danger {
-            font-weight: 600;
         }
 
         .btn-primary {
@@ -66,9 +60,9 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <main>
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                    <h1 class="mb-4 admin-title text-center">
+                    <h1 class="mb-3 admin-title text-center">
                         <i class="fa-solid fa-dumbbell me-2"></i>Quản lý gói tập
                     </h1>
                 </div>
@@ -95,22 +89,20 @@
                                 <table class="table table-bordered table-striped align-middle">
                                     <thead>
                                         <tr>
-                                            <th>Mã gói tập</th>
-                                            <th>Tên gói tập</th>
-                                            <th>Giá</th>
-                                            <th>Thời hạn</th>
+                                            <th style="width: 10%;">Tên gói tập</th>
+                                            <th style="width: 8%;">Giá</th>
+                                            <th style="width: 8%;">Thời hạn</th>
                                             <th>Mô tả</th>
-                                            <th class="text-center">Thao tác</th>
+                                            <th style="width: 11%;" class="text-center">Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if (!empty($goiTaps)): ?>
                                             <?php foreach ($goiTaps as $goiTap): ?>
                                                 <tr>
-                                                    <td><?php echo $goiTap['MaGoiTap'] ?? 'N/A'; ?></td>
                                                     <td><?php echo htmlspecialchars($goiTap['TenGoiTap'] ?? 'Chưa có gói tập'); ?></td>
                                                     <td><?php echo isset($goiTap['GiaTien']) ? number_format($goiTap['GiaTien'], 0, ',', '.') . ' VNĐ' : 'N/A'; ?></td>
-                                                    <td><?php echo isset($goiTap['ThoiHan']) ? $goiTap['ThoiHan'] . ' ngày' : 'N/A'; ?></td>
+                                                    <td><?php echo isset($goiTap['ThoiHan']) ? $goiTap['ThoiHan'] . ' tháng' : 'N/A'; ?></td>
                                                     <td><?php echo htmlspecialchars($goiTap['MoTa'] ?? 'Không có mô tả'); ?></td>
                                                     <td class="text-center">
                                                         <button class="btn btn-sm btn-success me-1" onclick="showGoiTap(<?php echo $goiTap['MaGoiTap'] ?? 0; ?>)" title="Xem chi tiết">
@@ -159,7 +151,7 @@
                             <input type="number" class="form-control" name="GiaTien" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Thời Hạn (ngày)</label>
+                            <label class="form-label">Thời Hạn (tháng)</label>
                             <input type="number" class="form-control" name="ThoiHan" required>
                         </div>
                         <div class="mb-3">

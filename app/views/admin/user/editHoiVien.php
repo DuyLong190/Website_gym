@@ -11,6 +11,7 @@
         body {
             background: linear-gradient(120deg, #f8fafc 0%, #dbeafe 100%);
             min-height: 100vh;
+            margin-top: -60px;
         }
 
         .admin-card {
@@ -74,14 +75,14 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label for="SDT" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
-                                            <input type="tel" class="form-control" id="SDT" name="SDT" value="<?php echo htmlspecialchars($hoiVien->SDT) ?>" required>
+                                            <input type="tel" class="form-control" id="SDT" name="SDT" value="<?= htmlspecialchars((string)($hoiVien->SDT ?? '')) ?>" required>
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="Email" class="form-label">Email</label>
-                                            <input type="email" class="form-control" id="Email" name="Email" value="<?php echo htmlspecialchars($hoiVien->Email) ?>">
+                                            <input type="email" class="form-control" id="Email" name="Email" value="<?= htmlspecialchars((string)($hoiVien->Email ?? '')) ?>">
                                         </div>
                                         <div class="col-md-6">
                                             <label for="MaGoiTap" class="form-label">Gói tập <span class="text-danger">*</span></label>
@@ -99,7 +100,7 @@
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="DiaChi" class="form-label">Địa chỉ</label>
-                                            <textarea class="form-control" id="DiaChi" name="DiaChi" rows="3"><?php echo htmlspecialchars($hoiVien->DiaChi) ?></textarea>
+                                            <textarea class="form-control" id="DiaChi" name="DiaChi" rows="3"><?= htmlspecialchars((string)($hoiVien->DiaChi ?? '')) ?></textarea>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="TrangThai" class="form-label">Trạng thái <span class="text-danger">*</span></label>
@@ -127,4 +128,5 @@
         </div>
     </div>
 </body>
+
 </html>

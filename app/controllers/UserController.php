@@ -50,7 +50,6 @@ class UserController
             header('Location: /gym/user/profile');
             exit;
         }
-
         require_once __DIR__ . '/../views/user/sidebarInfo.php';
         require_once __DIR__ . '/../views/user/edit_profile.php';
     }
@@ -72,23 +71,27 @@ class UserController
                 exit;
             }
 
-            // Lấy dữ liệu từ form
-            $HoTen = $_POST['fullname'];
-            $NgaySinh = $_POST['NgaySinh'];
-            $GioiTinh = $_POST['GioiTinh'];
-            $SDT = $_POST['SDT'];
-            $Email = $_POST['Email'];
-            $DiaChi = $_POST['DiaChi'];
+            // Lấy dữ liệu từ form, sử dụng null nếu không có giá trị
+            $HoTen = !empty($_POST['fullname']) ? $_POST['fullname'] : null;
+            $NgaySinh = !empty($_POST['NgaySinh']) ? $_POST['NgaySinh'] : null;
+            $GioiTinh = !empty($_POST['GioiTinh']) ? $_POST['GioiTinh'] : null;
+            $ChieuCao = !empty($_POST['ChieuCao']) ? $_POST['ChieuCao'] : null;
+            $CanNang = !empty($_POST['CanNang']) ? $_POST['CanNang'] : null;
+            $SDT = !empty($_POST['SDT']) ? $_POST['SDT'] : null;
+            $Email = !empty($_POST['Email']) ? $_POST['Email'] : null;
+            $DiaChi = !empty($_POST['DiaChi']) ? $_POST['DiaChi'] : null;
 
             // Cập nhật thông tin
-            if ($this->hoivienModel->updateHoiVienProfile($hoiVien->MaHV, $HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi)) {
-                // Cập nhật session HoTen
-                $_SESSION['HoTen'] = $HoTen;
+            if ($this->hoivienModel->updateHoiVienProfile($hoiVien->MaHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi)) {
+                // Cập nhật session HoTen nếu có thay đổi
+                if ($HoTen) {
+                    $_SESSION['HoTen'] = $HoTen;
+                }
                 $_SESSION['success'] = "Cập nhật thông tin thành công";
                 header('Location: /gym/user/profile');
             } else {
                 $_SESSION['error'] = "Cập nhật thông tin thất bại";
-                header('Location: /gym/user/edit-profile');
+                header('Location: /gym/user/edit_profile');
             }
             exit;
         }

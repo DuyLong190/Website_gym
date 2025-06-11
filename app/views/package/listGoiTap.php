@@ -117,7 +117,7 @@
                                 <p class="card-text mb-1"><strong>Thời hạn:</strong>
                                     <?php 
                                     $thoiHan = $goiTap['ThoiHan'] ?? '';
-                                    echo $thoiHan ? htmlspecialchars($thoiHan) . ' ngày' : '';
+                                    echo $thoiHan ? htmlspecialchars($thoiHan) . ' tháng' : '';
                                     ?>
                                 </p>
                                 <p class="card-text mb-3"><br>
