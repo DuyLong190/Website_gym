@@ -89,22 +89,20 @@
                                 <table class="table table-bordered table-striped align-middle">
                                     <thead>
                                         <tr>
-                                            <th>Mã gói tập</th>
-                                            <th>Tên gói tập</th>
-                                            <th>Giá</th>
-                                            <th>Thời hạn</th>
+                                            <th style="width: 10%;">Tên gói tập</th>
+                                            <th style="width: 8%;">Giá</th>
+                                            <th style="width: 8%;">Thời hạn</th>
                                             <th>Mô tả</th>
-                                            <th class="text-center">Thao tác</th>
+                                            <th style="width: 11%;" class="text-center">Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if (!empty($goiTaps)): ?>
                                             <?php foreach ($goiTaps as $goiTap): ?>
                                                 <tr>
-                                                    <td><?php echo $goiTap['MaGoiTap'] ?? 'N/A'; ?></td>
                                                     <td><?php echo htmlspecialchars($goiTap['TenGoiTap'] ?? 'Chưa có gói tập'); ?></td>
                                                     <td><?php echo isset($goiTap['GiaTien']) ? number_format($goiTap['GiaTien'], 0, ',', '.') . ' VNĐ' : 'N/A'; ?></td>
-                                                    <td><?php echo isset($goiTap['ThoiHan']) ? $goiTap['ThoiHan'] . ' ngày' : 'N/A'; ?></td>
+                                                    <td><?php echo isset($goiTap['ThoiHan']) ? $goiTap['ThoiHan'] . ' tháng' : 'N/A'; ?></td>
                                                     <td><?php echo htmlspecialchars($goiTap['MoTa'] ?? 'Không có mô tả'); ?></td>
                                                     <td class="text-center">
                                                         <button class="btn btn-sm btn-success me-1" onclick="showGoiTap(<?php echo $goiTap['MaGoiTap'] ?? 0; ?>)" title="Xem chi tiết">
@@ -153,7 +151,7 @@
                             <input type="number" class="form-control" name="GiaTien" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Thời Hạn (ngày)</label>
+                            <label class="form-label">Thời Hạn (tháng)</label>
                             <input type="number" class="form-control" name="ThoiHan" required>
                         </div>
                         <div class="mb-3">

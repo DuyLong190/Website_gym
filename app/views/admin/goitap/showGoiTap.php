@@ -204,7 +204,7 @@
                                 Thời hạn
                             </div>
                             <div class="detail-value">
-                                <?php echo htmlspecialchars($goiTap->ThoiHan, ENT_QUOTES, 'UTF-8'); ?> ngày
+                                <?php echo htmlspecialchars($goiTap->ThoiHan, ENT_QUOTES, 'UTF-8'); ?> tháng
                             </div>
 
                             <div class="detail-label">

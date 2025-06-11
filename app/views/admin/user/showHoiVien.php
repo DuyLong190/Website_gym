@@ -99,11 +99,11 @@
                     <div class="row">
                         <div class="col-md-6 mb-4">
                             <div class="info-label">Giới tính</div>
-                            <div class="info-value"><?= htmlspecialchars($hoiVien->GioiTinh) ?></div>
+                            <div class="info-value"><?= htmlspecialchars((string)($hoiVien->GioiTinh ?? '')) ?></div>
                         </div>
                         <div class="col-md-6 mb-4">
                             <div class="info-label">Số điện thoại</div>
-                            <div class="info-value"><?= htmlspecialchars($hoiVien->SDT) ?></div>
+                            <div class="info-value"><?= htmlspecialchars((string)($hoiVien->SDT ?? '')) ?></div>
                         </div>
                     </div>
 
@@ -155,16 +155,6 @@
                         <a href="/gym/admin/user" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-2"></i>Quay lại
                         </a>
-                        <div>
-                            <a href="/gym/admin/user/edit/<?= $hoiVien->MaHV ?>" class="btn btn-primary me-2">
-                                <i class="fas fa-edit me-2"></i>Chỉnh sửa
-                            </a>
-                            <a href="/gym/admin/user/delete/<?= $hoiVien->MaHV ?>"
-                                class="btn btn-danger"
-                                onclick="return confirm('Bạn có chắc chắn muốn xóa hội viên này?')">
-                                <i class="fas fa-trash me-2"></i>Xóa
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -106,7 +106,7 @@
                                 <p class="card-text mb-1"><strong>Thời gian sử dụng:</strong>
                                     <?php echo htmlspecialchars($DVTG->ThoiGianTG); ?> phút
                                 </p>
-                                <p class="card-text mb-3">
+                                <p class="card-text mb-3 py-3">
                                     <?php $moTa = htmlspecialchars($DVTG->MoTaTG);
                                     $cauArr = array_filter(array_map('trim', explode('.', $moTa)));
                                     foreach ($cauArr as $cau) {

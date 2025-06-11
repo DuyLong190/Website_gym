@@ -31,8 +31,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .table-responsive {
@@ -198,11 +205,11 @@
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>Tên lớp học</th>
-                                <th>Giá</th>
-                                <th>Thời Gian</th>
+                                <th style="width: 10%;">Tên lớp học</th>
+                                <th style="width: 8%;">Giá</th>
+                                <th style="width: 8%;">Thời Gian</th>
                                 <th>Mô Tả</th>
-                                <th>Thao Tác</th>
+                                <th style="width: 13%;">Thao Tác</th>
                             </tr>
                         </thead>
                         <tbody>
