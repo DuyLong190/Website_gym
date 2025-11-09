@@ -6,10 +6,12 @@ require_once 'app/controllers/DvThuGianController.php';
 require_once 'app/controllers/DvTapLuyenController.php';
 require_once 'app/controllers/AdminController.php';
 require_once 'app/controllers/UserController.php';
+require_once 'app/controllers/PtApiController.php';
 require_once 'app/models/GoiTapModel.php';
 require_once 'app/models/DvThuGianModel.php';
 require_once 'app/models/DvTapLuyenModel.php';
 require_once 'app/models/HoiVienModel.php';
+require_once 'app/models/PtModel.php';
 require_once 'app/helpers/SessionHelper.php';
 
 $url = $_GET['url'] ?? '';
@@ -17,8 +19,49 @@ $url = rtrim($url, '/');
 $url = filter_var($url, FILTER_SANITIZE_URL);
 $url = explode('/', $url);
 
+// Xử lý routing cho API (RESTful)
+if (isset($url[0]) && $url[0] === 'api') {
+    header('Content-Type: application/json');
+
+    $resource = $url[1] ?? '';
+    $controllerName = ucfirst($resource) . 'ApiController';
+
+    // Hỗ trợ method override (PUT/DELETE qua POST với _method)
+    $requestMethod = $_SERVER['REQUEST_METHOD'];
+    if ($requestMethod === 'POST' && isset($_POST['_method'])) {
+        $requestMethod = strtoupper($_POST['_method']);
+    }
+    
+    $id = $url[2] ?? null;
+    $specialAction = $url[2] ?? null; // Để xử lý các action đặc biệt như 'search'
+
+    // Mặc định action
+    $action = 'index';
+    $params = [];
+
+    if ($requestMethod === 'GET') {
+        // Xử lý search endpoint: GET /api/pt/search
+        if ($specialAction === 'search') {
+            $action = 'search';
+            $params = [];
+        } elseif (!empty($id) && is_numeric($id)) {
+            $action = 'show';
+            $params = [(int)$id];
+        } else {
+            $action = 'index';
+        }
+    } elseif ($requestMethod === 'POST') {
+        $action = 'store';
+    } elseif ($requestMethod === 'PUT') {
+        $action = 'update';
+        $params = !empty($id) ? [(int)$id] : [null];
+    } elseif ($requestMethod === 'DELETE') {
+        $action = 'delete';
+        if (!empty($id)) { $params = [(int)$id]; }
+    }
+}
 // Xử lý routing cho admin
-if (isset($url[0]) && $url[0] === 'admin') {
+else if (isset($url[0]) && $url[0] === 'admin') {
     $controllerName = 'AdminController';
     // Nếu có phần thứ 3 trong URL (ví dụ: admin/goitap/edit/1)
     if (isset($url[2])) {
@@ -63,30 +106,50 @@ if (isset($url[0]) && $url[0] === 'admin') {
             case 'UserController':
                 $action = 'profile';
                 break;
+            case 'PtApiController':
+                $action = 'indexPT';
+                break;
             default:
                 $action = 'indexGoiTap';
         }
     }
+    
+    // Xử lý params cho các action có tham số
+    if (isset($url[2]) && is_numeric($url[2])) {
+        $params = [$url[2]];
+    }
 }
 
-// Kiểm tra xem controller và action có tồn tại không
+// Kiểm tra và load controller
 if (!file_exists('app/controllers/' . $controllerName . '.php')) {
-    // Xử lý khi không tìm thấy controller
+    header('HTTP/1.1 404 Not Found');
+    if (isset($url[0]) && $url[0] === 'api') {
+        die(json_encode(['error' => 'Controller not found']));
+    }
     die('Không tìm thấy Controller: '.$controllerName);
 }
 require_once 'app/controllers/' . $controllerName . '.php';
 
 $controller = new $controllerName();
 if (!method_exists($controller, $action)) {
-    // Xử lý khi không tìm thấy action
+    header('HTTP/1.1 404 Not Found');
+    if (isset($url[0]) && $url[0] === 'api') {
+        die(json_encode(['error' => 'Method not found']));
+    }
     die('Không tìm thấy Action '.$action.' trong Controller '.$controllerName);
 }
 
-// Gọi action với các tham số còn lại (nếu có)
-if (isset($params)) {
-    call_user_func_array([$controller, $action], $params);
-} else if (isset($url[2])) {
-    call_user_func_array([$controller, $action], array_slice($url, 2));
-} else {
-    call_user_func_array([$controller, $action], []);
+// Gọi action với các tham số
+try {
+    $result = call_user_func_array([$controller, $action], $params ?? []);
+    if (isset($url[0]) && $url[0] === 'api') {
+        echo json_encode($result);
+    }
+} catch (Exception $e) {
+    if (isset($url[0]) && $url[0] === 'api') {
+        header('HTTP/1.1 500 Internal Server Error');
+        echo json_encode(['error' => $e->getMessage()]);
+    } else {
+        throw $e;
+    }
 }

@@ -193,7 +193,7 @@
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
                     <h1 class="h2">
-                        <i class="fas fa-hand-fist me-2"></i>Quản lý lớp học
+                        <i class="fas fa-home-user me-2"></i>Quản lý lớp học
                     </h1>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDvTapLuyenModal">
                         <i class="fas fa-plus me-2"></i>Thêm mới

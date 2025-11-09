@@ -63,13 +63,14 @@ VALUES ('Bùi Duy Long', '2004-10-19', 'Nam', '0961054672', 'bduylong1910@gmail.
 VALUES ('Nguyen Van A', '2000-01-01', 'Nam', '0123456789', 'a@gmail.com', 'Hanoi', CURDATE(), 1);
 
 CREATE TABLE Role (
-   role_id TINYINT PRIMARY KEY CHECK (role_id IN (0, 1)),
-   role_name VARCHAR(10) NOT NULL UNIQUE CHECK (role_name IN ('admin', 'user'))
+   role_id TINYINT PRIMARY KEY CHECK (role_id IN (0, 1, 2)),
+   role_name VARCHAR(10) NOT NULL UNIQUE CHECK (role_name IN ('admin', 'user', 'pt'))
 );
 
 INSERT INTO role (role_id, role_name) VALUES
- (0, 'admin'),
- (1, 'user');
+ 	(0, 'admin'),
+ 	(1, 'user'),
+ 	(2, 'pt');
 );
 ALTER TABLE account
 DROP COLUMN role,
@@ -84,3 +85,26 @@ ALTER TABLE hoivien
 ADD COLUMN ChieuCao INT,
 ADD COLUMN CanNang INT
 
+-- Xóa bảng nếu đã tồn tại để tránh lỗi trùng lặp
+DROP TABLE IF EXISTS PT;
+
+gym_dbCREATE TABLE pt (
+   pt_id INT AUTO_INCREMENT PRIMARY KEY, -- Mã PT tự tăng
+   HoTen VARCHAR(100) CHARACTER SET utf8mb4 NOT NULL, -- Tên PT
+   NgaySinh DATE,
+   GioiTinh ENUM('Nam', 'Nữ', 'Khác'),
+   SDT VARCHAR(15),
+   Email VARCHAR(100),
+   DiaChi VARCHAR(200) CHARACTER SET utf8mb4,
+   ChuyenMon VARCHAR(100) CHARACTER SET utf8mb4, -- Chuyên môn: gym, boxing, yoga,...
+   KinhNghiem INT CHECK (KinhNghiem >= 0),       -- Số năm kinh nghiệm
+   Luong DECIMAL(10,2) CHECK (Luong >= 0),        -- Lương cơ bản
+   NgayVaoLam DATE DEFAULT (CURRENT_DATE),
+   TrangThai ENUM('Đang làm việc', 'Nghỉ tạm thời', 'Đã nghỉ') DEFAULT 'Đang làm việc',
+   account_id INT,                                -- Tài khoản gắn với PT (nếu có)
+   FOREIGN KEY (account_id) REFERENCES account(id)
+);
+
+INSERT INTO PT (HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, ChuyenMon, KinhNghiem, Luong)
+VALUES
+('Nguyễn Văn Bình', '1995-03-12', 'Nam', '0909123456', 'binh.pt@gmail.com', 'TP. HCM', 'Gym & Fitness', 5, 15000000.00);

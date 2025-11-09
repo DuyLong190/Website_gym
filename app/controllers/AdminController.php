@@ -3,6 +3,7 @@ require_once __DIR__ . '/../models/GoiTapModel.php';
 require_once __DIR__ . '/../models/DvThuGianModel.php';
 require_once __DIR__ . '/../models/DvTapLuyenModel.php';
 require_once __DIR__ . '/../models/HoiVienModel.php';
+require_once __DIR__ . '/../models/PtModel.php';
 require_once __DIR__ . '/../config/database.php';
 
 class AdminController
@@ -12,6 +13,7 @@ class AdminController
     private $lophocModel;
     private $db;
     private $hoiVienModel;
+    private $ptModel;
 
     public function __construct()
     {
@@ -21,12 +23,13 @@ class AdminController
         $this->dvtgModel = new DvThuGianModel($this->db);
         $this->lophocModel = new DvTapLuyenModel($this->db);
         $this->hoiVienModel = new HoiVienModel($this->db);
+        $this->ptModel = new PtModel($this->db);
     }
     //Gói tập----------------------------------------------------------------------------------------------------------------------
     public function indexGoitap()
     {
         $goiTaps = $this->goitapModel->getGoiTaps();
-        require_once __DIR__ . '/../views/admin/sidebarQL.php';
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
         require_once __DIR__ . '/../views/admin/goitap/adminGoiTap.php';
     }
 
@@ -34,7 +37,7 @@ class AdminController
     {
         $goiTap = $this->goitapModel->getByMaGoiTap($MaGoiTap);
         if ($goiTap) {
-            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             require_once __DIR__ . '/../views/admin/goitap/showGoiTap.php';
         } else {
             echo "Gói tập không tồn tại.";
@@ -58,7 +61,7 @@ class AdminController
 
             if (is_array($result)) {
                 // Nếu có lỗi validation, hiển thị form lại với lỗi
-                require_once __DIR__ . '/../views/admin/sidebarQL.php';
+                require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             } else if ($result === true) {
                 // Nếu thêm thành công, chuyển hướng về danh sách
                 header('Location: /gym/admin/goitap');
@@ -75,7 +78,7 @@ class AdminController
     {
         $goiTap = $this->goitapModel->getByMaGoiTap($MaGoiTap);
         if ($goiTap) {
-            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             require_once __DIR__ . '/../views/admin/goitap/editGoiTap.php';
         } else {
             echo "Gói tập không tồn tại.";
@@ -116,14 +119,14 @@ class AdminController
     {
         $DVTGs = $this->dvtgModel->getDVTGs();
 
-        require_once __DIR__ . '/../views/admin/sidebarQL.php';
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
         require_once __DIR__ . '/../views/admin/dvtg/adminDVTG.php';
     }
     public function showDVTG($id)
     {
         $DVTG = $this->dvtgModel->getDVTG_ByID($id);
         if ($DVTG) {
-            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             include_once __DIR__ . '/../views/admin/dvtg/showDVTG.php';
         } else {
             echo "Dịch vụ này không tồn tại.";
@@ -147,7 +150,7 @@ class AdminController
 
             if (is_array($result)) {
                 // Nếu có lỗi validation, hiển thị form lại với lỗi
-                require_once __DIR__ . '/../views/admin/sidebarQL.php';
+                require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             } else if ($result === true) {
                 // Nếu thêm thành công, chuyển hướng về danh sách
                 header('Location: /gym/admin/DvThuGian');
@@ -163,7 +166,7 @@ class AdminController
     {
         $DVTG = $this->dvtgModel->getDVTG_ByID($id);
         if ($DVTG) {
-            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             include_once __DIR__ . '/../views/admin/dvtg/editDVTG.php';
         } else {
             echo "Dịch vụ này không tồn tại.";
@@ -202,14 +205,14 @@ class AdminController
     {
         $lophocs = $this->lophocModel->getDVTLs();
 
-        require_once __DIR__ . '/../views/admin/sidebarQL.php';
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
         require_once __DIR__ . '/../views/admin/lophoc/adminLopHoc.php';
     }
     public function showLopHoc($id)
     {
         $lophoc = $this->lophocModel->getDVTL_ByID($id);
         if ($lophoc) {
-            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             require_once __DIR__ . '/../views/admin/lophoc/showLopHoc.php';
         } else {
             echo "Lớp học không tồn tại.";
@@ -233,7 +236,7 @@ class AdminController
 
             if (is_array($result)) {
                 // Nếu có lỗi validation, hiển thị form lại với lỗi
-                require_once __DIR__ . '/../views/admin/sidebarQL.php';
+                require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             } else if ($result === true) {
                 // Nếu thêm thành công, chuyển hướng về danh sách
                 header('Location: /gym/admin/lophoc');
@@ -249,7 +252,7 @@ class AdminController
     {
         $lophoc = $this->lophocModel->getDVTL_ByID($id);
         if ($lophoc) {
-            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             require_once __DIR__ . '/../views/admin/lophoc/editLopHoc.php';
         } else {
             echo "Lớp học không tồn tại.";
@@ -288,14 +291,14 @@ class AdminController
     {
         $hoiVien = $this->hoiVienModel->getAllHoiVien();
         $goiTap = $this->goitapModel->getGoiTaps();
-        require_once __DIR__ . '/../views/admin/sidebarQL.php';
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
         require_once __DIR__ . '/../views/admin/user/adminHoiVien.php';
     }
     public function showUser($maHV)
     {
         $hoiVien = $this->hoiVienModel->getHoiVienById($maHV);
         if ($hoiVien) {
-            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             require_once __DIR__ . '/../views/admin/user/showHoiVien.php';
         } else {
             echo "Hội viên không tồn tại.";
@@ -320,7 +323,7 @@ class AdminController
 
         $goiTap = $this->goitapModel->getGoiTaps();
         require_once __DIR__ . '/../views/admin/user/addHoiVien.php';
-        require_once __DIR__ . '/../views/admin/sidebarQL.php';
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
     }
     public function saveUser()
     {
@@ -346,7 +349,7 @@ class AdminController
             } catch (Exception $e) {
                 $_SESSION['error'] = $e->getMessage();
                 $goiTap = $this->goitapModel->getGoiTaps();
-                require_once __DIR__ . '/../views/admin/sidebarQL.php';
+                require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
                 require_once __DIR__ . '/../views/admin/user/addHoiVien.php';
             }
         }
@@ -364,7 +367,7 @@ class AdminController
             $goiTap = $this->goitapModel->getGoiTaps();
 
             // Load view
-            require_once __DIR__ . '/../views/admin/sidebarQL.php';
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             require_once __DIR__ . '/../views/admin/user/editHoiVien.php';
         } catch (Exception $e) {
             // Xử lý lỗi nếu có
@@ -405,5 +408,198 @@ class AdminController
         $keyword = $_GET['keyword'] ?? '';
         $hoiVien = $this->hoiVienModel->searchHoiVien($keyword);
         require_once __DIR__ . '/../views/admin/user/adminHoiVien.php';
+    }
+
+    //PT (Personal Trainer)---------------------------------------------------------------------------------------------------------------
+    public function indexPt()
+    {
+        $pts = $this->ptModel->getAllPTs();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        require_once __DIR__ . '/../views/admin/pt/adminPT.php';
+    }
+
+    public function showPt($pt_id)
+    {
+        $pt = $this->ptModel->getPtById($pt_id);
+
+        if (!$pt) {
+            // Xử lý khi không tìm thấy PT
+            header('Location: /gym/admin/pt');
+            exit;
+        }
+
+        // Sửa lại đường dẫn view cho đúng
+        require_once __DIR__ . '/../views/admin/pt/showPt.php';
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+    }
+
+    public function addPt()
+    {
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        require_once __DIR__ . '/../views/pt/addPT.php';
+    }
+
+    public function savePt()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $HoTen = $_POST['HoTen'] ?? '';
+            $NgaySinh = $_POST['NgaySinh'] ?? '';
+            $GioiTinh = $_POST['GioiTinh'] ?? '';
+            $SDT = $_POST['SDT'] ?? '';
+            $Email = $_POST['Email'] ?? '';
+            $DiaChi = $_POST['DiaChi'] ?? '';
+            $ChuyenMon = $_POST['ChuyenMon'] ?? '';
+            $KinhNghiem = $_POST['KinhNghiem'] ?? '';
+            $Luong = $_POST['Luong'] ?? '';
+
+            $result = $this->ptModel->addPT($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $ChuyenMon, $KinhNghiem, $Luong);
+
+            if (is_array($result)) {
+                // Nếu có lỗi validation, hiển thị form lại với lỗi
+                $errors = $result;
+                require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+                require_once __DIR__ . '/../views/pt/addPT.php';
+            } else if ($result === true) {
+                // Nếu thêm thành công, chuyển hướng về danh sách
+                header('Location: /gym/admin/pt');
+                exit();
+            } else {
+                // Nếu có lỗi khác
+                echo "Có lỗi xảy ra khi thêm PT. Vui lòng thử lại.";
+            }
+        }
+    }
+
+    public function editPt($MaPT)
+    {
+        $pt = $this->ptModel->getPTById($MaPT);
+        if ($pt) {
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            require_once __DIR__ . '/../views/pt/editPT.php';
+        } else {
+            echo "PT không tồn tại.";
+        }
+    }
+
+    public function updatePt()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $MaPT = $_POST['MaPT'] ?? '';
+            $HoTen = $_POST['HoTen'] ?? '';
+            $NgaySinh = $_POST['NgaySinh'] ?? '';
+            $GioiTinh = $_POST['GioiTinh'] ?? '';
+            $SDT = $_POST['SDT'] ?? '';
+            $Email = $_POST['Email'] ?? '';
+            $DiaChi = $_POST['DiaChi'] ?? '';
+            $ChuyenMon = $_POST['ChuyenMon'] ?? '';
+            $KinhNghiem = $_POST['KinhNghiem'] ?? '';
+            $Luong = $_POST['Luong'] ?? '';
+
+            $result = $this->ptModel->updatePT($MaPT, $HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $ChuyenMon, $KinhNghiem, $Luong);
+            
+            if ($result) {
+                header('Location: /gym/admin/pt');
+                exit();
+            } else {
+                echo "Cập nhật PT không thành công.";
+            }
+        }
+    }
+
+    public function deletePt($MaPT)
+    {
+        if ($this->ptModel->deletePT($MaPT)) {
+            header('Location: /gym/admin/pt');
+            exit();
+        } else {
+            echo "Xóa PT không thành công.";
+        }
+    }
+
+    public function searchPt()
+    {
+        $keyword = $_GET['keyword'] ?? '';
+        $pts = $this->ptModel->searchPT($keyword);
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        require_once __DIR__ . '/../views/pt/adminPT.php';
+    }
+
+    public function indexStatistics()
+    {
+        // Kiểm tra quyền admin
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        // Lấy thống kê từ model
+        $statistics = $this->getStatistics();
+        
+        // Load view
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        require_once __DIR__ . '/../views/admin/statistics.php';
+    }
+
+    private function getStatistics()
+    {
+        try {
+            // Thống kê theo role
+            $query = "SELECT 
+                        r.role_name,
+                        COUNT(a.id) as total_users,
+                        COUNT(CASE WHEN h.MaGoiTap IS NOT NULL THEN 1 END) as users_with_package,
+                        COUNT(CASE WHEN h.MaGoiTap IS NULL THEN 1 END) as users_without_package
+                    FROM Role r
+                    LEFT JOIN Account a ON r.role_id = a.role_id
+                    LEFT JOIN HoiVien h ON a.MaHV = h.MaHV
+                    GROUP BY r.role_id, r.role_name";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            $roleStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Thống kê gói tập theo role
+            $query = "SELECT 
+                        r.role_name,
+                        g.TenGoiTap,
+                        COUNT(h.MaHV) as total_users
+                    FROM Role r
+                    LEFT JOIN Account a ON r.role_id = a.role_id
+                    LEFT JOIN HoiVien h ON a.MaHV = h.MaHV
+                    LEFT JOIN GoiTap g ON h.MaGoiTap = g.MaGoiTap
+                    WHERE g.MaGoiTap IS NOT NULL
+                    GROUP BY r.role_id, r.role_name, g.MaGoiTap, g.TenGoiTap
+                    ORDER BY r.role_id, g.TenGoiTap";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            $packageStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Thống kê đăng ký theo thời gian
+            $query = "SELECT 
+                        DATE_FORMAT(h.NgayDangKy, '%Y-%m') as registration_month,
+                        COUNT(h.MaHV) as total_registrations
+                    FROM HoiVien h
+                    GROUP BY DATE_FORMAT(h.NgayDangKy, '%Y-%m')
+                    ORDER BY registration_month DESC
+                    LIMIT 12";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            $timeStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return [
+                'roleStats' => $roleStats,
+                'packageStats' => $packageStats,
+                'timeStats' => $timeStats
+            ];
+        } catch (PDOException $e) {
+            error_log("Error in getStatistics: " . $e->getMessage());
+            return [
+                'roleStats' => [],
+                'packageStats' => [],
+                'timeStats' => []
+            ];
+        }
     }
 }

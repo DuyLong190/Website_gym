@@ -62,7 +62,15 @@
                                             <input type="date" class="form-control" id="NgaySinh" name="NgaySinh" value="<?php echo $hoiVien->NgaySinh ?>" required>
                                         </div>
                                     </div>
-
+                                    <div class = "row mb-3">
+                                        <div class="col-md-6">
+                                            <label for= "ChieuCao" class="form-label">Chiều cao (cm)</label>
+                                            <input type="number" class="form-control" id="ChieuCao" name="ChieuCao" value="<?php echo $hoiVien->ChieuCao ?>" step="1" min="0">
+                                        </div>
+                                        <div class ="col-md-6">
+                                            <label for= "CanNang" class="form-label">Cân nặng (kg)</label>
+                                            <input type="number" class="form-control" id="CanNang" name="CanNang" value="<?php echo $hoiVien->CanNang ?>" step="1" min="0">
+                                    </div>
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="GioiTinh" class="form-label">Giới tính <span class="text-danger">*</span></label>
