@@ -96,12 +96,18 @@
                         <ul class="dropdown-menu dropdown-menu-end bg-gray-800 text-white" aria-labelledby="userDropdown">
                             <?php if (SessionHelper::isAdmin()): ?>
                                 <li><a class="dropdown-item hover:bg-gray-700 !important" href="/gym/admin">Quản lý</a></li>
+                            <?php elseif (SessionHelper::isPT()): ?>
+                                <li><a class="dropdown-item hover:bg-gray-700 !important" href="/gym/pt">Xem lịch dạy</a></li>
                             <?php endif; ?>
-                            <li><a class="dropdown-item hover:bg-gray-7 00" href="/gym/user">Thông tin cá nhân</a></li>
+                            <li>
+                                <a class="dropdown-item hover:bg-gray-7 00" href="/gym/user">Thông tin cá nhân</a>
+                            </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item hover:bg-gray-700" href="/gym/account/logout">Đăng xuất</a></li>
+                            <li>
+                                <a class="dropdown-item hover:bg-gray-700" href="/gym/account/logout">Đăng xuất</a>
+                            </li>
                         </ul>
                     </li>
                 <?php else: ?>

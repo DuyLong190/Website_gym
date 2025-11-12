@@ -4,6 +4,7 @@ require_once __DIR__ . '/../models/DvThuGianModel.php';
 require_once __DIR__ . '/../models/DvTapLuyenModel.php';
 require_once __DIR__ . '/../models/HoiVienModel.php';
 require_once __DIR__ . '/../models/PtModel.php';
+require_once __DIR__ . '/../models/AccountModel.php';
 require_once __DIR__ . '/../config/database.php';
 
 class AdminController
@@ -14,6 +15,7 @@ class AdminController
     private $db;
     private $hoiVienModel;
     private $ptModel;
+    private $accountModel;
 
     public function __construct()
     {
@@ -24,6 +26,7 @@ class AdminController
         $this->lophocModel = new DvTapLuyenModel($this->db);
         $this->hoiVienModel = new HoiVienModel($this->db);
         $this->ptModel = new PtModel($this->db);
+        $this->accountModel = new AccountModel($this->db);
     }
     //Gói tập----------------------------------------------------------------------------------------------------------------------
     public function indexGoitap()
@@ -292,14 +295,14 @@ class AdminController
         $hoiVien = $this->hoiVienModel->getAllHoiVien();
         $goiTap = $this->goitapModel->getGoiTaps();
         require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
-        require_once __DIR__ . '/../views/admin/user/adminHoiVien.php';
+        require_once __DIR__ . '/../views/admin/hoivien/adminHoiVien.php';
     }
     public function showUser($maHV)
     {
         $hoiVien = $this->hoiVienModel->getHoiVienById($maHV);
         if ($hoiVien) {
             require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
-            require_once __DIR__ . '/../views/admin/user/showHoiVien.php';
+            require_once __DIR__ . '/../views/admin/hoivien/showHoiVien.php';
         } else {
             echo "Hội viên không tồn tại.";
         }
@@ -368,7 +371,7 @@ class AdminController
 
             // Load view
             require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
-            require_once __DIR__ . '/../views/admin/user/editHoiVien.php';
+            require_once __DIR__ . '/../views/admin/hoivien/editHoiVien.php';
         } catch (Exception $e) {
             // Xử lý lỗi nếu có
             error_log("Error in editUser: " . $e->getMessage());
@@ -601,5 +604,132 @@ class AdminController
                 'timeStats' => []
             ];
         }
+    }
+
+    //Quản lý tài khoản và phân quyền---------------------------------------------------------------------------------------------------------------
+    public function indexAccount()
+    {
+        // Kiểm tra quyền admin
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        $accounts = $this->accountModel->getAllAccounts();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        require_once __DIR__ . '/../views/admin/account/adminAccount.php';
+    }
+
+    public function editAccount($accountId)
+    {
+        // Kiểm tra quyền admin
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        // Lấy thông tin tài khoản
+        $query = "SELECT a.id, a.username, a.HoTen, r.role_name, r.role_id
+                  FROM account a
+                  JOIN role r ON a.role_id = r.role_id
+                  WHERE a.id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':id', $accountId, PDO::PARAM_INT);
+        $stmt->execute();
+        $account = $stmt->fetch(PDO::FETCH_OBJ);
+
+        if (!$account) {
+            header('Location: /gym/admin/account');
+            exit;
+        }
+
+        // Lấy danh sách roles
+        $queryRoles = "SELECT role_id, role_name FROM role ORDER BY role_id";
+        $stmtRoles = $this->db->prepare($queryRoles);
+        $stmtRoles->execute();
+        $roles = $stmtRoles->fetchAll(PDO::FETCH_OBJ);
+
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        require_once __DIR__ . '/../views/admin/account/editAccount.php';
+    }
+
+    public function updateAccount()
+    {
+        // Kiểm tra quyền admin
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $accountId = $_POST['account_id'] ?? '';
+            $roleId = $_POST['role_id'] ?? '';
+
+            if ($accountId && $roleId !== '') {
+                $result = $this->accountModel->updateRole($accountId, $roleId);
+                if ($result) {
+                    $_SESSION['success'] = "Cập nhật quyền tài khoản thành công!";
+                } else {
+                    $_SESSION['error'] = "Cập nhật quyền tài khoản thất bại!";
+                }
+            }
+
+            header('Location: /gym/admin/account');
+            exit;
+        }
+    }
+
+    public function deleteAccount($accountId)
+    {
+        // Kiểm tra quyền admin
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        try {
+            // Bắt đầu transaction để đảm bảo xóa an toàn theo quan hệ
+            $this->db->beginTransaction();
+
+            // Lấy liên kết đến hồ sơ (MaHV, pt_id, role)
+            $links = $this->accountModel->getAccountLinksById((int)$accountId);
+            if (!$links) {
+                throw new Exception('Tài khoản không tồn tại');
+            }
+
+            // Nếu là hội viên (role_id = 1), xóa hồ sơ HoiVien trước
+            if ((int)$links->role_id === 1 && !empty($links->MaHV)) {
+                $ok = $this->hoiVienModel->deleteOnlyHoiVien((int)$links->MaHV);
+                if (!$ok) {
+                    throw new Exception('Không thể xóa hồ sơ hội viên');
+                }
+            }
+
+            // Nếu là PT (role_id = 2), xóa hồ sơ PT trước
+            if ((int)$links->role_id === 2 && !empty($links->pt_id)) {
+                $ok = $this->ptModel->deletePT((int)$links->pt_id);
+                if (!$ok) {
+                    throw new Exception('Không thể xóa hồ sơ huấn luyện viên');
+                }
+            }
+
+            // Cuối cùng xóa tài khoản
+            $stmt = $this->db->prepare('DELETE FROM account WHERE id = :id');
+            $stmt->bindParam(':id', $accountId, PDO::PARAM_INT);
+            if (!$stmt->execute()) {
+                throw new Exception('Không thể xóa tài khoản');
+            }
+
+            $this->db->commit();
+            $_SESSION['success'] = 'Xóa tài khoản và hồ sơ liên quan thành công!';
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            $_SESSION['error'] = 'Lỗi: ' . $e->getMessage();
+        }
+
+        header('Location: /gym/admin/account');
+        exit;
     }
 }

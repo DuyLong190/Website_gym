@@ -1,24 +1,167 @@
-<?php
+<?php 
 require_once('app/config/database.php');
 require_once __DIR__ . '/../models/AccountModel.php';
+require_once __DIR__ . '/../models/RoleModel.php';
+require_once __DIR__ . '/../models/PTModel.php';
 require_once __DIR__ . '/../models/HoiVienModel.php';
 
 class AccountController
 {
     private $accountModel;
     private $db;
+    private $roleModel;
     private $hoiVienModel;
+    private $ptModel;
 
     public function __construct()
     {
         $this->db = (new Database())->getConnection();
         $this->accountModel = new AccountModel($this->db);
+        $this->roleModel = new RoleModel($this->db);
         $this->hoiVienModel = new HoiVienModel($this->db);
+        // File model định nghĩa class PtModel
+        $this->ptModel = new PtModel($this->db);
     }
 
-    function register()
+    public function register()
     {
-        include_once 'app/views/account/register.php';
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            // Lấy danh sách roles từ database (chỉ lấy user và pt role, không hiển thị admin)
+            $roles = array_filter($this->roleModel->getAllRoles(), function($role) {
+                return $role->role_id != 0; // Loại bỏ admin role
+            });
+            
+            require_once __DIR__ . '/../views/account/register.php';
+        }
+        else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->save();
+        }
+    }
+
+    public function save()
+    {
+        // Lấy dữ liệu từ form
+        $username = $_POST['username'] ?? '';
+        $HoTen = $_POST['HoTen'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $confirmPassword = $_POST['confirmpassword'] ?? '';
+        $role_id = $_POST['role_id'] ?? 1; // 1: user, 2: pt
+        $email = $_POST['email'] ?? '';
+        $NgaySinh = $_POST['NgaySinh'] ?? null;
+        $GioiTinh = $_POST['GioiTinh'] ?? null;
+        $SDT = $_POST['SDT'] ?? '';
+        $DiaChi = $_POST['DiaChi'] ?? '';
+        $ChuyenMon = $_POST['chuyenMon'] ?? '';
+        $KinhNghiem = !empty($_POST['kinhNghiem']) ? (int)$_POST['kinhNghiem'] : 0;
+        $Luong = !empty($_POST['luong']) ? (int)$_POST['luong'] : 0;
+
+        // Validation
+        $errors = [];
+
+        if (empty($username)) {
+            $errors['username'] = 'Tên tài khoản không được để trống';
+        }
+        if (empty($HoTen)) {
+            $errors['HoTen'] = 'Họ và tên không được để trống';
+        }
+        if (empty($password)) {
+            $errors['password'] = 'Mật khẩu không được để trống';
+        }
+        if ($password !== $confirmPassword) {
+            $errors['confirmPass'] = 'Mật khẩu không khớp';
+        }
+        if (strlen($password) < 6) {
+            $errors['password'] = 'Mật khẩu phải có ít nhất 6 ký tự';
+        }
+
+        // Kiểm tra username đã tồn tại
+        $existingUser = $this->accountModel->getAccountByUsername($username);
+        if ($existingUser) {
+            $errors['username'] = 'Tên tài khoản đã tồn tại';
+        }
+
+        // Nếu có lỗi, hiển thị form lại
+        if (!empty($errors)) {
+            $roles = array_filter($this->roleModel->getAllRoles(), function($role) {
+                return $role->role_id != 0;
+            });
+            require_once __DIR__ . '/../views/account/register.php';
+            return;
+        }
+
+        // Hash password
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+        try {
+            // Transaction: tạo hồ sơ trước, sau đó tạo account với MaHV/pt_id
+            $this->db->beginTransaction();
+
+            $maHV = null;
+            $pt_id = null;
+
+            if ($role_id == 1) { // User/Hội viên
+                // addHoiVien(HoTen, NgaySinh, GioiTinh, ChieuCao, CanNang, SDT, Email, DiaChi, MaGoiTap)
+                $maHV = $this->hoiVienModel->addHoiVien(
+                    $HoTen,
+                    $NgaySinh,
+                    $GioiTinh,
+                    null,
+                    null,
+                    $SDT,
+                    $email,
+                    $DiaChi,
+                    null
+                );
+                if (!$maHV) {
+                    throw new Exception('Không thể tạo hồ sơ hội viên');
+                }
+            } elseif ($role_id == 2) { // PT/Huấn luyện viên
+                $pt_id = $this->ptModel->addPT(
+                    $HoTen,
+                    $NgaySinh,
+                    $GioiTinh,
+                    $SDT,
+                    $email,
+                    $DiaChi,
+                    $ChuyenMon,
+                    $KinhNghiem,
+                    $Luong
+                );
+                if (!$pt_id) {
+                    throw new Exception('Không thể tạo hồ sơ huấn luyện viên');
+                }
+            }
+
+            $saved = $this->accountModel->save(
+                $username,
+                $HoTen,
+                $hashedPassword,
+                $role_id,
+                $role_id == 1 ? $maHV : null,
+                $role_id == 2 ? $pt_id : null
+            );
+
+            if (!$saved) {
+                throw new Exception('Không thể tạo tài khoản');
+            }
+
+            $this->db->commit();
+
+            // Đăng ký thành công
+            $_SESSION['success_message'] = 'Đăng ký tài khoản thành công! Vui lòng đăng nhập.';
+            header('Location: /gym/account/login');
+            exit;
+
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            $errors['system'] = $e->getMessage();
+            $roles = array_filter($this->roleModel->getAllRoles(), function($role) {
+                return $role->role_id != 0;
+            });
+            require_once __DIR__ . '/../views/account/register.php';
+        }
     }
 
     public function login()
@@ -26,76 +169,10 @@ class AccountController
         include_once 'app/views/account/login.php';
     }
 
-    function save()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $username = $_POST['username'] ?? '';
-            $HoTen = $_POST['HoTen'] ?? '';
-            $password = $_POST['password'] ?? '';
-            $confirmPassword = $_POST['confirmpassword'] ?? '';
-
-            $errors = [];
-            if (empty($username)) {
-                $errors['username'] = "Vui lòng nhập tên đăng nhập!";
-            }
-            if (empty($password)) {
-                $errors['password'] = "Vui lòng nhập mật khẩu!";
-            }
-            if (empty($HoTen)) {
-                $errors['HoTen'] = "Vui lòng nhập họ và tên!";
-            }
-            if ($password != $confirmPassword) {
-                $errors['confirmPass'] = "Mật khẩu và xác nhận không khớp";
-            }
-            //kiểm tra username đã được đăng ký chưa?
-            $account = $this->accountModel->getAccountByUsername($username);
-
-            if ($account) {
-                $errors['account'] = "Tài khoản này đã có người đăng ký!";
-            }
-            if (count($errors) > 0) {
-                include_once 'app/views/account/register.php';
-            } else {
-                try {
-                    // Bắt đầu transaction
-                    $this->db->beginTransaction();
-
-                    // Thêm hội viên trước
-                    $hoiVienModel = new HoiVienModel($this->db);
-                    $maHV = $hoiVienModel->addHoiVien($HoTen, null, null, null, null, null, null, null, null);
-
-                    if (!$maHV) {
-                        throw new Exception("Không thể thêm thông tin hội viên");
-                    }
-
-                    // Mã hóa mật khẩu
-                    $password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
-
-                    // Thêm tài khoản với MaHV vừa tạo
-                    $result = $this->accountModel->save($username, $HoTen, $password, 1, $maHV);
-
-                    if (!$result) {
-                        throw new Exception("Không thể thêm tài khoản");
-                    }
-
-                    // Commit transaction
-                    $this->db->commit();
-                    header('Location: /gym/account/login');
-                    exit;
-                } catch (Exception $e) {
-                    // Rollback nếu có lỗi
-                    $this->db->rollBack();
-                    $errors['system'] = "Có lỗi xảy ra: " . $e->getMessage();
-                    include_once 'app/views/account/register.php';
-                }
-            }
-        }
-    }
 
     function logout()
     {
-        unset($_SESSION['username']);
-        unset($_SESSION['role_id']);
+        session_destroy();
         header('Location: /gym');
     }
 
@@ -134,5 +211,75 @@ class AccountController
     public function profile()
     {
         include_once 'app/views/account/profile.php';
+    }
+
+    public function updateRole()
+    {
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role_id'] != 0) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $accountId = $_POST['account_id'] ?? '';
+            $roleId = $_POST['role_id'] ?? '';
+
+            if ($accountId && $roleId !== '') {
+                $this->accountModel->updateRole($accountId, $roleId);
+            }
+
+            header('Location: /gym/admin/dashboard');
+            exit;
+        }
+    }
+
+    public function delete()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? null;
+            if (!$id) {
+                header('Location: /gym/admin/accounts');
+                exit;
+            }
+
+            try {
+                $this->db->beginTransaction();
+
+                $links = $this->accountModel->getAccountLinksById($id);
+                if (!$links) {
+                    throw new Exception('Tài khoản không tồn tại');
+                }
+
+                if ((int)$links->role_id === 1 && !empty($links->MaHV)) {
+                    $ok = $this->hoiVienModel->deleteOnlyHoiVien((int)$links->MaHV);
+                    if (!$ok) {
+                        throw new Exception('Không thể xóa hồ sơ hội viên');
+                    }
+                }
+
+                if ((int)$links->role_id === 2 && !empty($links->pt_id)) {
+                    $ok = $this->ptModel->deletePT((int)$links->pt_id);
+                    if (!$ok) {
+                        throw new Exception('Không thể xóa hồ sơ huấn luyện viên');
+                    }
+                }
+
+                $ok = $this->accountModel->deleteAccount((int)$id);
+                if (!$ok) {
+                    throw new Exception('Không thể xóa tài khoản');
+                }
+
+                $this->db->commit();
+                header('Location: /gym/admin/accounts');
+                exit;
+            } catch (Exception $e) {
+                if ($this->db->inTransaction()) {
+                    $this->db->rollBack();
+                }
+                $_SESSION['error'] = $e->getMessage();
+                header('Location: /gym/admin/accounts');
+                exit;
+            }
+        }
     }
 }

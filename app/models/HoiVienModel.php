@@ -9,10 +9,14 @@ class HoiVienModel
         $this->conn = $db;
     }
 
-    // Lấy tất cả hội viên
+    // Lấy tất cả hội viên (chỉ những người có role_id = 1, tức là User)
     public function getAllHoiVien() {
-        $query = "SELECT h.*, g.TenGoiTap FROM HoiVien h 
-                LEFT JOIN GoiTap g ON h.MaGoiTap = g.MaGoiTap ORDER BY h.MaHV DESC";
+        $query = "SELECT h.*, g.TenGoiTap, a.username, a.role_id 
+                FROM HoiVien h 
+                LEFT JOIN GoiTap g ON h.MaGoiTap = g.MaGoiTap 
+                LEFT JOIN Account a ON h.MaHV = a.MaHV
+                WHERE a.role_id = 1 OR a.role_id IS NULL
+                ORDER BY h.MaHV DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -149,14 +153,28 @@ class HoiVienModel
     }
 
     public function searchHoiVien($keyword) {
-        $query = "SELECT h.*, g.TenGoiTap FROM HoiVien h 
+        $query = "SELECT h.*, g.TenGoiTap, a.username, a.role_id 
+                FROM HoiVien h 
                 LEFT JOIN GoiTap g ON h.MaGoiTap = g.MaGoiTap 
-                WHERE h.HoTen LIKE ? OR h.SDT LIKE ? OR h.Email LIKE ?
+                LEFT JOIN Account a ON h.MaHV = a.MaHV
+                WHERE (h.HoTen LIKE ? OR h.SDT LIKE ? OR h.Email LIKE ?)
+                AND (a.role_id = 1 OR a.role_id IS NULL)
                 ORDER BY h.MaHV DESC";
         $stmt = $this->conn->prepare($query);
         $keyword = "%$keyword%";
         $stmt->execute([$keyword, $keyword, $keyword]);
         return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function deleteOnlyHoiVien($maHV) {
+        try {
+            $query = "DELETE FROM HoiVien WHERE MaHV = ?";
+            $stmt = $this->conn->prepare($query);
+            return $stmt->execute([$maHV]);
+        } catch (PDOException $e) {
+            error_log("Error in deleteOnlyHoiVien: " . $e->getMessage());
+            return false;
+        }
     }
 
     public function getHoiVienByUsername($username) {

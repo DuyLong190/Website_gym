@@ -41,7 +41,8 @@ if (isset($errors)) {
             color: #374151;
         }
 
-        .form-control:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.15);
         }
@@ -90,6 +91,18 @@ if (isset($errors)) {
             background: #fff;
             padding: 0 .25em;
         }
+
+        .role-select {
+            position: relative;
+        }
+
+        .role-select label {
+            position: static;
+            opacity: 1;
+            transform: none;
+            top: auto;
+            left: auto;
+        }
     </style>
 </head>
 
@@ -98,25 +111,81 @@ if (isset($errors)) {
     <section class="vh-100 gradient-custom d-flex align-items-center">
         <div class="register-card w-100">
             <h2 class="register-title text-center">Đăng Ký Tài Khoản</h2>
-            <form method="POST" action="/gym/account/save" autocomplete="off">
+            <form method="POST" action="/gym/account/register" autocomplete="off">
                 <div class="mb-3 form-floating">
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Nhập tên tài khoản">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Nhập tên tài khoản" required>
                     <label for="username" class="form-label">Nhập tên tài khoản</label>
                 </div>
 
-                <div class=" mb-3 form-floating">
-                    <input type="text" class="form-control" id="HoTen" name="HoTen" placeholder="Nhập họ và tên">
-                    <label for="HoTen " class="form-label">Họ và tên</label>
+                <div class="mb-3 form-floating">
+                    <input type="text" class="form-control" id="HoTen" name="HoTen" placeholder="Nhập họ và tên" required>
+                    <label for="HoTen" class="form-label">Họ và tên</label>
                 </div>
 
-                <div class=" mb-3 form-floating">
+                <div class="mb-3 role-select">
+                    <label for="role_id" class="form-label">Chọn vai trò</label>
+                    <select class="form-select" id="role_id" name="role_id" required>
+                        <option value="">-- Chọn vai trò --</option>
+                        <?php 
+                            if (isset($roles) && !empty($roles)) {
+                                foreach ($roles as $role) {
+                                    // Không cho phép chọn admin khi đăng ký
+                                    if ($role->role_id != 0) {
+                                        $selected = ($role->role_id == 1) ? 'selected' : '';
+                                        echo "<option value='{$role->role_id}' {$selected}>" . htmlspecialchars($role->role_name) . "</option>";
+                                    }
+                                }
+                            }
+                        ?>
+                    </select>
+                </div>
+
+                <div class="mb-3 form-floating">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu" required>
                     <label for="password" class="form-label">Mật khẩu</label>
                 </div>
 
                 <div class="mb-3 form-floating">
                     <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Nhập lại mật khẩu" required>
-                    <label for="password" class="form-label">Nhập lại mật khẩu</label>
+                    <label for="confirmpassword" class="form-label">Nhập lại mật khẩu</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="NgaySinh" class="form-label">Ngày sinh</label>
+                    <input type="date" class="form-control" id="NgaySinh" name="NgaySinh" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Giới tính</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="GioiTinh" id="Nam" value="Nam" checked>
+                        <label class="form-check-label" for="Nam">Nam</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="GioiTinh" id="Nu" value="Nữ">
+                        <label class="form-check-label" for="Nu">Nữ</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="GioiTinh" id="Khac" value="Khác">
+                        <label class="form-check-label" for="Khac">Khác</label>
+                    </div>
+                </div>
+
+                <div id="ptFields" style="display: none;">
+                    <div class="mb-3">
+                        <label for="chuyenMon" class="form-label">Chuyên môn</label>
+                        <input type="text" class="form-control" id="chuyenMon" name="chuyenMon" placeholder="Ví dụ: Yoga, Gym, Boxing...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="kinhNghiem" class="form-label">Kinh nghiệm (năm)</label>
+                        <input type="number" class="form-control" id="kinhNghiem" name="kinhNghiem" min="0" value="0">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="luong" class="form-label">Lương cơ bản (VND)</label>
+                        <input type="number" class="form-control" id="luong" name="luong" min="0" value="0">
+                    </div>
                 </div>
 
                 <div class="d-grid mb-3">
@@ -129,6 +198,46 @@ if (isset($errors)) {
             </div>
         </div>
     </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Show/hide PT fields based on role selection
+            function togglePTFields() {
+                const roleId = $('#role_id').val();
+                if (roleId == '2') { // PT role
+                    $('#ptFields').slideDown();
+                    // Make PT fields required
+                    $('#chuyenMon, #kinhNghiem, #luong').prop('required', true);
+                } else {
+                    $('#ptFields').slideUp();
+                    // Remove required from PT fields
+                    $('#chuyenMon, #kinhNghiem, #luong').prop('required', false);
+                }
+            }
+
+            // Initial check
+            togglePTFields();
+
+            // On role change
+            $('#role_id').change(togglePTFields);
+
+            // Form validation
+            $('form').on('submit', function(e) {
+                const password = $('#password').val();
+                const confirmPassword = $('#confirmpassword').val();
+                
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Mật khẩu xác nhận không khớp!');
+                    return false;
+                }
+                
+                // Additional validation can be added here
+                return true;
+            });
+        });
+    </script>
 </body>
 
 </html>

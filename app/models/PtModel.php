@@ -52,12 +52,8 @@ class PtModel
         if (empty($HoTen)) {
             $errors['HoTen'] = 'Họ tên không được để trống';
         }
-        if (empty($SDT)) {
-            $errors['SDT'] = 'Số điện thoại không được để trống';
-        }
-        if (!empty($Email) && !filter_var($Email, FILTER_VALIDATE_EMAIL)) {
-            $errors['Email'] = 'Email không hợp lệ';
-        }
+
+        
         if (!empty($Luong) && (!is_numeric($Luong) || $Luong < 0)) {
             $errors['Luong'] = 'Lương không hợp lệ';
         }
@@ -99,7 +95,7 @@ class PtModel
 
             // Thực thi query
             if ($stmt->execute()) {
-                return true;
+                return $this->conn->lastInsertId();
             }
             return false;
         } catch (PDOException $e) {

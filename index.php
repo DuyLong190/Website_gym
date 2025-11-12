@@ -13,6 +13,8 @@ require_once 'app/models/DvTapLuyenModel.php';
 require_once 'app/models/HoiVienModel.php';
 require_once 'app/models/PtModel.php';
 require_once 'app/helpers/SessionHelper.php';
+require_once 'app/models/RoleModel.php';
+require_once 'app/models/AccountModel.php';
 
 $url = $_GET['url'] ?? '';
 $url = rtrim($url, '/');
@@ -108,6 +110,9 @@ else if (isset($url[0]) && $url[0] === 'admin') {
                 break;
             case 'PtApiController':
                 $action = 'indexPT';
+                break;
+            case 'AccountController':
+                $action = 'indexAccount';
                 break;
             default:
                 $action = 'indexGoiTap';

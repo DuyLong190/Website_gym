@@ -78,7 +78,7 @@
             <div class="list-group list-group-flush mx-3 mt-4">
                 <a href="/gym/admin/statistics" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
                     <i class="fas fa-tachometer-alt fa-fw me-3"></i>
-                    <span>Main dashboard</span>
+                    <span>Thống kê</span>
                 </a>
                 <a href="/gym/admin/user" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-users fa-fw me-3"></i>
@@ -99,6 +99,10 @@
                 <a href="/gym/admin/pt" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-user-tie fa-fw me-3"></i>
                     <span>Huấn luyện viên</span>
+                </a>
+                <a href="/gym/admin/account" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-user-shield fa-fw me-3"></i>
+                    <span>Quản lý tài khoản</span>
                 </a>
                 <a href="#" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-calendar fa-fw me-3"></i>
