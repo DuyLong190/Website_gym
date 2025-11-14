@@ -511,11 +511,29 @@ class AdminController
 
     public function deletePt($MaPT)
     {
-        if ($this->ptModel->deletePT($MaPT)) {
+        try {
+            // Bắt đầu transaction để xóa an toàn cả tài khoản và hồ sơ PT
+            $this->db->beginTransaction();
+
+            // Xóa tài khoản liên kết với PT (nếu có)
+            $queryAccount = "DELETE FROM Account WHERE pt_id = ?";
+            $stmtAccount = $this->db->prepare($queryAccount);
+            $stmtAccount->execute([$MaPT]);
+
+            // Xóa hồ sơ PT
+            $ok = $this->ptModel->deletePT($MaPT);
+            if (!$ok) {
+                throw new Exception('Không thể xóa hồ sơ PT');
+            }
+
+            $this->db->commit();
             header('Location: /gym/admin/pt');
             exit();
-        } else {
-            echo "Xóa PT không thành công.";
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            echo "Xóa PT không thành công: " . $e->getMessage();
         }
     }
 

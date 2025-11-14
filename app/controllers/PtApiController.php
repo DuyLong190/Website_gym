@@ -124,13 +124,30 @@ class PtApiController
             return ['success' => false, 'message' => 'Không tìm thấy HLV'];
         }
 
-        $result = $this->ptModel->deletePT((int)$pt_id);
-        if ($result) {
-            return ['success' => true, 'message' => 'Xóa HLV thành công'];
-        }
+        try {
+            // Bắt đầu transaction để xóa an toàn cả tài khoản và hồ sơ PT
+            $this->db->beginTransaction();
 
-        http_response_code(500);
-        return ['success' => false, 'message' => 'Không thể xóa HLV'];
+            // Xóa tài khoản liên kết với PT (nếu có)
+            $queryAccount = "DELETE FROM Account WHERE pt_id = ?";
+            $stmtAccount = $this->db->prepare($queryAccount);
+            $stmtAccount->execute([(int)$pt_id]);
+
+            // Xóa hồ sơ PT
+            $result = $this->ptModel->deletePT((int)$pt_id);
+            if (!$result) {
+                throw new Exception('Không thể xóa hồ sơ PT');
+            }
+
+            $this->db->commit();
+            return ['success' => true, 'message' => 'Xóa HLV và tài khoản liên quan thành công'];
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            http_response_code(500);
+            return ['success' => false, 'message' => 'Không thể xóa HLV: ' . $e->getMessage()];
+        }
     }
 
     // GET /api/pt/search?keyword=... - Tìm kiếm PT

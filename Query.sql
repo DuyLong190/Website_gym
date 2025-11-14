@@ -109,6 +109,19 @@ ADD CONSTRAINT fk_account_pt
     FOREIGN KEY (pt_id) REFERENCES PT(pt_id)
     ON DELETE SET NULL
     ON UPDATE CASCADE;
-  
-SELECT * FROM account p
-JOIN account a  ON a.pt_id =p.pt_id WHERE p.pt_id = 5
+
+ALTER TABLE account DROP FOREIGN KEY fk_account_hoivien;
+ALTER TABLE hoivien ADD COLUMN account_id INT;
+ALTER TABLE hoivien
+ADD CONSTRAINT fk_hoivien_account FOREIGN KEY (account_id)
+REFERENCES account(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE account DROP FOREIGN KEY fk_account_pt;
+ALTER TABLE pt ADD COLUMN account_id INT;
+ALTER TABLE pt
+ADD CONSTRAINT fk_pt_account FOREIGN KEY (account_id)
+REFERENCES account(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
