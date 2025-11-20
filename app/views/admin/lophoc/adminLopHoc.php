@@ -187,6 +187,12 @@
 </head>
 
 <body>
+    <?php
+    $errorsAdd = $_SESSION['errors_lophoc_add'] ?? [];
+    $oldAdd = $_SESSION['old_lophoc_add'] ?? [];
+    $hasErrorsAdd = !empty($errorsAdd);
+    unset($_SESSION['errors_lophoc_add'], $_SESSION['old_lophoc_add']);
+    ?>
     <div class="container-fluid">
         <div class="row">
             <!-- Main Content -->
@@ -195,7 +201,7 @@
                     <h1 class="h2">
                         <i class="fas fa-home-user me-2"></i>Quản lý lớp học
                     </h1>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDvTapLuyenModal">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLopHocModal">
                         <i class="fas fa-plus me-2"></i>Thêm mới
                     </button>
                 </div>
@@ -205,29 +211,31 @@
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th style="width: 10%;">Tên lớp học</th>
+                                <th style="width: 15%;">Tên lớp học</th>
                                 <th style="width: 8%;">Giá</th>
-                                <th style="width: 8%;">Thời Gian</th>
+                                <th style="width: 13%;">Bắt đầu</th>
+                                <th style="width: 13%;">Kết thúc</th>
                                 <th>Mô Tả</th>
                                 <th style="width: 13%;">Thao Tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($lophocs)): ?>
-                                <?php foreach ($lophocs as $lh): ?>
+                                <?php foreach ($lophocs as $lophoc): ?>
                                     <tr>
-                                        <td><?php echo htmlspecialchars($lh->TenTL) ?></td>
-                                        <td><?php echo number_format($lh->GiaTL, 0, ',', '.'); ?> VNĐ</td>
-                                        <td><?php echo $lh->ThoiGianTL; ?> phút</td>
-                                        <td><?php echo htmlspecialchars($lh->MoTaTL) ?></td>
+                                        <td><?php echo htmlspecialchars($lophoc->TenLop) ?></td>
+                                        <td><?php echo number_format($lophoc->GiaTien, 0, ',', '.'); ?> VNĐ</td>
+                                        <td><?= $lophoc->NgayBatDau ? date('d/m/Y', strtotime($lophoc->NgayBatDau)) : '';?></td>
+                                        <td><?= $lophoc->NgayKetThuc ? date('d/m/Y', strtotime($lophoc->NgayKetThuc)) : '';?></td>
+                                        <td><?php echo htmlspecialchars($lophoc->MoTa) ?></td>
                                         <td>
-                                            <button class="btn btn-sm btn-success" onclick="showLopHoc(<?php echo $lh->id ?>)">
+                                            <button class="btn btn-sm btn-success" onclick="showLopHoc(<?php echo $lophoc->MaLop ?>)">
                                                 <i class="fas fa-eye"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-info" onclick="editLopHoc(<?php echo $lh->id ?>)">
+                                            <button class="btn btn-sm btn-info" onclick="editLopHoc(<?php echo $lophoc->MaLop ?>)">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-danger" onclick="deleteLopHoc(<?php echo $lh->id ?>)">
+                                            <button class="btn btn-sm btn-danger" onclick="deleteLopHoc(<?php echo $lophoc->MaLop ?>)">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
@@ -245,8 +253,7 @@
         </div>
     </div>
 
-    <!-- Add DvTapLuyen Modal -->
-    <div class="modal fade" id="addDvTapLuyenModal" tabindex="-1">
+    <div class="modal fade" id="addLopHocModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -261,25 +268,47 @@
                             <label class="form-label">
                                 <i class="fas fa-tag me-2"></i>Tên Lớp Học
                             </label>
-                            <input type="text" class="form-control" name="TenTL" required>
+                            <input type="text" class="form-control" name="TenLop" required
+                                value="<?php echo htmlspecialchars($oldAdd['TenLop'] ?? ''); ?>">
+                            <?php if (!empty($errorsAdd['TenLop'])): ?>
+                                <div class="text-danger small mt-1"><?php echo htmlspecialchars($errorsAdd['TenLop']); ?></div>
+                            <?php endif; ?>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">
                                 <i class="fas fa-money-bill-wave me-2"></i>Giá
                             </label>
-                            <input type="number" class="form-control" name="GiaTL" required>
+                            <input type="number" class="form-control" name="GiaTien" required min="50000"
+                                value="<?php echo htmlspecialchars($oldAdd['GiaTien'] ?? ''); ?>">
+                            <?php if (!empty($errorsAdd['GiaTien'])): ?>
+                                <div class="text-danger small mt-1"><?php echo htmlspecialchars($errorsAdd['GiaTien']); ?></div>
+                            <?php endif; ?>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">
-                                <i class="fas fa-clock me-2"></i>Thời Gian (phút)
+                                <i class="fas fa-clock me-2"></i>Ngày bắt đầu
                             </label>
-                            <input type="number" class="form-control" name="ThoiGianTL" required>
+                            <input type="date" class="form-control" name="NgayBatDau" required
+                                value="<?php echo htmlspecialchars($oldAdd['NgayBatDau'] ?? ''); ?>">
+                            <?php if (!empty($errorsAdd['NgayBatDau'])): ?>
+                                <div class="text-danger small mt-1"><?php echo htmlspecialchars($errorsAdd['NgayBatDau']); ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-clock me-2"></i>Ngày kết thúc
+                            </label>
+                            <input type="date" class="form-control" name="NgayKetThuc" required
+                                value="<?php echo htmlspecialchars($oldAdd['NgayKetThuc'] ?? ''); ?>">
+                            <?php if (!empty($errorsAdd['NgayKetThuc'])): ?>
+                                <div class="text-danger small mt-1"><?php echo htmlspecialchars($errorsAdd['NgayKetThuc']); ?></div>
+                            <?php endif; ?>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">
                                 <i class="fas fa-align-left me-2"></i>Mô Tả
                             </label>
-                            <textarea class="form-control" name="MoTaTL" rows="3"></textarea>
+                            <textarea class="form-control" name="MoTa" rows="3"><?php echo htmlspecialchars($oldAdd['MoTa'] ?? ''); ?></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -310,6 +339,49 @@
                 window.location.href = `/gym/admin/lophoc/deleteLopHoc/${id}`;
             }
         }
+
+        // Validate quan hệ ngày bắt đầu / kết thúc cho form thêm mới
+        document.addEventListener('DOMContentLoaded', function() {
+            var startInput = document.querySelector('#addLopHocModal input[name="NgayBatDau"]');
+            var endInput = document.querySelector('#addLopHocModal input[name="NgayKetThuc"]');
+            var formAdd = document.querySelector('#addLopHocModal form');
+
+            if (!startInput || !endInput || !formAdd) return;
+
+            function validateDates() {
+                if (!startInput.value || !endInput.value) {
+                    endInput.setCustomValidity('');
+                    return;
+                }
+
+                var startDate = new Date(startInput.value);
+                var endDate = new Date(endInput.value);
+
+                if (endDate <= startDate) {
+                    endInput.setCustomValidity('Ngày kết thúc phải lớn hơn ngày bắt đầu');
+                } else {
+                    endInput.setCustomValidity('');
+                }
+            }
+
+            startInput.addEventListener('change', validateDates);
+            endInput.addEventListener('change', validateDates);
+
+            formAdd.addEventListener('submit', function(e) {
+                validateDates();
+                if (!formAdd.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            });
+        });
+
+        <?php if ($hasErrorsAdd): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                var addModal = new bootstrap.Modal(document.getElementById('addLopHocModal'));
+                addModal.show();
+            });
+        <?php endif; ?>
     </script>
 </body>
 

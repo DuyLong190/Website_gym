@@ -103,9 +103,13 @@
                     <i class="fas fa-user-shield fa-fw me-3"></i>
                     <span>Quản lý tài khoản</span>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+                <a href="/gym/admin/lichlophoc" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-calendar fa-fw me-3"></i>
                     <span>Lịch lớp học</span>
+                </a>
+                <a href="/gym/admin/yeucau" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-code-pull-request fa-fw me-3"></i>
+                    <span>Yêu cầu xác nhận</span>
                 </a>
                 <a href="/gym" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-home fa-fw me-3"></i>

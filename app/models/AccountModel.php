@@ -11,7 +11,7 @@ class AccountModel
 
     public function getAccountByUsername($username)
     {
-        $query = "SELECT a.id, a.username, a.HoTen, a.password, a.role_id, r.role_name 
+        $query = "SELECT a.id, a.username, a.HoTen, a.password, a.role_id, a.MaHV, a.pt_id, r.role_name 
                 FROM account a 
                 JOIN role r ON a.role_id = r.role_id 
                 WHERE a.username = :username";

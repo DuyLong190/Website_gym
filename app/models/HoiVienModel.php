@@ -223,9 +223,7 @@ class HoiVienModel
 
     public function updateGoiTap($maHV, $maGoiTap) {
         try {
-            $query = "UPDATE HoiVien 
-                    SET MaGoiTap = ?, NgayDangKy = CURRENT_TIMESTAMP 
-                    WHERE MaHV = ?";
+            $query = "UPDATE HoiVien SET MaGoiTap = ? WHERE MaHV = ?";
             $stmt = $this->conn->prepare($query);
             return $stmt->execute([$maGoiTap, $maHV]);
         } catch (PDOException $e) {

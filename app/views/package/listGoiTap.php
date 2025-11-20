@@ -115,7 +115,7 @@
                                 </span>
                                 <hr class="line-custom">
                                 <p class="card-text mb-1"><strong>Thời hạn:</strong>
-                                    <?php 
+                                    <?php
                                     $thoiHan = $goiTap['ThoiHan'] ?? '';
                                     echo $thoiHan ? htmlspecialchars($thoiHan) . ' tháng' : '';
                                     ?>
@@ -133,12 +133,12 @@
                                 <hr class="line-custom">
                                 <div class="mt-auto gap-2 d-flex ">
                                     <?php if (isset($_SESSION['username'])): ?>
-                                        <?php 
+                                        <?php
                                         $username = $_SESSION['username'];
                                         $hoiVien = $this->hoiVienModel->getHoiVienByUsername($username);
-                                        if (empty($hoiVien->MaGoiTap)): 
+                                        if (empty($hoiVien->MaGoiTap)):
                                         ?>
-                                            <a href="/gym/goitap/register/<?php echo $goiTap['MaGoiTap']; ?>" class="btn btn-outline-warning flex-fill">
+                                            <a href="/gym/goitap/select/<?php echo $goiTap['MaGoiTap']; ?>" class="btn btn-outline-warning flex-fill">
                                                 <i class="fa fa-edit"></i> Đăng ký
                                             </a>
                                         <?php else: ?>
@@ -168,15 +168,15 @@
     <!-- Thêm SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
-    function showAlreadyRegisteredAlert() {
-        Swal.fire({
-            title: 'Thông báo',
-            text: 'Bạn đã đăng ký gói tập',
-            icon: 'warning',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#3085d6'
-        });
-    }
+        function showAlreadyRegisteredAlert() {
+            Swal.fire({
+                title: 'Thông báo',
+                text: 'Bạn đang có gói tập khác',
+                icon: 'warning',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6'
+            });
+        }
     </script>
 </body>
 

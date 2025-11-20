@@ -1,10 +1,13 @@
 <?php
 require_once __DIR__ . '/../models/GoiTapModel.php';
 require_once __DIR__ . '/../models/DvThuGianModel.php';
-require_once __DIR__ . '/../models/DvTapLuyenModel.php';
+require_once __DIR__ . '/../models/LopHoc_Model.php';
+require_once __DIR__ . '/../models/LichLopHocModel.php';
 require_once __DIR__ . '/../models/HoiVienModel.php';
 require_once __DIR__ . '/../models/PtModel.php';
 require_once __DIR__ . '/../models/AccountModel.php';
+require_once __DIR__ . '/../models/ChiTiet_Goitap_Model.php';
+require_once __DIR__ . '/../models/YeuCauThanhToanModel.php';
 require_once __DIR__ . '/../config/database.php';
 
 class AdminController
@@ -12,10 +15,13 @@ class AdminController
     private $dvtgModel;
     private $goitapModel;
     private $lophocModel;
+    private $lichLopHocModel;
     private $db;
     private $hoiVienModel;
     private $ptModel;
     private $accountModel;
+    private $ctgtModel;
+    private $yeuCauThanhToanModel;
 
     public function __construct()
     {
@@ -23,10 +29,13 @@ class AdminController
         $this->db = (new Database())->getConnection();
         $this->goitapModel = new GoiTapModel($this->db);
         $this->dvtgModel = new DvThuGianModel($this->db);
-        $this->lophocModel = new DvTapLuyenModel($this->db);
+        $this->lophocModel = new LopHoc_Model($this->db);
+        $this->lichLopHocModel = new LichLopHocModel($this->db);
         $this->hoiVienModel = new HoiVienModel($this->db);
         $this->ptModel = new PtModel($this->db);
         $this->accountModel = new AccountModel($this->db);
+        $this->ctgtModel = new ChiTiet_Goitap_Model($this->db);
+        $this->yeuCauThanhToanModel = new YeuCauThanhToanModel($this->db);
     }
     //Gói tập----------------------------------------------------------------------------------------------------------------------
     public function indexGoitap()
@@ -206,14 +215,14 @@ class AdminController
     //Lớp học---------------------------------------------------------------------------------------------------------------
     public function indexLopHoc()
     {
-        $lophocs = $this->lophocModel->getDVTLs();
+        $lophocs = $this->lophocModel->getLopHocs();
 
         require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
         require_once __DIR__ . '/../views/admin/lophoc/adminLopHoc.php';
     }
     public function showLopHoc($id)
     {
-        $lophoc = $this->lophocModel->getDVTL_ByID($id);
+        $lophoc = $this->lophocModel->getLopHoc_ByID($id);
         if ($lophoc) {
             require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             require_once __DIR__ . '/../views/admin/lophoc/showLopHoc.php';
@@ -230,30 +239,48 @@ class AdminController
     public function saveLopHoc()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $TenTL = $_POST['TenTL'] ?? '';
-            $GiaTL = $_POST['GiaTL'] ?? '';
-            $ThoiGianTL = $_POST['ThoiGianTL'] ?? '';
-            $MoTaTL = $_POST['MoTaTL'] ?? '';
+            // Lấy dữ liệu từ form (tên trường phù hợp với view)
+            $TenLop = $_POST['TenLop'] ?? '';
+            $GiaTien = $_POST['GiaTien'] ?? 0;
+            $MoTa = $_POST['MoTa'] ?? null;
+            $NgayBatDau = $_POST['NgayBatDau'] ?? null;
+            $NgayKetThuc = $_POST['NgayKetThuc'] ?? null;
+            $TrangThai = $_POST['TrangThai'] ?? null;
+            $pt_id = !empty($_POST['pt_id']) ? (int)$_POST['pt_id'] : null;
 
-            $result = $this->lophocModel->addDVTL($TenTL, $GiaTL, $ThoiGianTL, $MoTaTL);
+            $result = $this->lophocModel->addLopHoc($TenLop, $GiaTien, $MoTa, $NgayBatDau, $NgayKetThuc, $TrangThai, $pt_id);
 
             if (is_array($result)) {
-                // Nếu có lỗi validation, hiển thị form lại với lỗi
-                require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
-            } else if ($result === true) {
-                // Nếu thêm thành công, chuyển hướng về danh sách
+                // Nếu có lỗi validation, hiển thị form lại với lỗi và dữ liệu cũ
+                $errors = $result;
+                // có thể tái sử dụng biến để prefill form
+                $old = compact('TenLop', 'GiaTien', 'MoTa', 'NgayBatDau', 'NgayKetThuc', 'TrangThai', 'pt_id');
+
+                $_SESSION['errors_lophoc_add'] = $errors;
+                $_SESSION['old_lophoc_add'] = $old;
+
+                header('Location: /gym/admin/lophoc');
+                exit();
+            } else if ($result) {
+                // Nếu thêm thành công (trả về id mới), chuyển hướng về danh sách
+                $_SESSION['success'] = "Thêm lớp học thành công.";
                 header('Location: /gym/admin/lophoc');
                 exit();
             } else {
                 // Nếu có lỗi khác
-                echo "Có lỗi xảy ra khi thêm lớp học. Vui lòng thử lại.";
+                $_SESSION['error'] = "Có lỗi xảy ra khi thêm lớp học. Vui lòng thử lại.";
+                header('Location: /gym/admin/lophoc');
+                exit();
             }
+        } else {
+            header('Location: /gym/admin/lophoc');
+            exit;
         }
     }
 
-    public function editLopHoc($id)
+    public function editLopHoc($MaLop)
     {
-        $lophoc = $this->lophocModel->getDVTL_ByID($id);
+        $lophoc = $this->lophocModel->getLopHoc_ByID($MaLop);
         if ($lophoc) {
             require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             require_once __DIR__ . '/../views/admin/lophoc/editLopHoc.php';
@@ -265,28 +292,126 @@ class AdminController
     public function updateLopHoc()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'];
-            $TenTL = $_POST['TenTL'] ?? '';
-            $GiaTL = $_POST['GiaTL'] ?? '';
-            $ThoiGianTL = $_POST['ThoiGianTL'] ?? '';
-            $MoTaTL = $_POST['MoTaTL'] ?? '';
+            $MaLop = $_POST['MaLop'] ?? null;
+            $TenLop = $_POST['TenLop'] ?? '';
+            $GiaTien = $_POST['GiaTien'] ?? 0;
+            $MoTa = $_POST['MoTa'] ?? null;
+            $NgayBatDau = $_POST['NgayBatDau'] ?? null;
+            $NgayKetThuc = $_POST['NgayKetThuc'] ?? null;
+            $TrangThai = $_POST['TrangThai'] ?? null;
+            $pt_id = !empty($_POST['pt_id']) ? (int)$_POST['pt_id'] : null;
 
-            $edit = $this->lophocModel->updateDVTL($id, $TenTL, $GiaTL, $ThoiGianTL, $MoTaTL);
-            if ($edit) {
+            if (empty($MaLop)) {
+                $_SESSION['error'] = "ID lớp học không hợp lệ.";
                 header('Location: /gym/admin/lophoc');
-            } else {
-                echo "Cập nhật lớp học không thành công.";
+                exit;
             }
+
+            $ok = $this->lophocModel->updateLopHoc($MaLop, $TenLop, $GiaTien, $MoTa, $NgayBatDau, $NgayKetThuc, $TrangThai, $pt_id);
+            if ($ok) {
+                $_SESSION['success'] = "Cập nhật lớp học thành công.";
+                header('Location: /gym/admin/lophoc');
+                exit;
+            } else {
+                $_SESSION['error'] = "Cập nhật lớp học không thành công.";
+                header('Location: /gym/admin/lophoc');
+                exit;
+            }
+        } else {
+            header('Location: /gym/admin/lophoc');
+            exit;
         }
     }
 
-    public function deleteLopHoc($id)
+    public function deleteLopHoc($MaLop)
     {
-        if ($this->lophocModel->deleteDVTL($id)) {
+        if ($this->lophocModel->deleteLopHoc($MaLop)) {
             header('Location: /gym/admin/lophoc');
         } else {
             echo "Xóa lớp học không thành công.";
         }
+    }
+    // Lịch lớp học---------------------------------------------------------------------------------------------------------------
+    public function indexLichlophoc()
+    {
+        $lichLopHocs = $this->lichLopHocModel->getAll();
+        $lophocs = $this->lophocModel->getLopHocs();
+
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        require_once __DIR__ . '/../views/admin/lichlophoc/adminLichLopHoc.php';
+    }
+
+    public function saveLichLopHoc()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $MaLop = $_POST['MaLop'] ?? null;
+            $NgayHoc = $_POST['NgayHoc'] ?? null;
+            $GioBatDau = $_POST['GioBatDau'] ?? null;
+            $GioKetThuc = $_POST['GioKetThuc'] ?? null;
+            $PhongHoc = $_POST['PhongHoc'] ?? null;
+
+            $result = $this->lichLopHocModel->create($MaLop, $NgayHoc, $GioBatDau, $GioKetThuc, $PhongHoc);
+
+            if (is_array($result)) {
+                $_SESSION['errors'] = $result;
+            } elseif ($result) {
+                $_SESSION['success'] = 'Thêm lịch lớp học thành công.';
+            } else {
+                $_SESSION['error'] = 'Có lỗi xảy ra khi thêm lịch lớp học.';
+            }
+
+            header('Location: /gym/admin/lichlophoc');
+            exit;
+        }
+
+        header('Location: /gym/admin/lichlophoc');
+        exit;
+    }
+
+    public function updateLichLopHoc()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? null;
+            $MaLop = $_POST['MaLop'] ?? null;
+            $NgayHoc = $_POST['NgayHoc'] ?? null;
+            $GioBatDau = $_POST['GioBatDau'] ?? null;
+            $GioKetThuc = $_POST['GioKetThuc'] ?? null;
+            $PhongHoc = $_POST['PhongHoc'] ?? null;
+
+            if (empty($id)) {
+                $_SESSION['error'] = 'ID lịch lớp học không hợp lệ.';
+                header('Location: /gym/admin/lichlophoc');
+                exit;
+            }
+
+            $result = $this->lichLopHocModel->update($id, $MaLop, $NgayHoc, $GioBatDau, $GioKetThuc, $PhongHoc);
+
+            if (is_array($result)) {
+                $_SESSION['errors'] = $result;
+            } elseif ($result) {
+                $_SESSION['success'] = 'Cập nhật lịch lớp học thành công.';
+            } else {
+                $_SESSION['error'] = 'Cập nhật lịch lớp học không thành công.';
+            }
+
+            header('Location: /gym/admin/lichlophoc');
+            exit;
+        }
+
+        header('Location: /gym/admin/lichlophoc');
+        exit;
+    }
+
+    public function deleteLichLopHoc($id)
+    {
+        if ($this->lichLopHocModel->delete($id)) {
+            $_SESSION['success'] = 'Xóa lịch lớp học thành công.';
+        } else {
+            $_SESSION['error'] = 'Xóa lịch lớp học không thành công.';
+        }
+
+        header('Location: /gym/admin/lichlophoc');
+        exit;
     }
 //Hội viên---------------------------------------------------------------------------------------------------------------
 
@@ -301,6 +426,8 @@ class AdminController
     {
         $hoiVien = $this->hoiVienModel->getHoiVienById($maHV);
         if ($hoiVien) {
+            // Lấy chi tiết gói tập hiện tại (nếu có) để hiển thị và xác minh thanh toán
+            $currentCtgt = $this->ctgtModel->getCurrentByMaHV((int)$maHV);
             require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             require_once __DIR__ . '/../views/admin/hoivien/showHoiVien.php';
         } else {
@@ -325,7 +452,7 @@ class AdminController
         }
 
         $goiTap = $this->goitapModel->getGoiTaps();
-        require_once __DIR__ . '/../views/admin/user/addHoiVien.php';
+        require_once __DIR__ . '/../views/admin/hoivien/addHoiVien.php';
         require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
     }
     public function saveUser()
@@ -389,12 +516,36 @@ class AdminController
             $SDT = $_POST['SDT'];
             $Email = $_POST['Email'];
             $DiaChi = $_POST['DiaChi'];
-            $MaGoiTap = $_POST['MaGoiTap'];
+            $MaGoiTap = isset($_POST['MaGoiTap']) && $_POST['MaGoiTap'] !== '' ? $_POST['MaGoiTap'] : null;
             $TrangThai = $_POST['TrangThai'];
 
-            if ($this->hoiVienModel->updateHoiVien($maHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $TrangThai)) {
+            try {
+                // Lấy thông tin hội viên hiện tại để so sánh gói tập
+                $currentHoiVien = $this->hoiVienModel->getHoiVienById($maHV);
+
+                $this->db->beginTransaction();
+
+                $okUpdate = $this->hoiVienModel->updateHoiVien($maHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $TrangThai);
+                if (!$okUpdate) {
+                    throw new Exception('Không thể cập nhật hội viên');
+                }
+
+                // Nếu gói tập thay đổi và có gói mới thì thêm chi tiết gói tập
+                $oldMaGoiTap = $currentHoiVien ? $currentHoiVien->MaGoiTap : null;
+                if (!empty($MaGoiTap) && $MaGoiTap != $oldMaGoiTap) {
+                    $okCtgt = $this->ctgtModel->createForHoiVien((int)$maHV, (int)$MaGoiTap);
+                    if (!$okCtgt) {
+                        throw new Exception('Không thể tạo chi tiết gói tập');
+                    }
+                }
+
+                $this->db->commit();
                 header('Location: /gym/admin/user');
-            } else {
+            } catch (Exception $e) {
+                if ($this->db->inTransaction()) {
+                    $this->db->rollBack();
+                }
+                error_log('AdminController::updateUser error - ' . $e->getMessage());
                 echo "Cập nhật hội viên không thành công.";
             }
         }
@@ -405,6 +556,129 @@ class AdminController
             header('Location: /gym/admin/user');
             exit;
         }
+    }
+
+    // Quản lý yêu cầu thanh toán ----------------------------------------------------------------------
+
+    public function indexYeucau()
+    {
+        // Mặc định chỉ admin truy cập được, nếu bạn đã có check quyền ở sidebar/menu có thể bỏ qua
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        $yeuCaus = $this->yeuCauThanhToanModel->getPending();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        require_once __DIR__ . '/../views/admin/yeucau/indexYeucau.php';
+    }
+
+    public function confirmYeuCau($id)
+    {
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /gym/admin/yeucau');
+            exit;
+        }
+
+        $yc = $this->yeuCauThanhToanModel->getById((int)$id);
+        if (!$yc) {
+            $_SESSION['error'] = 'Không tìm thấy yêu cầu thanh toán.';
+            header('Location: /gym/admin/yeucau');
+            exit;
+        }
+
+        $id_ctgt = (int)($yc['id_ctgt'] ?? 0);
+        $maHV    = (int)($yc['MaHV'] ?? 0);
+
+        if ($id_ctgt <= 0 || $maHV <= 0) {
+            $_SESSION['error'] = 'Dữ liệu yêu cầu thanh toán không hợp lệ.';
+            header('Location: /gym/admin/yeucau');
+            exit;
+        }
+
+        try {
+            $this->db->beginTransaction();
+
+            // 1. Cập nhật trạng thái yêu cầu
+            $okYc = $this->yeuCauThanhToanModel->markConfirmed((int)$id);
+            if (!$okYc) {
+                throw new Exception('Không thể cập nhật trạng thái yêu cầu thanh toán.');
+            }
+
+            // 2. Cập nhật chi tiết gói tập: set ngày bắt đầu/kết thúc, trạng thái, thanh toán
+            $okCtgt = $this->ctgtModel->confirmPayment($id_ctgt);
+            if (!$okCtgt) {
+                throw new Exception('Không thể cập nhật chi tiết gói tập hoặc đã được xác nhận trước đó.');
+            }
+
+            $this->db->commit();
+            $_SESSION['success'] = 'Xác nhận yêu cầu thanh toán thành công.';
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            $_SESSION['error'] = 'Lỗi khi xác nhận yêu cầu: ' . $e->getMessage();
+        }
+
+        // Quay lại danh sách yêu cầu, hoặc có thể chuyển về chi tiết hội viên nếu muốn
+        header('Location: /gym/admin/yeucau');
+        exit;
+    }
+
+    public function verifyPayment($id_ctgt)
+    {
+        // Chỉ admin mới được xác minh
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /gym/admin/user');
+            exit;
+        }
+
+        // Lấy chi tiết gói tập để xác định hội viên
+        $rows = $this->ctgtModel->getChiTietById($id_ctgt);
+        if (empty($rows)) {
+            $_SESSION['error'] = 'Không tìm thấy chi tiết gói tập để xác minh.';
+            header('Location: /gym/admin/user');
+            exit;
+        }
+
+        $ct = $rows[0];
+        $maHV = (int)($ct['MaHV'] ?? 0);
+
+        if ($maHV <= 0) {
+            $_SESSION['error'] = 'Dữ liệu chi tiết gói tập không hợp lệ.';
+            header('Location: /gym/admin/user');
+            exit;
+        }
+
+        try {
+            $this->db->beginTransaction();
+
+            $ok = $this->ctgtModel->confirmPayment((int)$id_ctgt);
+            if (!$ok) {
+                throw new Exception('Không thể xác minh thanh toán hoặc đã được xác minh trước đó.');
+            }
+
+            $this->db->commit();
+            $_SESSION['success'] = 'Xác minh thanh toán thành công.';
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            $_SESSION['error'] = 'Lỗi khi xác minh thanh toán: ' . $e->getMessage();
+        }
+
+        header('Location: /gym/admin/showUser/' . $maHV);
+        exit;
     }
 
     public function searchUser() {

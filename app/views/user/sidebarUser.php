@@ -66,7 +66,7 @@
                 <a href="/gym/user/profile" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-user fa-fw me-3"></i>
                     <span>Thông tin cá nhân</span>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-dumbbell fa-fw me-3"></i>
+                <a href="/gym/user/chitiet_goitap" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-dumbbell fa-fw me-3"></i>
                     <span>Gói tập của tôi</span>
                 </a>
                 <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-calendar fa-fw me-3"></i>

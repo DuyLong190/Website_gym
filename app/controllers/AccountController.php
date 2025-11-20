@@ -190,13 +190,25 @@ class AccountController
                     $_SESSION['username'] = $account->username;
                     $_SESSION['role_id'] = $account->role_id;
                     $_SESSION['role_name'] = $account->role_name;
-                    
-                    // Lấy thông tin hội viên
-                    $hoiVien = $this->hoiVienModel->getHoiVienByUsername($username);
-                    if ($hoiVien) {
-                        $_SESSION['HoTen'] = $hoiVien->HoTen;
+
+                    // Thiết lập thông tin hiển thị mặc định từ bảng account
+                    $_SESSION['HoTen'] = $account->HoTen;
+
+                    if ((int)$account->role_id === 1) {
+                        // Lấy thông tin hội viên
+                        $hoiVien = $this->hoiVienModel->getHoiVienByUsername($username);
+                        if ($hoiVien) {
+                            $_SESSION['HoTen'] = $hoiVien->HoTen;
+                            $_SESSION['MaHV'] = $hoiVien->MaHV;
+                        }
+                    } elseif ((int)$account->role_id === 2 && !empty($account->pt_id)) {
+                        $pt = $this->ptModel->getPTById((int)$account->pt_id);
+                        if ($pt) {
+                            $_SESSION['HoTen'] = $pt->HoTen;
+                            $_SESSION['pt_id'] = $pt->pt_id;
+                        }
                     }
-                    
+
                     header('Location: /gym');
                     exit;
                 } else {

@@ -30,8 +30,8 @@ class UserController
         if (!$hoiVien) {
             error_log("Không tìm thấy thông tin hội viên cho username: " . $username);
         }
-        require_once __DIR__ . '/../views/user/sidebarInfo.php';
-        require_once __DIR__ . '/../views/user/profile.php';
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        require_once __DIR__ . '/../views/user/info/profile.php';
     }
 
     public function edit_profile() {
@@ -50,8 +50,8 @@ class UserController
             header('Location: /gym/user/profile');
             exit;
         }
-        require_once __DIR__ . '/../views/user/sidebarInfo.php';
-        require_once __DIR__ . '/../views/user/edit_profile.php';
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        require_once __DIR__ . '/../views/user/info/edit_profile.php';
     }
 
     public function update_profile() {

@@ -69,12 +69,14 @@
             .admin-title {
                 font-size: 1.3rem;
             }
+
             body {
                 margin-left: 0;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container py-5">
         <h1 class="text-center mb-5 admin-title">
@@ -85,18 +87,26 @@
                 <div class="col-md-8 col-lg-6">
                     <div class="admin-card">
                         <h2 class="card-title mb-4">
-                            <?php echo htmlspecialchars($lophoc->TenTL, ENT_QUOTES, 'UTF-8'); ?>
+                            <?php echo htmlspecialchars($lophoc->TenLop, ENT_QUOTES, 'UTF-8'); ?>
                         </h2>
                         <div class="price-badge">
-                            <?php echo number_format($lophoc->GiaTL); ?> VNĐ
+                            <?php echo number_format($lophoc->GiaTien); ?> VNĐ
                         </div>
-                        <div class="detail-label">Thời hạn:</div>
+                        <div class="detail-label">Ngày bắt đầu:</div>
                         <div class="detail-value">
-                            <?php echo htmlspecialchars($lophoc->ThoiGianTL, ENT_QUOTES, 'UTF-8'); ?> ngày
+                            <?php $NgayBD = $lophoc->NgayBatDau ?? '';
+                            echo $NgayBD ? date('d/m/Y', strtotime($NgayBD)) : '';
+                            ?>
+                        </div>
+                        <div class="detail-label">Ngày kết thúc:</div>
+                        <div class="detail-value">
+                            <?php $NgayKT = $lophoc->NgayKetThuc ?? '';
+                            echo $NgayKT ? date('d/m/Y', strtotime($NgayKT)) : '';
+                            ?>
                         </div>
                         <div class="detail-label">Mô tả:</div>
                         <div class="detail-value">
-                            <?php echo nl2br(htmlspecialchars($lophoc->MoTaTL ?? '', ENT_QUOTES, 'UTF-8')); ?>
+                            <?php echo nl2br(htmlspecialchars($lophoc->MoTa ?? '', ENT_QUOTES, 'UTF-8')); ?>
                         </div>
                         <div class="d-flex justify-content-between mt-4">
                             <a href="/gym/admin/lophoc" class="btn btn-primary">

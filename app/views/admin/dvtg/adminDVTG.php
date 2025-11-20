@@ -202,9 +202,9 @@
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th style="width: 10%;">Tên dịch vụ</th>
-                                <th style="width: 8%;">Giá</th>
-                                <th style="width: 8%;">Thời gian</th>
+                                <th style="width: 15%;">Tên dịch vụ</th>
+                                <th style="width: 10%;">Giá</th>
+                                <th style="width: 10%;">Thời gian</th>
                                 <th>Mô tả</th>
                                 <th style="width: 13%;">Thao tác</th>
                             </tr>

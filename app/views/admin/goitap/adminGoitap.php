@@ -105,9 +105,9 @@
                                 <table class="table table-bordered table-striped align-middle">
                                     <thead>
                                         <tr>
-                                            <th style="width: 10%;">Tên gói tập</th>
-                                            <th style="width: 8%;">Giá</th>
-                                            <th style="width: 8%;">Thời hạn</th>
+                                            <th style="width: 15%;">Tên gói tập</th>
+                                            <th style="width: 10%;">Giá</th>
+                                            <th style="width: 10%;">Thời hạn</th>
                                             <th>Mô tả</th>
                                             <th style="width: 11%;" class="text-center">Thao tác</th>
                                         </tr>

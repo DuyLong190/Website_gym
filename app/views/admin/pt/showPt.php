@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +23,7 @@
         .pt-card {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
             border: none;
             margin-top: 2rem;
         }
@@ -86,24 +87,27 @@
 
         .back-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99,102,241,0.2);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
         }
 
         @media (max-width: 768px) {
             .pt-header {
                 padding: 1.5rem;
             }
+
             .pt-avatar {
                 width: 100px;
                 height: 100px;
                 bottom: -50px;
             }
+
             .pt-info {
                 padding: 60px 1.5rem 1.5rem;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container py-4">
         <div class="row justify-content-center">
@@ -115,7 +119,7 @@
                             <i class="fa-solid fa-user-tie"></i>
                         </div>
                     </div>
-                    
+
                     <div class="pt-info">
                         <div class="row">
                             <div class="col-md-6">
@@ -170,16 +174,30 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-md-6">
                                 <div class="info-group">
                                     <div class="info-label">Lương</div>
                                     <div class="info-value">
-                                        <?php 
+                                        <?php
                                         if (isset($pt->Luong)) {
                                             echo number_format($pt->Luong, 0, ',', '.') . ' VNĐ';
                                         }
                                         ?>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-group">
+                                    <div class="info-label">Ngày vào làm</div>
+                                    <div class="info-value">
+                                        <?php echo isset($pt->NgayVaoLam) ? date('d/m/Y', strtotime($pt->NgayVaoLam)) : ''; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">                           
+                                <div class="info-label">Trạng Thái</div>
+                                <div class="info-value">
+                                    <?php echo isset($pt->TrangThai) ? $pt->TrangThai  : ''; ?>                                   
                                 </div>
                             </div>
                         </div>
@@ -195,4 +213,5 @@
         </div>
     </div>
 </body>
+
 </html>

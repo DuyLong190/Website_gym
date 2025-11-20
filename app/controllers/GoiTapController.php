@@ -1,12 +1,14 @@
 <?php
 require_once __DIR__ . '/../models/GoiTapModel.php';
 require_once __DIR__ . '/../models/HoiVienModel.php';
+require_once __DIR__ . '/../models/ChiTiet_Goitap_Model.php';
 require_once __DIR__ . '/../config/database.php';
 
 class GoiTapController
 {
     private $goitapModel;
     private $hoiVienModel;
+    private $ctgtModel;
     private $db;
 
     public function __construct()
@@ -15,6 +17,7 @@ class GoiTapController
         $this->db = (new Database())->getConnection();
         $this->goitapModel = new GoiTapModel($this->db);
         $this->hoiVienModel = new HoiVienModel($this->db);
+        $this->ctgtModel = new ChiTiet_Goitap_Model($this->db);
     }
 
     // Hiển thị danh sách gói tập
@@ -108,7 +111,7 @@ class GoiTapController
         }
     }
 
-    public function register($MaGoiTap)
+    public function select($MaGoiTap)
     {
         // Kiểm tra đăng nhập
         if (!isset($_SESSION['username'])) {
@@ -142,10 +145,26 @@ class GoiTapController
             exit;
         }
 
-        // Cập nhật gói tập cho hội viên
-        if ($this->hoiVienModel->updateGoiTap($hoiVien->MaHV, $MaGoiTap)) {
+        try {
+            $this->db->beginTransaction();
+
+            $okUpdateHoiVien = $this->hoiVienModel->updateGoiTap($hoiVien->MaHV, $MaGoiTap);
+            if (!$okUpdateHoiVien) {
+                throw new Exception('Không thể cập nhật gói tập cho hội viên');
+            }
+
+            $okCreateCtgt = $this->ctgtModel->createForHoiVien((int)$hoiVien->MaHV, (int)$MaGoiTap);
+            if (!$okCreateCtgt) {
+                throw new Exception('Không thể tạo chi tiết gói tập');
+            }
+
+            $this->db->commit();
             $_SESSION['success'] = "Đăng ký gói tập thành công";
-        } else {
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            error_log('GoiTapController::register error - ' . $e->getMessage());
             $_SESSION['error'] = "Đăng ký gói tập thất bại";
         }
 

@@ -191,7 +191,7 @@
                                 <th style="width: 10%;">Ngày sinh</th>
                                 <th style="width: 8%;">Giới tính</th>
                                 <th style="width: 10%;">SĐT</th>
-                                <th style="width: 12%;">Email</th>
+                                <th style="width: 12%;">Chuyên môn</th>
                                 <th style="width: 10%;">Địa chỉ</th>
                                 <th style="width: 13%;" class="text-center">Thao tác</th>
                             </tr>
@@ -378,6 +378,27 @@
                 });
         }
 
+        // Định dạng ngày dạng d/m/Y cho hiển thị bảng
+        function formatDateDMY(dateStr) {
+            if (!dateStr) return '';
+
+            // Ưu tiên tách phần ngày nếu chuỗi có cả thời gian
+            const raw = dateStr.split(' ')[0];
+            const parts = raw.split('-'); // kỳ vọng YYYY-MM-DD
+            if (parts.length === 3) {
+                const [y, m, d] = parts;
+                return `${d.padStart(2, '0')}/${m.padStart(2, '0')}/${y}`;
+            }
+
+            // Fallback: thử với Date
+            const dObj = new Date(dateStr);
+            if (isNaN(dObj.getTime())) return dateStr;
+            const d = String(dObj.getDate()).padStart(2, '0');
+            const m = String(dObj.getMonth() + 1).padStart(2, '0');
+            const y = dObj.getFullYear();
+            return `${d}/${m}/${y}`;
+        }
+
         // Render bảng PT
         function renderPTTable(pts) {
             const tbody = document.getElementById('ptTableBody');
@@ -389,10 +410,10 @@
             tbody.innerHTML = pts.map(pt => `
             <tr>
                 <td>${pt.HoTen || ''}</td>
-                <td>${pt.NgaySinh ? pt.NgaySinh.split(' ')[0] : ''}</td>
+                <td>${formatDateDMY(pt.NgaySinh)}</td>
                 <td>${pt.GioiTinh || ''}</td>
                 <td>${pt.SDT || ''}</td>
-                <td>${pt.Email || ''}</td>
+                <td>${pt.ChuyenMon || ''}</td>
                 <td>${pt.DiaChi || ''}</td>
 
                 <td class="text-center">

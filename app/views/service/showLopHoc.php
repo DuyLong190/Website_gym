@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết</title>
+    <title>Chi tiết lớp học</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .package-detail-card {
@@ -47,27 +47,31 @@
 <body>
     <div class="container py-5">
         <h1 class="text-center mb-5 fw-bold text-primary">Chi tiết lớp học</h1>
-        <?php if (isset($DVTL) && is_object($DVTL)): ?>
+        <?php if (isset($lophoc) && is_object($lophoc)): ?>
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6">
                     <div class="card package-detail-card">
                         <div class="card-body">
                             <h2 class="card-title mb-4">
-                                <?php echo htmlspecialchars($DVTL->TenTL, ENT_QUOTES, 'UTF-8'); ?>
+                                <?php echo htmlspecialchars($lophoc->TenLop, ENT_QUOTES, 'UTF-8'); ?>
                             </h2>
                             <div class="price-badge">
-                                <?php echo number_format($DVTL->GiaTL); ?> VNĐ
+                                <?php echo number_format($lophoc->GiaTien); ?> VNĐ
                             </div>
-                            <div class="detail-label">Thời hạn:</div>
+                            <div class="detail-label">Ngày bắt đầu:</div>
                             <div class="detail-value">
-                                <?php echo htmlspecialchars($DVTL->ThoiGianTL, ENT_QUOTES, 'UTF-8'); ?> ngày
+                                <?php echo htmlspecialchars($lophoc->NgayBatDau, ENT_QUOTES, 'UTF-8'); ?>
+                            </div>
+                            <div class="detail-label">Ngày kết thúc:</div>
+                            <div class="detail-value">
+                                <?php echo htmlspecialchars($lophoc->NgayKetThuc, ENT_QUOTES, 'UTF-8'); ?> ngày
                             </div>
                             <div class="detail-label">Mô tả:</div>
                             <div class="detail-value">
-                                <?php echo nl2br(htmlspecialchars($loDVTLphoc->MoTaTL ?? '', ENT_QUOTES, 'UTF-8')); ?>
+                                <?php echo nl2br(htmlspecialchars($lophoc->MoTa ?? '', ENT_QUOTES, 'UTF-8')); ?>
                             </div>
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="/gym/DvTapLuyen" class="btn btn-secondary">
+                                <a href="/gym/lophoc" class="btn btn-secondary">
                                     <i class="fa fa-arrow-left"></i> Quay lại
                                 </a>
                             </div>

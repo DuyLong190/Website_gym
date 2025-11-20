@@ -3,18 +3,21 @@ session_start();
 require_once 'app/controllers/AccountController.php';
 require_once 'app/controllers/GoiTapController.php';
 require_once 'app/controllers/DvThuGianController.php';
-require_once 'app/controllers/DvTapLuyenController.php';
+require_once 'app/controllers/LopHocController.php';
 require_once 'app/controllers/AdminController.php';
 require_once 'app/controllers/UserController.php';
 require_once 'app/controllers/PtApiController.php';
+require_once 'app/controllers/ChiTiet_Goitap_Controller.php';
 require_once 'app/models/GoiTapModel.php';
 require_once 'app/models/DvThuGianModel.php';
-require_once 'app/models/DvTapLuyenModel.php';
+require_once 'app/models/LopHoc_Model.php';
 require_once 'app/models/HoiVienModel.php';
 require_once 'app/models/PtModel.php';
 require_once 'app/helpers/SessionHelper.php';
 require_once 'app/models/RoleModel.php';
 require_once 'app/models/AccountModel.php';
+require_once 'app/models/ChiTiet_Goitap_Model.php';
+require_once 'app/config/Database.php';
 
 $url = $_GET['url'] ?? '';
 $url = rtrim($url, '/');
@@ -86,42 +89,107 @@ else if (isset($url[0]) && $url[0] === 'admin') {
         $params = [];
     }
 } else {
-    // Xử lý routing thông thường
-    $controllerName = isset($url[0]) && $url[0] != '' ? ucfirst($url[0]) . 'Controller' : 'HomeController';
-    $action = isset($url[1]) && $url[1] != '' ? $url[1] : '';
+    // Route đặc biệt: trang "Gói tập của tôi" và thanh toán cho user
+    if (isset($url[0], $url[1]) && $url[0] === 'user' && $url[1] === 'chitiet_goitap') {
+        $controllerName = 'ChiTiet_Goitap_Controller';
+
+        // /user/chitiet_goitap/purchase/{id_ctgt}
+        if (isset($url[2]) && $url[2] === 'purchase' && isset($url[3]) && is_numeric($url[3])) {
+            $action = 'purchase';
+            $params = [$url[3]];
+        } else {
+            // /user/chitiet_goitap hoặc /user/chitiet_goitap/{id_ctgt}
+            $action = 'index_ctgt';
+            if (isset($url[2]) && is_numeric($url[2])) {
+                $params = [$url[2]];
+            } else {
+                $params = [];
+            }
+        }
+    } else {
+        if (isset($url[0]) && strtolower($url[0]) === 'pt') {
+            $controllerName = 'PtApiController';
+            $segment = $url[1] ?? '';
+            switch ($segment) {
+                case 'edit':
+                    $action = 'edit';
+                    break;
+                case 'update':
+                    $action = 'updateProfile';
+                    break;
+                case 'profile':
+                case '':
+                    $action = 'profile';
+                    break;
+                default:
+                    $action = $segment;
+            }
+            $params = [];
+        } else {
+            // Xử lý routing thông thường
+            $controllerMap = [
+                'lophoc' => 'LopHocController',
+                'dvthugian' => 'DvThuGianController',
+                'goitap' => 'GoiTapController',
+                'user' => 'UserController',
+                'pt' => 'PtApiController',
+                'account' => 'AccountController',
+            ];
+
+            if (!empty($url[0])) {
+                $key = strtolower($url[0]);
+                $controllerName = $controllerMap[$key] ?? ucfirst($key) . 'Controller';
+            } else {
+                $controllerName = 'HomeController';
+            }
+            $action = isset($url[1]) && $url[1] != '' ? $url[1] : '';
+        }
+    }
 
     // Xác định action mặc định dựa trên controller
     if (empty($action)) {
         switch ($controllerName) {
             case 'HomeController':
                 $action = 'indexHome';
+                $params = [];
                 break;
             case 'DvThuGianController':
                 $action = 'indexDVTG';
+                $params = [];
                 break;
-            case 'DvTapLuyenController':
-                $action = 'indexDVTL';
+            case 'LopHocController':
+                $action = 'indexLopHoc';
+                $params = [];
                 break;
             case 'GoiTapController':
                 $action = 'indexGoiTap';
+                $params = [];
                 break;
             case 'UserController':
                 $action = 'profile';
+                $params = [];
                 break;
             case 'PtApiController':
-                $action = 'indexPT';
+                $action = 'profile';
+                $params = [];
                 break;
             case 'AccountController':
                 $action = 'indexAccount';
+                $params = [];
+                break;
+            case 'Chitiet_Goitap_Controller':
+                $action = 'index_ctgt';
+                $params = [];
                 break;
             default:
                 $action = 'indexGoiTap';
+                $params = [];
         }
-    }
-    
-    // Xử lý params cho các action có tham số
-    if (isset($url[2]) && is_numeric($url[2])) {
-        $params = [$url[2]];
+    } else {
+        // Xử lý params cho các action có tham số
+        if (isset($url[2]) && is_numeric($url[2])) {
+            $params = [$url[2]];
+        }
     }
 }
 

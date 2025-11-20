@@ -79,7 +79,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label for="NgaySinh" class="form-label">Ngày sinh <span class="text-danger">*</span></label>
-                                            <input type="date" class="form-control" id="NgaySinh" name="NgaySinh" required value="<?= htmlspecialchars($_POST['NgaySinh'] ?? '') ?>">
+                                            <input type="date" class="form-control" id="NgaySinh" name="NgaySinh" required maxlength.year= value="<?= htmlspecialchars($_POST['NgaySinh'] ?? '') ?>">
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -94,7 +94,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label for="SDT" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
-                                            <input type="tel" class="form-control" id="SDT" name="SDT" required value="<?= htmlspecialchars($_POST['SDT'] ?? '') ?>">
+                                            <input type="tel" class="form-control" id="SDT" name="SDT" required maxlength="10" value="<?= htmlspecialchars($_POST['SDT'] ?? '') ?>">
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -104,7 +104,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label for="MaGoiTap" class="form-label">Gói tập <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="MaGoiTap" name="MaGoiTap" required>
+                                            <select class="form-select" id="MaGoiTap" name="MaGoiTap">
                                                 <option value="">Chọn gói tập</option>
                                                 <?php foreach ($goiTap as $goitap): ?>
                                                     <option value="<?= $goitap['MaGoiTap'] ?>" <?= (($_POST['MaGoiTap'] ?? '') == $goitap['MaGoiTap']) ? 'selected' : '' ?>>

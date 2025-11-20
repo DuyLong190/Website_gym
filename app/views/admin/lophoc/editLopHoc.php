@@ -79,12 +79,14 @@
             .admin-title {
                 font-size: 1.3rem;
             }
+
             body {
                 margin-left: 0;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container py-5">
         <div class="row justify-content-center">
@@ -102,23 +104,46 @@
                             </ul>
                         </div>
                     <?php endif; ?>
-                    <form method="POST" action="/gym/admin/lophoc/updateLopHoc" onsubmit="return validateForm()">
-                        <input type="hidden" name="id" value="<?php echo $lophoc->id; ?>">
+                    <?php
+                    $ngayBatDauValue = '';
+                    if (!empty($lophoc->NgayBatDau)) {
+                        $ts = strtotime($lophoc->NgayBatDau);
+                        if ($ts) {
+                            $ngayBatDauValue = date('Y-m-d\TH:i', $ts);
+                        }
+                    }
+
+                    $ngayKetThucValue = '';
+                    if (!empty($lophoc->NgayKetThuc)) {
+                        $ts2 = strtotime($lophoc->NgayKetThuc);
+                        if ($ts2) {
+                            $ngayKetThucValue = date('Y-m-d\TH:i', $ts2);
+                        }
+                    }
+                    ?>
+                    <form method="POST" action="/gym/admin/lophoc/updateLopHoc">
+
+                        <input type="hidden" name="MaLop" value="<?php echo htmlspecialchars($lophoc->MaLop, ENT_QUOTES, 'UTF-8'); ?>">
                         <div class="mb-4">
-                            <label for="TenTL" class="form-label">Tên lớp học</label>
-                            <input type="text" name="TenTL" id="TenTL" class="form-control" value="<?php echo htmlspecialchars($lophoc->TenTL, ENT_QUOTES, 'UTF-8'); ?>" required>
+                            <label for="TenLop" class="form-label">Tên lớp học</label>
+                            <input type="text" name="TenLop" id="TenLop" class="form-control" value="<?php echo htmlspecialchars($lophoc->TenLop, ENT_QUOTES, 'UTF-8'); ?>" required>
                         </div>
                         <div class="mb-4">
-                            <label for="GiaTL" class="form-label">Giá</label>
-                            <input type="number" name="GiaTL" id="GiaTL" class="form-control" step="0.01" value="<?php echo htmlspecialchars($lophoc->GiaTL); ?>" required>
+                            <label for="GiaTien" class="form-label">Giá</label>
+                            <input type="number" name="GiaTien" id="GiaTien" class="form-control" step="0.01" value="<?php echo htmlspecialchars($lophoc->GiaTien); ?>" required>
                         </div>
                         <div class="mb-4">
-                            <label for="ThoiGianTL" class="form-label">Thời gian sử dụng (phút)</label>
-                            <input type="text" name="ThoiGianTL" id="ThoiGianTL" class="form-control" value="<?php echo htmlspecialchars($lophoc->ThoiGianTL); ?>" required>
+                            <label for="NgayBatDau" class="form-label">Ngày Bắt đầu</label>
+                            <input type="datetime-local" name="NgayBatDau" id="NgayBatDau" class="form-control" value="<?php echo $ngayBatDauValue; ?>" required>
                         </div>
                         <div class="mb-4">
-                            <label for="MoTaTL" class="form-label">Mô tả</label>
-                            <textarea name="MoTaTL" id="MoTaTL" class="form-control" rows="4"><?php echo htmlspecialchars($lophoc->MoTaTL ?? ''); ?></textarea>
+                            <label for="NgayKetThuc" class="form-label">Ngày Kết thúc</label>
+                            <input type="datetime-local" name="NgayKetThuc" id="NgayKetThuc" class="form-control" value="<?php echo $ngayKetThucValue; ?>" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="MoTa" class="form-label">Mô tả</label>
+                            <textarea name="MoTa" id="MoTa" class="form-control" rows="4"><?php echo htmlspecialchars($lophoc->MoTa ?? ''); ?></textarea>
                         </div>
                         <div class="d-flex justify-content-between mt-5">
                             <button type="submit" class="btn btn-primary">
