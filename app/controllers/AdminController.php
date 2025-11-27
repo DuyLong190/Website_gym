@@ -3,6 +3,7 @@ require_once __DIR__ . '/../models/GoiTapModel.php';
 require_once __DIR__ . '/../models/DvThuGianModel.php';
 require_once __DIR__ . '/../models/LopHoc_Model.php';
 require_once __DIR__ . '/../models/LichLopHocModel.php';
+require_once __DIR__ . '/../models/CauHinhLichHocModel.php';
 require_once __DIR__ . '/../models/HoiVienModel.php';
 require_once __DIR__ . '/../models/PtModel.php';
 require_once __DIR__ . '/../models/AccountModel.php';
@@ -16,6 +17,7 @@ class AdminController
     private $goitapModel;
     private $lophocModel;
     private $lichLopHocModel;
+    private $cauHinhLichHocModel;
     private $db;
     private $hoiVienModel;
     private $ptModel;
@@ -31,6 +33,7 @@ class AdminController
         $this->dvtgModel = new DvThuGianModel($this->db);
         $this->lophocModel = new LopHoc_Model($this->db);
         $this->lichLopHocModel = new LichLopHocModel($this->db);
+        $this->cauHinhLichHocModel = new CauHinhLichHocModel($this->db);
         $this->hoiVienModel = new HoiVienModel($this->db);
         $this->ptModel = new PtModel($this->db);
         $this->accountModel = new AccountModel($this->db);
@@ -245,16 +248,16 @@ class AdminController
             $MoTa = $_POST['MoTa'] ?? null;
             $NgayBatDau = $_POST['NgayBatDau'] ?? null;
             $NgayKetThuc = $_POST['NgayKetThuc'] ?? null;
+            $SoLuongToiDa = $_POST['SoLuongToiDa'] ?? null;
             $TrangThai = $_POST['TrangThai'] ?? null;
-            $pt_id = !empty($_POST['pt_id']) ? (int)$_POST['pt_id'] : null;
 
-            $result = $this->lophocModel->addLopHoc($TenLop, $GiaTien, $MoTa, $NgayBatDau, $NgayKetThuc, $TrangThai, $pt_id);
+            $result = $this->lophocModel->addLopHoc($TenLop, $GiaTien, $MoTa, $NgayBatDau, $NgayKetThuc,$SoLuongToiDa, $TrangThai);
 
             if (is_array($result)) {
                 // Nếu có lỗi validation, hiển thị form lại với lỗi và dữ liệu cũ
                 $errors = $result;
                 // có thể tái sử dụng biến để prefill form
-                $old = compact('TenLop', 'GiaTien', 'MoTa', 'NgayBatDau', 'NgayKetThuc', 'TrangThai', 'pt_id');
+                $old = compact('TenLop', 'GiaTien', 'MoTa', 'NgayBatDau', 'NgayKetThuc', 'SoLuongToiDa', 'TrangThai');
 
                 $_SESSION['errors_lophoc_add'] = $errors;
                 $_SESSION['old_lophoc_add'] = $old;
@@ -298,8 +301,8 @@ class AdminController
             $MoTa = $_POST['MoTa'] ?? null;
             $NgayBatDau = $_POST['NgayBatDau'] ?? null;
             $NgayKetThuc = $_POST['NgayKetThuc'] ?? null;
+            $SoLuongToiDa = $_POST['SoLuongToiDa'] ?? null;
             $TrangThai = $_POST['TrangThai'] ?? null;
-            $pt_id = !empty($_POST['pt_id']) ? (int)$_POST['pt_id'] : null;
 
             if (empty($MaLop)) {
                 $_SESSION['error'] = "ID lớp học không hợp lệ.";
@@ -307,7 +310,7 @@ class AdminController
                 exit;
             }
 
-            $ok = $this->lophocModel->updateLopHoc($MaLop, $TenLop, $GiaTien, $MoTa, $NgayBatDau, $NgayKetThuc, $TrangThai, $pt_id);
+            $ok = $this->lophocModel->updateLopHoc($MaLop, $TenLop, $GiaTien, $MoTa, $NgayBatDau, $NgayKetThuc, $SoLuongToiDa, $TrangThai);
             if ($ok) {
                 $_SESSION['success'] = "Cập nhật lớp học thành công.";
                 header('Location: /gym/admin/lophoc');
@@ -331,6 +334,89 @@ class AdminController
             echo "Xóa lớp học không thành công.";
         }
     }
+    // Cấu hình lịch học----------------------------------------------------------------------------------------------------------
+    public function indexCauhinhlichhoc()
+    {
+        $cauhinhs = $this->cauHinhLichHocModel->getAll();
+        $lophocs = $this->lophocModel->getLopHocs();
+
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        require_once __DIR__ . '/../views/admin/lichlophoc/adminCauHinhLichHoc.php';
+    }
+
+    public function saveCauhinhlichhoc()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $MaLop = $_POST['MaLop'] ?? null;
+            $ThuTrongTuan = $_POST['ThuTrongTuan'] ?? null;
+            $GioBatDau = $_POST['GioBatDau'] ?? null;
+            $GioKetThuc = $_POST['GioKetThuc'] ?? null;
+            $PhongHocMacDinh = $_POST['PhongHocMacDinh'] ?? null;
+
+            $result = $this->cauHinhLichHocModel->create($MaLop, $ThuTrongTuan, $GioBatDau, $GioKetThuc, $PhongHocMacDinh);
+
+            if (is_array($result)) {
+                $_SESSION['errors'] = $result;
+            } elseif ($result) {
+                $_SESSION['success'] = 'Thêm cấu hình lịch học thành công.';
+            } else {
+                $_SESSION['error'] = 'Có lỗi xảy ra khi thêm cấu hình lịch học.';
+            }
+
+            header('Location: /gym/admin/cauhinhlichhoc');
+            exit;
+        }
+
+        header('Location: /gym/admin/cauhinhlichhoc');
+        exit;
+    }
+
+    public function updateCauhinhlichhoc()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? null;
+            $MaLop = $_POST['MaLop'] ?? null;
+            $ThuTrongTuan = $_POST['ThuTrongTuan'] ?? null;
+            $GioBatDau = $_POST['GioBatDau'] ?? null;
+            $GioKetThuc = $_POST['GioKetThuc'] ?? null;
+            $PhongHocMacDinh = $_POST['PhongHocMacDinh'] ?? null;
+
+            if (empty($id)) {
+                $_SESSION['error'] = 'ID cấu hình không hợp lệ.';
+                header('Location: /gym/admin/cauhinhlichhoc');
+                exit;
+            }
+
+            $result = $this->cauHinhLichHocModel->update($id, $MaLop, $ThuTrongTuan, $GioBatDau, $GioKetThuc, $PhongHocMacDinh);
+
+            if (is_array($result)) {
+                $_SESSION['errors'] = $result;
+            } elseif ($result) {
+                $_SESSION['success'] = 'Cập nhật cấu hình lịch học thành công.';
+            } else {
+                $_SESSION['error'] = 'Cập nhật cấu hình lịch học không thành công.';
+            }
+
+            header('Location: /gym/admin/cauhinhlichhoc');
+            exit;
+        }
+
+        header('Location: /gym/admin/cauhinhlichhoc');
+        exit;
+    }
+
+    public function deleteCauhinhlichhoc($id)
+    {
+        if ($this->cauHinhLichHocModel->delete($id)) {
+            $_SESSION['success'] = 'Xóa cấu hình lịch học thành công.';
+        } else {
+            $_SESSION['error'] = 'Xóa cấu hình lịch học không thành công.';
+        }
+
+        header('Location: /gym/admin/cauhinhlichhoc');
+        exit;
+    }
+
     // Lịch lớp học---------------------------------------------------------------------------------------------------------------
     public function indexLichlophoc()
     {
@@ -397,9 +483,6 @@ class AdminController
             header('Location: /gym/admin/lichlophoc');
             exit;
         }
-
-        header('Location: /gym/admin/lichlophoc');
-        exit;
     }
 
     public function deleteLichLopHoc($id)
@@ -413,8 +496,35 @@ class AdminController
         header('Location: /gym/admin/lichlophoc');
         exit;
     }
-//Hội viên---------------------------------------------------------------------------------------------------------------
+    public function generateLichFromCauHinh()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $MaLop = $_POST['MaLop'] ?? null;
 
+            if (empty($MaLop) || !is_numeric($MaLop)) {
+                $_SESSION['error'] = 'Mã lớp không hợp lệ.';
+                header('Location: /gym/admin/lichlophoc');
+                exit;
+            }
+
+            $result = $this->lichLopHocModel->generateFromCauHinhByMaLop($MaLop);
+
+            if ($result === false) {
+                $_SESSION['error'] = 'Không thể sinh lịch từ cấu hình. Vui lòng kiểm tra lại cấu hình và khoảng ngày của lớp học.';
+            } elseif ($result === 0) {
+                $_SESSION['success'] = 'Không có lịch mới nào được tạo. Có thể chưa có cấu hình hoặc các lịch đã tồn tại.';
+            } else {
+                $_SESSION['success'] = 'Đã tạo ' . (int)$result . ' lịch học từ cấu hình.';
+            }
+
+            header('Location: /gym/admin/lichlophoc');
+            exit;
+        }
+
+        header('Location: /gym/admin/lichlophoc');
+        exit;
+    }
+//Hội viên---------------------------------------------------------------------------------------------------------------
     public function indexUser() 
     {
         $hoiVien = $this->hoiVienModel->getAllHoiVien();
@@ -557,6 +667,60 @@ class AdminController
             exit;
         }
     }
+
+    public function indexDangky()
+    {
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteId'])) {
+            $id = (int)$_POST['deleteId'];
+            if ($id > 0) {
+                try {
+                    $stmtUpd = $this->db->prepare("UPDATE DangKyLopHoc SET TrangThai = 'Huy', updated_at = NOW() WHERE id = :id");
+                    $stmtUpd->bindParam(':id', $id, PDO::PARAM_INT);
+                    $stmtUpd->execute();
+                } catch (PDOException $e) {
+                    error_log('AdminController::indexDangky cancel error - ' . $e->getMessage());
+                }
+            }
+
+            header('Location: /gym/admin/dangky');
+            exit;
+        }
+
+        try {
+            $sqlHv = "SELECT d.*, h.HoTen AS TenHV, l.TenLop, l.SoLuongToiDa,
+                             (SELECT COUNT(*) FROM DangKyLopHoc d2
+                              WHERE d2.MaLop = d.MaLop AND d2.TrangThai = 'DangKy') AS SoDangKy
+                      FROM DangKyLopHoc d
+                      LEFT JOIN HoiVien h ON d.MaHV = h.MaHV
+                      LEFT JOIN LopHoc l ON d.MaLop = l.MaLop
+                      ORDER BY d.created_at DESC";
+            $stmtHv = $this->db->prepare($sqlHv);
+            $stmtHv->execute();
+            $dangkyHv = $stmtHv->fetchAll(PDO::FETCH_ASSOC);
+
+            $sqlPt = "SELECT p.*, pt.HoTen AS TenPT, l.TenLop
+                      FROM PtDayHoc p
+                      LEFT JOIN pt ON p.pt_id = pt.pt_id
+                      LEFT JOIN LopHoc l ON p.MaLop = l.MaLop
+                      ORDER BY p.created_at DESC";
+            $stmtPt = $this->db->prepare($sqlPt);
+            $stmtPt->execute();
+            $dangkyPt = $stmtPt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('AdminController::indexDangky - ' . $e->getMessage());
+            $dangkyHv = [];
+            $dangkyPt = [];
+        }
+
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        require_once __DIR__ . '/../views/admin/dangky/indexDangky.php';
+    }
+
 
     // Quản lý yêu cầu thanh toán ----------------------------------------------------------------------
 

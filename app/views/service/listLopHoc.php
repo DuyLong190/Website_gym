@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -183,16 +184,28 @@
                                 <div class="info-row">
                                     <i class="fas fa-calendar-days"></i>
                                     <span class="card-text">
-                                        <strong>Bắt đầu:</strong> 
-                                        <?php echo date('d/m/Y H:i', strtotime($lophoc->NgayBatDau)); ?>
+                                        <strong>Bắt đầu:</strong>
+                                        <?php echo date('d/m/Y', strtotime($lophoc->NgayBatDau)); ?>
                                     </span>
                                 </div>
 
                                 <div class="info-row">
                                     <i class="fas fa-calendar-check"></i>
                                     <span class="card-text">
-                                        <strong>Kết thúc:</strong> 
-                                        <?php echo date('d/m/Y H:i', strtotime($lophoc->NgayKetThuc)); ?>
+                                        <strong>Kết thúc:</strong>
+                                        <?php echo date('d/m/Y', strtotime($lophoc->NgayKetThuc)); ?>
+                                    </span>
+                                </div>
+
+                                <!-- PT phụ trách -->
+                                <div class="info-row">
+                                    <i class="fas fa-user-tie"></i>
+                                    <span class="card-text">
+                                        <strong>Huấn luyện viên:</strong>
+                                        <?php
+                                        $tenPT = !empty($lophoc->TenPT) ? $lophoc->TenPT : 'Chưa có';
+                                        echo htmlspecialchars($tenPT);
+                                        ?>
                                     </span>
                                 </div>
 
@@ -200,31 +213,45 @@
                                 <div class="info-row">
                                     <i class="fas fa-users"></i>
                                     <span class="card-text">
-                                        <strong>Sỹ số:</strong> 
-                                        <?php echo isset($lophoc->SoLuongToiDa) ? htmlspecialchars($lophoc->SoLuongToiDa) : 'Không xác định'; ?> người
+                                        <strong>Sỹ số tối đa:</strong>
+                                        <?php echo isset($lophoc->SoLuongToiDa) ? htmlspecialchars($lophoc->SoLuongToiDa) : 'Không xác định'; ?>
                                     </span>
+                                </div>
+                                <div class="info-row">
+                                    <i class="fas fa-user-check"></i>
+                                    <span class="card-text">
+                                        <strong>Còn trống:</strong>
+                                        <?php
+                                        $max = isset($lophoc->SoLuongToiDa) ? (int)$lophoc->SoLuongToiDa : 0;
+                                        $reg = isset($lophoc->SoDangKy) ? (int)$lophoc->SoDangKy : 0;
+                                        $remaining = ($max > 0) ? max($max - $reg, 0) : null;
+                                        if ($remaining === null) {
+                                            echo '';
+                                        } else {
+                                            echo htmlspecialchars((string)$remaining);
+                                        }
+                                        ?>
+                                    </span>
+
                                 </div>
 
                                 <!-- Mô tả -->
                                 <?php if (!empty($lophoc->MoTa)): ?>
                                     <div class="info-row">
-                                        <i class="fas fa-note-sticky"></i>
                                         <span class="card-text">
-                                            <strong>Mô tả:</strong><br>
-                                            <?php 
-                                                $moTa = htmlspecialchars($lophoc->MoTa);
-                                                $cauArr = array_filter(array_map('trim', explode('.', $moTa)));
-                                                foreach ($cauArr as $cau) {
-                                                    if (!empty($cau)) {
-                                                        echo '• ' . $cau . '.<br>';
-                                                    }
-                                                } 
+                                            <strong><i class="fas fa-note-sticky me-2"></i>Mô tả:</strong><br>
+                                            <?php
+                                            $moTa = htmlspecialchars($lophoc->MoTa);
+                                            $cauArr = array_filter(array_map('trim', explode('.', $moTa)));
+                                            foreach ($cauArr as $cau) {
+                                                if (!empty($cau)) {
+                                                    echo '• ' . $cau . '.<br>';
+                                                }
+                                            }
                                             ?>
                                         </span>
                                     </div>
                                 <?php endif; ?>
-
-                                
 
                                 <hr class="line-custom">
 
@@ -251,16 +278,59 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function registerClass(maLop) {
-            // Kiểm tra nếu user đã đăng nhập
-            <?php if (isset($_SESSION['user_id'])): ?>
-                window.location.href = '/gym/user/lophoc/register/' + maLop;
-            <?php else: ?>
-                alert('Vui lòng đăng nhập để đăng ký lớp học');
-                window.location.href = '/gym/account/login';
-            <?php endif; ?>
+        async function registerClass(maLop) {
+            try {
+                const response = await fetch('/gym/api/dangkylophoc', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        MaLop: maLop
+                    })
+                });
+
+                let result = {};
+                try {
+                    result = await response.json();
+                } catch (e) {
+                    result = {};
+                }
+
+                if (response.status === 401) {
+                    alert(result.message || 'Vui lòng đăng nhập để đăng ký lớp học');
+                    window.location.href = '/gym/account/login';
+                    return;
+                }
+
+                if (response.ok && result.success) {
+                    if (typeof result.remaining_slots === 'number') {
+                        alert((result.message || 'Đăng ký lớp học thành công') + "\nSố chỗ còn lại: " + result.remaining_slots);
+                    } else {
+                        alert(result.message || 'Đăng ký lớp học thành công');
+                    }
+                    window.location.href = '/gym/user/lichlophoc?MaLop=' + encodeURIComponent(maLop);
+                    return;
+                }
+
+                if (result.errors) {
+                    if (result.errors.exists) {
+                        alert(result.errors.exists);
+                        return;
+                    }
+                    if (result.errors.full) {
+                        alert(result.errors.full);
+                        return;
+                    }
+                }
+
+                alert(result.message || 'Đăng ký lớp học thất bại');
+            } catch (e) {
+                alert('Có lỗi xảy ra, vui lòng thử lại sau');
+            }
         }
     </script>
+
 </body>
 
 </html>

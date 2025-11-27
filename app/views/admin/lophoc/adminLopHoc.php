@@ -169,6 +169,32 @@
         .btn-close {
             filter: brightness(0) invert(1);
         }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border-radius: 12px;
+            padding: 0.35rem 0.85rem;
+            font-size: 0.95rem;
+            gap: 0.25rem;
+            letter-spacing: 0.01em;
+        }
+
+        .status-active {
+            background: #22c55e;
+            color: white;
+        }
+
+        .status-pause {
+            background: #facc15;
+            color: #1e293b;
+        }
+
+        .status-cancel {
+            background: #ef4444;
+            color: white;
+        }
 
         @media (max-width: 768px) {
             .table-responsive {
@@ -211,12 +237,15 @@
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th style="width: 15%;">Tên lớp học</th>
+                                <th style="width: 14%;">Tên lớp học</th>
+                                <th style="width: 14%;">PT phụ trách</th>
                                 <th style="width: 8%;">Giá</th>
-                                <th style="width: 13%;">Bắt đầu</th>
-                                <th style="width: 13%;">Kết thúc</th>
-                                <th>Mô Tả</th>
-                                <th style="width: 13%;">Thao Tác</th>
+                                <th style="width: 10%;">Bắt đầu</th>
+                                <th style="width: 10%;">Kết thúc</th>
+                                <th style="width: 9%;">Sĩ số</th>
+                                <th style="width: 9%;">Còn trống</th>
+                                <th style="width: 12%;">Trạng thái</th>
+                                <th style="width: 14%;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -224,33 +253,66 @@
                                 <?php foreach ($lophocs as $lophoc): ?>
                                     <tr>
                                         <td><?php echo htmlspecialchars($lophoc->TenLop) ?></td>
-                                        <td><?php echo number_format($lophoc->GiaTien, 0, ',', '.'); ?> VNĐ</td>
-                                        <td><?= $lophoc->NgayBatDau ? date('d/m/Y', strtotime($lophoc->NgayBatDau)) : '';?></td>
-                                        <td><?= $lophoc->NgayKetThuc ? date('d/m/Y', strtotime($lophoc->NgayKetThuc)) : '';?></td>
-                                        <td><?php echo htmlspecialchars($lophoc->MoTa) ?></td>
                                         <td>
-                                            <button class="btn btn-sm btn-success" onclick="showLopHoc(<?php echo $lophoc->MaLop ?>)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-info" onclick="editLopHoc(<?php echo $lophoc->MaLop ?>)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger" onclick="deleteLopHoc(<?php echo $lophoc->MaLop ?>)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            <?php
+                                            $tenPT = !empty($lophoc->TenPT) ? $lophoc->TenPT : 'Chưa có';
+                                            echo htmlspecialchars($tenPT);
+                                            ?>
                                         </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="6" class="text-center">Không có lớp học nào</td>
+                                        <td><?php echo number_format($lophoc->GiaTien, 0, ',', '.'); ?> VNĐ</td>
+                                        <td><?= $lophoc->NgayBatDau ? date('d/m/Y', strtotime($lophoc->NgayBatDau)) : ''; ?></td>
+                                        <td><?= $lophoc->NgayKetThuc ? date('d/m/Y', strtotime($lophoc->NgayKetThuc)) : ''; ?></td>
+                                        <td><?php echo htmlspecialchars($lophoc->SoLuongToiDa ?? '') ?></td>
+                                        <td>
+                                            <?php
+                                            $max = isset($lophoc->SoLuongToiDa) ? (int)$lophoc->SoLuongToiDa : 0;
+                                            $reg = isset($lophoc->SoDangKy) ? (int)$lophoc->SoDangKy : 0;
+                                            $remaining = ($max > 0) ? max($max - $reg, 0) : null;
+                                            if ($remaining === null) {
+                                                echo '';
+                                            } else {
+                                                echo htmlspecialchars((string)$remaining);
+                                            }
+                                            ?>
+                                        </td>
+                                        <td>
+                                        <?php
+                                        $status = $lophoc->TrangThai ?? 'Chưa xác định';
+                                        if ($status === 'Đang mở') {
+                                            $statusClass = 'status-active';
+                                        } elseif ($status === 'Tạm ngưng') {
+                                            $statusClass = 'status-pause';
+                                        } else {
+                                            $statusClass = 'status-cancel';
+                                        }
+                                        ?>
+                                        <span class="status-badge <?php echo htmlspecialchars($statusClass); ?>">
+                                            <?= htmlspecialchars($status); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success" onclick="showLopHoc(<?php echo $lophoc->MaLop ?>)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-info" onclick="editLopHoc(<?php echo $lophoc->MaLop ?>)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteLopHoc(<?php echo $lophoc->MaLop ?>)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
                                 </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </main>
-        </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="9" class="text-center">Không có lớp học nào</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
     </div>
 
     <div class="modal fade" id="addLopHocModal" tabindex="-1">
@@ -304,6 +366,18 @@
                                 <div class="text-danger small mt-1"><?php echo htmlspecialchars($errorsAdd['NgayKetThuc']); ?></div>
                             <?php endif; ?>
                         </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-users me-2"></i>Số lượng tối đa
+                            </label>
+                            <input type="number" class="form-control" name="SoLuongToiDa" min="1"
+                                value="<?php echo htmlspecialchars($oldAdd['SoLuongToiDa'] ?? ''); ?>">
+                            <?php if (!empty($errorsAdd['SoLuongToiDa'])): ?>
+                                <div class="text-danger small mt-1"><?php echo htmlspecialchars($errorsAdd['SoLuongToiDa']); ?></div>
+                            <?php endif; ?>
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label">
                                 <i class="fas fa-align-left me-2"></i>Mô Tả

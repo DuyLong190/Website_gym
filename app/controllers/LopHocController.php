@@ -17,7 +17,7 @@ class LopHocController
     // Hiển thị danh sách gói tập
     public function indexLopHoc()
     {
-        $lophocs = $this->lophocModel->getLopHocs();
+        $lophocs = $this->lophocModel->getLopHocsByTrangThai('Đang mở');
 
         require_once __DIR__ . '/../views/share/header.php';
         require_once __DIR__ . '/../views/service/listLopHoc.php';
@@ -48,16 +48,16 @@ class LopHocController
             $MoTa = $_POST['MoTa'] ?? null;
             $NgayBatDau = $_POST['NgayBatDau'] ?? null;
             $NgayKetThuc = $_POST['NgayKetThuc'] ?? null;
+            $SoLuongToiDa = $_POST['SoLuongToiDa'] ?? null;
             $TrangThai = $_POST['TrangThai'] ?? null;
-            $pt_id = !empty($_POST['pt_id']) ? (int)$_POST['pt_id'] : null;
 
-            $result = $this->lophocModel->addLopHoc($TenLop, $GiaTien, $MoTa, $NgayBatDau, $NgayKetThuc, $TrangThai, $pt_id);
+            $result = $this->lophocModel->addLopHoc($TenLop, $GiaTien, $MoTa, $NgayBatDau, $NgayKetThuc, $SoLuongToiDa, $TrangThai);
 
             if (is_array($result)) {
                 // Nếu có lỗi validation, hiển thị form lại với lỗi và dữ liệu cũ
                 $errors = $result;
                 // có thể tái sử dụng biến để prefill form
-                $old = compact('TenLop', 'GiaTien', 'MoTa', 'NgayBatDau', 'NgayKetThuc', 'TrangThai', 'pt_id');
+                $old = compact('TenLop', 'GiaTien', 'MoTa', 'NgayBatDau', 'NgayKetThuc', 'SoLuongToiDa', 'TrangThai');
                 require_once __DIR__ . '/../views/share/header.php';
                 require_once __DIR__ . '/../views/service/addDVTL.php';
                 require_once __DIR__ . '/../views/share/footer.php';
@@ -98,8 +98,8 @@ class LopHocController
             $MoTa = $_POST['MoTa'] ?? null;
             $NgayBatDau = $_POST['NgayBatDau'] ?? null;
             $NgayKetThuc = $_POST['NgayKetThuc'] ?? null;
+            $SoLuongToiDa = $_POST['SoLuongToiDa'] ?? null;
             $TrangThai = $_POST['TrangThai'] ?? null;
-            $pt_id = !empty($_POST['pt_id']) ? (int)$_POST['pt_id'] : null;
 
             if (empty($MaLop)) {
                 $_SESSION['error'] = "ID lớp học không hợp lệ.";
@@ -107,7 +107,7 @@ class LopHocController
                 exit;
             }
 
-            $ok = $this->lophocModel->updateLopHoc($MaLop, $TenLop, $GiaTien, $MoTa, $NgayBatDau, $NgayKetThuc, $TrangThai, $pt_id);
+            $ok = $this->lophocModel->updateLopHoc($MaLop, $TenLop, $GiaTien, $MoTa, $NgayBatDau, $NgayKetThuc, $SoLuongToiDa, $TrangThai);
             if ($ok) {
                 $_SESSION['success'] = "Cập nhật lớp học thành công.";
                 header('Location: /gym/DvTapLuyen');

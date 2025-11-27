@@ -1,17 +1,34 @@
 <?php
 require_once __DIR__ . '/../models/PtModel.php';
+require_once __DIR__ . '/../models/LopHoc_Model.php';
+require_once __DIR__ . '/../models/PtDayHocModel.php';
+require_once __DIR__ . '/../models/LichLopHocModel.php';
+require_once __DIR__ . '/../models/DangKyLopHocModel.php';
+require_once __DIR__ . '/../models/HoiVienModel.php';
+
 require_once __DIR__ . '/../helpers/SessionHelper.php';
 require_once 'app/config/database.php';
 
 class PtApiController
 {
     private $ptModel;
+    private $lopHocModel;
+    private $ptLopHocDkModel;
+    private $lichLopHocModel;
+    private $dangKyLopHocModel;
+    private $hoiVienModel;
+
     private $db;
 
     public function __construct()
     {
         $this->db = (new Database())->getConnection();
         $this->ptModel = new PtModel($this->db);
+        $this->lopHocModel = new LopHoc_Model($this->db);
+        $this->ptLopHocDkModel = new PtDayHocModel($this->db);
+        $this->lichLopHocModel = new LichLopHocModel($this->db);
+        $this->dangKyLopHocModel = new DangKyLopHocModel($this->db);
+        $this->hoiVienModel = new HoiVienModel($this->db);
     }
 
     private function ensurePT()
@@ -37,6 +54,213 @@ class PtApiController
 
         require_once __DIR__ . '/../views/pt/sidebarPT.php';
         require_once __DIR__ . '/../views/pt/profile.php';
+    }
+
+    // Danh sách lớp học để PT đăng ký đứng lớp (web)
+    public function lophoc()
+    {
+        $this->ensurePT();
+        $ptId = (int)$_SESSION['pt_id'];
+
+        $this->lopHocModel->updateExpiredClassesStatus();
+        $lophocs = $this->lopHocModel->getLopHocsByTrangThai('Đang mở');
+        $dangKys = $this->ptLopHocDkModel->getByPt($ptId);
+
+        $dangKyMap = [];
+        if (!empty($dangKys)) {
+            foreach ($dangKys as $row) {
+                if (($row['TrangThai'] ?? '') === 'Đăng ký') {
+                    $maLop = (int)($row['MaLop'] ?? 0);
+                    if ($maLop > 0) {
+                        $dangKyMap[$maLop] = $row;
+                    }
+                }
+            }
+        }
+
+        $lichDay = [];
+        if (!empty($dangKyMap)) {
+            $maLops = array_keys($dangKyMap);
+            $lichDay = $this->lichLopHocModel->getByMaLops($maLops);
+        }
+
+        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        require_once __DIR__ . '/../views/pt/lophoc.php';
+    }
+
+    // Trang lịch dạy PT (web)
+    public function lichday()
+    {
+        $this->ensurePT();
+        $ptId = (int)$_SESSION['pt_id'];
+
+        $lophocs = $this->lopHocModel->getLopHocs();
+        $dangKys = $this->ptLopHocDkModel->getByPt($ptId);
+
+        $dangKyMap = [];
+        if (!empty($dangKys)) {
+            foreach ($dangKys as $row) {
+                if (($row['TrangThai'] ?? '') === 'Đăng ký') {
+                    $maLop = (int)($row['MaLop'] ?? 0);
+                    if ($maLop > 0) {
+                        $dangKyMap[$maLop] = $row;
+                    }
+                }
+            }
+        }
+
+        $lichDay = [];
+        if (!empty($dangKyMap)) {
+            $maLops = array_keys($dangKyMap);
+            $lichDay = $this->lichLopHocModel->getByMaLops($maLops);
+        }
+
+        $lopMap = [];
+        if (!empty($lichDay)) {
+            foreach ($lichDay as $item) {
+                $maLop = (int)($item['MaLop'] ?? 0);
+                if ($maLop > 0) {
+                    $lopMap[$maLop] = $item['TenLop'] ?? ('Lớp #' . $maLop);
+                }
+            }
+        }
+
+        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        require_once __DIR__ . '/../views/pt/lichday.php';
+    }
+
+    public function danhsach_lop()
+    {
+        $this->ensurePT();
+        $ptId = (int)$_SESSION['pt_id'];
+
+        if (empty($_GET['MaLop']) || !is_numeric($_GET['MaLop'])) {
+            $_SESSION['error'] = 'Lớp học không hợp lệ.';
+            header('Location: /gym/pt/lophoc');
+            exit;
+        }
+
+        $MaLop = (int)$_GET['MaLop'];
+
+        $activePtLop = $this->ptLopHocDkModel->getActiveByPtAndLop($ptId, $MaLop);
+        if (!$activePtLop) {
+            $_SESSION['error'] = 'Bạn không có quyền xem danh sách hội viên của lớp này.';
+            header('Location: /gym/pt/lophoc');
+            exit;
+        }
+
+        $lop = $this->lopHocModel->getLopHoc_ByID($MaLop);
+        $members = $this->dangKyLopHocModel->getActiveMembersByLop($MaLop);
+        $lichLop = $this->lichLopHocModel->getByMaLops([$MaLop]);
+
+        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        require_once __DIR__ . '/../views/pt/danhsach_lop.php';
+    }
+
+    public function lichsu()
+    {
+        $this->ensurePT();
+        $ptId = (int)$_SESSION['pt_id'];
+
+        // Lấy tất cả bản ghi PT đã từng đăng ký đứng lớp
+        $dangKys = $this->ptLopHocDkModel->getByPt($ptId);
+
+        $classHistory = [];
+        if (!empty($dangKys)) {
+            $maLopMap = [];
+            foreach ($dangKys as $row) {
+                $maLop = isset($row['MaLop']) ? (int)$row['MaLop'] : 0;
+                if ($maLop <= 0) {
+                    continue;
+                }
+
+                if (!isset($maLopMap[$maLop])) {
+                    $maLopMap[$maLop] = [
+                        'MaLop' => $maLop,
+                        'records' => [],
+                    ];
+                }
+                $maLopMap[$maLop]['records'][] = $row;
+            }
+
+            if (!empty($maLopMap)) {
+                $maLops = array_keys($maLopMap);
+
+                // Thông tin lớp
+                $lopInfos = [];
+                foreach ($maLops as $id) {
+                    $lop = $this->lopHocModel->getLopHoc_ByID($id);
+                    if ($lop) {
+                        $lopInfos[$id] = $lop;
+                    }
+                }
+
+                // Số HV đang tham gia mỗi lớp
+                $activeCounts = [];
+                foreach ($maLops as $id) {
+                    $activeCounts[$id] = $this->dangKyLopHocModel->getActiveCountByLop($id);
+                }
+
+                // Số buổi học theo lịch
+                $lichMap = [];
+                $lichList = $this->lichLopHocModel->getByMaLops($maLops);
+                if (!empty($lichList)) {
+                    foreach ($lichList as $item) {
+                        $m = isset($item['MaLop']) ? (int)$item['MaLop'] : 0;
+                        if ($m > 0) {
+                            if (!isset($lichMap[$m])) {
+                                $lichMap[$m] = [];
+                            }
+                            $lichMap[$m][] = $item;
+                        }
+                    }
+                }
+
+                // Tổng hợp lịch sử theo lớp
+                foreach ($maLopMap as $maLop => $data) {
+                    $records = $data['records'];
+
+                    // lấy bản ghi mới nhất để biết trạng thái hiện tại
+                    usort($records, function ($a, $b) {
+                        $t1 = strtotime($a['updated_at'] ?? $a['created_at'] ?? '');
+                        $t2 = strtotime($b['updated_at'] ?? $b['created_at'] ?? '');
+                        return $t2 <=> $t1;
+                    });
+
+                    $latest = $records[0];
+                    $trangThai = $latest['TrangThai'] ?? '';
+
+                    $lop = $lopInfos[$maLop] ?? null;
+
+                    // Nếu lớp hiện tại vẫn đang được PT phụ trách thì không đưa vào lịch sử
+                    if ($trangThai === 'Đăng ký') {
+                        continue;
+                    }
+
+                    $soHvDangKy = $activeCounts[$maLop] ?? 0;
+                    $lichLop = $lichMap[$maLop] ?? [];
+
+                    $classHistory[] = [
+                        'MaLop' => $maLop,
+                        'lop' => $lop,
+                        'TrangThai' => $trangThai,
+                        'SoHoiVienDangKy' => $soHvDangKy,
+                        'SoBuoi' => is_array($lichLop) ? count($lichLop) : 0,
+                        'LichLop' => $lichLop,
+                    ];
+                }
+
+                // Sắp xếp lớp theo thời gian đăng ký mới nhất
+                usort($classHistory, function ($a, $b) {
+                    $maLopA = $a['MaLop'] ?? 0;
+                    $maLopB = $b['MaLop'] ?? 0;
+                    return $maLopB <=> $maLopA;
+                });
+            }
+        }
+
+        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        require_once __DIR__ . '/../views/pt/lichsu.php';
     }
 
     // Trang chỉnh sửa PT (web)

@@ -96,7 +96,7 @@
                             <?php if (SessionHelper::isAdmin()): ?>
                                 <li><a class="dropdown-item hover:bg-gray-700 !important" href="/gym/admin">Quản lý</a></li>
                             <?php elseif (SessionHelper::isPT()): ?>
-                                <li><a class="dropdown-item hover:bg-gray-700 !important" href="/gym/pt">Xem lịch dạy</a></li>
+                                <li><a class="dropdown-item hover:bg-gray-700 !important" href="/gym/pt/lichday">Xem lịch dạy</a></li>
                             <?php endif; ?>
                             <li>
                                 <a class="dropdown-item hover:bg-gray-7 00" href="<?php echo SessionHelper::isPT() ? '/gym/pt' : '/gym/user'; ?>">Thông tin cá nhân</a>

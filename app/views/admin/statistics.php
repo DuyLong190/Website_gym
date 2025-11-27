@@ -9,50 +9,75 @@
     <style>
         body {
             margin-left: 15%;
+            background-color: #f3f4f6;
         }
         .stat-card {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+            padding: 20px 22px;
             margin-bottom: 20px;
         }
         .chart-container {
             position: relative;
-            height: 300px;
-            margin-bottom: 30px;
+            height: 320px;
+            margin-bottom: 10px;
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .section-title i {
+            color: #2563eb;
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
     <div class="container-fluid py-4">
-        <h2 class="mb-4">Thống kê hệ thống</h2>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-1">
+                    <i class="fa-solid fa-chart-column me-2 text-primary"></i>
+                    Thống kê hệ thống
+                </h2>
+                <p class="text-muted mb-0">Tổng quan người dùng, gói tập và xu hướng đăng ký theo thời gian.</p>
+            </div>
+        </div>
 
         <!-- Thống kê theo role -->
-        <div class="row">
-            <div class="col-md-6">
+        <div class="row g-4">
+            <div class="col-lg-6">
                 <div class="stat-card">
-                    <h4 class="mb-3">Thống kê theo vai trò</h4>
-                    <div class="chart-container">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="section-title">
+                            <i class="fa-solid fa-user-gear"></i>
+                            <span>Thống kê theo vai trò</span>
+                        </div>
+                    </div>
+                    <div class="chart-container mb-2">
                         <canvas id="roleChart"></canvas>
                     </div>
-                    <div class="table-responsive mt-3">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
+                    <div class="table-responsive mt-2">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr class="text-nowrap">
                                     <th>Vai trò</th>
-                                    <th>Tổng số</th>
-                                    <th>Có gói tập</th>
-                                    <th>Chưa có gói</th>
+                                    <th class="text-end">Tổng số</th>
+                                    <th class="text-end">Có gói tập</th>
+                                    <th class="text-end">Chưa có gói</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($statistics['roleStats'] as $stat): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($stat['role_name']) ?></td>
-                                    <td><?= $stat['total_users'] ?></td>
-                                    <td><?= $stat['users_with_package'] ?></td>
-                                    <td><?= $stat['users_without_package'] ?></td>
+                                    <td class="text-end fw-semibold"><?= $stat['total_users'] ?></td>
+                                    <td class="text-end text-success"><?= $stat['users_with_package'] ?></td>
+                                    <td class="text-end text-muted"><?= $stat['users_without_package'] ?></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -62,25 +87,30 @@
             </div>
 
             <!-- Thống kê gói tập -->
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <div class="stat-card">
-                    <h4 class="mb-3">Thống kê gói tập</h4>
-                    <div class="chart-container">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="section-title">
+                            <i class="fa-solid fa-dumbbell"></i>
+                            <span>Thống kê gói tập</span>
+                        </div>
+                    </div>
+                    <div class="chart-container mb-2">
                         <canvas id="packageChart"></canvas>
                     </div>
-                    <div class="table-responsive mt-3">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
+                    <div class="table-responsive mt-2">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr class="text-nowrap">
                                     <th>Gói tập</th>
-                                    <th>Số lượng</th>
+                                    <th class="text-end">Số lượng</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($statistics['packageStats'] as $stat): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($stat['TenGoiTap']) ?></td>
-                                    <td><?= $stat['total_users'] ?></td>
+                                    <td class="text-end fw-semibold"><?= $stat['total_users'] ?></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -91,16 +121,22 @@
         </div>
 
         <!-- Thống kê theo thời gian -->
-        <div class="row mt-4">
+        <div class="row mt-4 g-4">
             <div class="col-12">
                 <div class="stat-card">
-                    <h4 class="mb-3">Thống kê đăng ký theo thời gian</h4>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="section-title">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>Thống kê đăng ký theo thời gian</span>
+                        </div>
+                    </div>
                     <div class="chart-container">
                         <canvas id="timeChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

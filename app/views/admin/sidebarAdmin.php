@@ -89,7 +89,7 @@
                 </a>
                 <a href="/gym/admin/DvThuGian" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-heart fa-fw me-3"></i>
-                    <span>Dịch vụ thư giãn</span>
+                    <span>Dịch vụ</span>
                 </a>
                 <a href="/gym/admin/lophoc" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-hand-fist fa-fw me-3"></i>
@@ -101,11 +101,15 @@
                 </a>
                 <a href="/gym/admin/account" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-user-shield fa-fw me-3"></i>
-                    <span>Quản lý tài khoản</span>
+                    <span>Tài khoản</span>
                 </a>
                 <a href="/gym/admin/lichlophoc" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-calendar fa-fw me-3"></i>
                     <span>Lịch lớp học</span>
+                </a>
+                <a href="/gym/admin/dangky" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-dumbbell fa-fw me-3"></i>
+                    <span>Buổi học</span>
                 </a>
                 <a href="/gym/admin/yeucau" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-code-pull-request fa-fw me-3"></i>
