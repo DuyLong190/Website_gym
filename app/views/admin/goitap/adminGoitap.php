@@ -54,6 +54,22 @@
                 font-size: 0.95rem;
             }
         }
+
+        .container-fluid {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -89,9 +105,9 @@
                                 <table class="table table-bordered table-striped align-middle">
                                     <thead>
                                         <tr>
-                                            <th style="width: 10%;">Tên gói tập</th>
-                                            <th style="width: 8%;">Giá</th>
-                                            <th style="width: 8%;">Thời hạn</th>
+                                            <th style="width: 15%;">Tên gói tập</th>
+                                            <th style="width: 10%;">Giá</th>
+                                            <th style="width: 10%;">Thời hạn</th>
                                             <th>Mô tả</th>
                                             <th style="width: 11%;" class="text-center">Thao tác</th>
                                         </tr>

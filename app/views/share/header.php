@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LD Gym & Fitness</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="public/css/header.css">
     <style>
@@ -65,7 +64,7 @@
                     </a>
                     <ul class="dropdown-menu absolute bg-gray-800 text-white rounded-lg mt-2" aria-labelledby="dichvuDropdown">
                         <li><a class="dropdown-item" href="/gym/DvThuGian">Dịch vụ thư giãn</a></li>
-                        <li><a class="dropdown-item" href="/gym/DvTapLuyen">Lớp học</a></li>
+                        <li><a class="dropdown-item" href="/gym/lophoc">Lớp học</a></li>
                     </ul>
                 </li>
                 <li><a href="#" class="hover:text-red-500 transition duration-300">Ưu đãi</a></li>
@@ -96,12 +95,18 @@
                         <ul class="dropdown-menu dropdown-menu-end bg-gray-800 text-white" aria-labelledby="userDropdown">
                             <?php if (SessionHelper::isAdmin()): ?>
                                 <li><a class="dropdown-item hover:bg-gray-700 !important" href="/gym/admin">Quản lý</a></li>
+                            <?php elseif (SessionHelper::isPT()): ?>
+                                <li><a class="dropdown-item hover:bg-gray-700 !important" href="/gym/pt/lichday">Xem lịch dạy</a></li>
                             <?php endif; ?>
-                            <li><a class="dropdown-item hover:bg-gray-7 00" href="/gym/user">Thông tin cá nhân</a></li>
+                            <li>
+                                <a class="dropdown-item hover:bg-gray-7 00" href="<?php echo SessionHelper::isPT() ? '/gym/pt' : '/gym/user'; ?>">Thông tin cá nhân</a>
+                            </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item hover:bg-gray-700" href="/gym/account/logout">Đăng xuất</a></li>
+                            <li>
+                                <a class="dropdown-item hover:bg-gray-700" href="/gym/account/logout">Đăng xuất</a>
+                            </li>
                         </ul>
                     </li>
                 <?php else: ?>

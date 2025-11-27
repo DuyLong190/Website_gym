@@ -14,7 +14,7 @@
             background: linear-gradient(120deg, #f8fafc 0%, #dbeafe 100%);
             min-height: 100vh;
             margin-left: 15%;
-            
+
         }
 
         .admin-card {
@@ -72,6 +72,22 @@
 
         .profile-value {
             color: #333;
+        }
+
+        .container-fluid {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sửa thông tin hội viên</title>
+    <title>Chỉnh sửa hội viên</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -62,7 +62,15 @@
                                             <input type="date" class="form-control" id="NgaySinh" name="NgaySinh" value="<?php echo $hoiVien->NgaySinh ?>" required>
                                         </div>
                                     </div>
-
+                                    <div class = "row mb-3">
+                                        <div class="col-md-6">
+                                            <label for= "ChieuCao" class="form-label">Chiều cao (cm)</label>
+                                            <input type="number" class="form-control" id="ChieuCao" name="ChieuCao" value="<?php echo $hoiVien->ChieuCao ?>" step="1" min="0">
+                                        </div>
+                                        <div class ="col-md-6">
+                                            <label for= "CanNang" class="form-label">Cân nặng (kg)</label>
+                                            <input type="number" class="form-control" id="CanNang" name="CanNang" value="<?php echo $hoiVien->CanNang ?>" step="1" min="0">
+                                    </div>
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="GioiTinh" class="form-label">Giới tính <span class="text-danger">*</span></label>

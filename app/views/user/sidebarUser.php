@@ -66,14 +66,14 @@
                 <a href="/gym/user/profile" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-user fa-fw me-3"></i>
                     <span>Thông tin cá nhân</span>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-dumbbell fa-fw me-3"></i>
+                <a href="/gym/user/chitiet_goitap" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-dumbbell fa-fw me-3"></i>
                     <span>Gói tập của tôi</span>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-calendar fa-fw me-3"></i>
+                <a href="/gym/user/lichlophoc" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-calendar fa-fw me-3"></i>
                     <span>Lịch tập</span>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-list-check fa-fw me-3"></i>
-                    <span>Dịch vụ đăng ký</span>
+                <a href="/gym/user/lophoc" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-list-check fa-fw me-3"></i>
+                    <span>Lớp học</span>
                 </a>
                 <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i class="fas fa-clock-rotate-left fa-fw me-3"></i>
                     <span>Lịch sử hoạt động</span>

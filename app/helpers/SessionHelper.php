@@ -8,5 +8,9 @@
     {
         return isset($_SESSION['username']) && intval($_SESSION['role_id']) === 0;
     }
+    public static function isPT()
+    {
+        return isset($_SESSION['username']) && intval($_SESSION['role_id']) === 2;
+    }
 }
 ?>

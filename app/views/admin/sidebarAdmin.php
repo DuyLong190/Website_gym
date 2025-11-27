@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap & FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,6 +11,7 @@
         body {
             background-color: #fbfbfb;
         }
+
         .sidebar {
             position: fixed;
             top: 0;
@@ -23,10 +24,12 @@
             z-index: 600;
             transition: width 0.2s;
         }
+
         .sidebar .active {
             border-radius: 5px;
             box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
         }
+
         .sidebar-sticky {
             position: relative;
             top: 0;
@@ -35,6 +38,7 @@
             overflow-x: hidden;
             overflow-y: auto;
         }
+
         @media (max-width: 991.98px) {
             .sidebar {
                 width: 100%;
@@ -42,10 +46,12 @@
                 height: auto;
                 padding: 0;
             }
+
             main {
                 padding-left: 0 !important;
             }
         }
+
         main {
             padding-left: 240px;
             margin-top: 58px;
@@ -53,6 +59,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Sidebar -->
     <nav class="sidebar">
@@ -68,9 +75,9 @@
                 </div>
             </div>
             <div class="list-group list-group-flush mx-3 mt-4">
-                <a href="#" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+                <a href="/gym/admin/statistics" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
                     <i class="fas fa-tachometer-alt fa-fw me-3"></i>
-                    <span>Main dashboard</span>
+                    <span>Thống kê</span>
                 </a>
                 <a href="/gym/admin/user" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-users fa-fw me-3"></i>
@@ -82,19 +89,31 @@
                 </a>
                 <a href="/gym/admin/DvThuGian" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-heart fa-fw me-3"></i>
-                    <span>Dịch vụ thư giãn</span>
+                    <span>Dịch vụ</span>
                 </a>
                 <a href="/gym/admin/lophoc" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-hand-fist fa-fw me-3"></i>
                     <span>Lớp học</span>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+                <a href="/gym/admin/pt" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-user-tie fa-fw me-3"></i>
                     <span>Huấn luyện viên</span>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+                <a href="/gym/admin/account" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-user-shield fa-fw me-3"></i>
+                    <span>Tài khoản</span>
+                </a>
+                <a href="/gym/admin/lichlophoc" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-calendar fa-fw me-3"></i>
                     <span>Lịch lớp học</span>
+                </a>
+                <a href="/gym/admin/dangky" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-dumbbell fa-fw me-3"></i>
+                    <span>Buổi học</span>
+                </a>
+                <a href="/gym/admin/yeucau" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-code-pull-request fa-fw me-3"></i>
+                    <span>Yêu cầu xác nhận</span>
                 </a>
                 <a href="/gym" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-home fa-fw me-3"></i>
@@ -108,10 +127,11 @@
     <!-- Main content -->
     <main>
         <div class="container pt-4">
-            <!-- Nội dung chính ở đây -->
+            <!-- Nội dung chính sẽ được include ở đây -->
         </div>
     </main>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

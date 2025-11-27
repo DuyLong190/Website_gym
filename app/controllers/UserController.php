@@ -2,11 +2,15 @@
 require_once __DIR__ . '/../models/HoiVienModel.php';
 require_once __DIR__ . '/../models/GoiTapModel.php';
 require_once __DIR__ . '/../models/AccountModel.php';
+require_once __DIR__ . '/../models/DangKyLopHocModel.php';
+require_once __DIR__ . '/../models/LichLopHocModel.php';
 class UserController
 {
     private $hoivienModel;
     private $goitapModel;
     private $accountModel;
+    private $dangKyLopHocModel;
+    private $lichLopHocModel;
     private $db;
 
     public function __construct() 
@@ -15,6 +19,8 @@ class UserController
         $this->hoivienModel = new HoiVienModel($this->db);
         $this->goitapModel = new GoiTapModel($this->db);
         $this->accountModel = new AccountModel($this->db);
+        $this->dangKyLopHocModel = new DangKyLopHocModel($this->db);
+        $this->lichLopHocModel = new LichLopHocModel($this->db);
     }
     public function profile()
     {
@@ -30,8 +36,8 @@ class UserController
         if (!$hoiVien) {
             error_log("Không tìm thấy thông tin hội viên cho username: " . $username);
         }
-        require_once __DIR__ . '/../views/user/sidebarInfo.php';
-        require_once __DIR__ . '/../views/user/profile.php';
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        require_once __DIR__ . '/../views/user/info/profile.php';
     }
 
     public function edit_profile() {
@@ -50,8 +56,8 @@ class UserController
             header('Location: /gym/user/profile');
             exit;
         }
-        require_once __DIR__ . '/../views/user/sidebarInfo.php';
-        require_once __DIR__ . '/../views/user/edit_profile.php';
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        require_once __DIR__ . '/../views/user/info/edit_profile.php';
     }
 
     public function update_profile() {
@@ -95,5 +101,75 @@ class UserController
             }
             exit;
         }
+    }
+
+    public function lophoc()
+    {
+        if (!isset($_SESSION['username'])) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        $username = $_SESSION['username'];
+        $hoiVien = $this->hoivienModel->getHoiVienByUsername($username);
+
+        if (!$hoiVien) {
+            $_SESSION['error'] = "Không tìm thấy thông tin hội viên";
+            header('Location: /gym/user/profile');
+            exit;
+        }
+
+        $MaHV = (int)$hoiVien->MaHV;
+        $dangKys = $this->dangKyLopHocModel->getByHoiVien($MaHV);
+
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        require_once __DIR__ . '/../views/user/lophoc.php';
+    }
+
+    public function lichlophoc()
+    {
+        if (!isset($_SESSION['username'])) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        $username = $_SESSION['username'];
+        $hoiVien = $this->hoivienModel->getHoiVienByUsername($username);
+
+        if (!$hoiVien) {
+            $_SESSION['error'] = "Không tìm thấy thông tin hội viên";
+            header('Location: /gym/user/profile');
+            exit;
+        }
+
+        $MaHV = (int)$hoiVien->MaHV;
+        $dangKys = $this->dangKyLopHocModel->getByHoiVien($MaHV);
+
+        $maLops = [];
+        if (!empty($dangKys)) {
+            foreach ($dangKys as $dk) {
+                $trangThai = isset($dk['TrangThai']) ? $dk['TrangThai'] : '';
+                if ($trangThai === 'DangKy' && isset($dk['MaLop']) && is_numeric($dk['MaLop'])) {
+                    $maLops[] = (int)$dk['MaLop'];
+                }
+            }
+            $maLops = array_values(array_unique($maLops));
+        }
+
+        $maLopFilter = null;
+        if (isset($_GET['MaLop']) && is_numeric($_GET['MaLop'])) {
+            $maLopFilter = (int)$_GET['MaLop'];
+        }
+
+        if ($maLopFilter !== null && !empty($maLops)) {
+            $maLops = array_values(array_filter($maLops, function ($id) use ($maLopFilter) {
+                return $id === $maLopFilter;
+            }));
+        }
+
+        $lichLops = !empty($maLops) ? $this->lichLopHocModel->getByMaLops($maLops) : [];
+
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        require_once __DIR__ . '/../views/user/lichlophoc.php';
     }
 }

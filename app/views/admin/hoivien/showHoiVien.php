@@ -116,6 +116,7 @@
                             <div class="info-label">Cân nặng</div>
                             <div class="info-value"><?= htmlspecialchars((string)($hoiVien->CanNang ?? '')) ?> kg</div>
                         </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6 mb-4">
                             <div class="info-label">Email</div>
@@ -126,6 +127,46 @@
                             <div class="info-value"><?= htmlspecialchars((string)($hoiVien->DiaChi ?? '')) ?></div>
                         </div>
                     </div>
+
+                    <?php if (isset($currentCtgt) && is_array($currentCtgt)): ?>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="info-label">Trạng thái gói tập</div>
+                                <div class="info-value">
+                                    <?= htmlspecialchars((string)($currentCtgt['TrangThai'] ?? '')) ?>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="info-label">Thanh toán</div>
+                                <div class="info-value">
+                                    <?php
+                                    $daThanhToan = (int)($currentCtgt['DaThanhToan'] ?? 0);
+                                    $trangThaiCt = $currentCtgt['TrangThai'] ?? '';
+                                    if ($daThanhToan === 1) {
+                                        echo '<span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Đã thanh toán</span>';
+                                    } else {
+                                        // Hiển thị badge trạng thái hiện tại
+                                        if ($trangThaiCt === 'Chờ xác minh') {
+                                            echo '<span class="badge bg-warning text-dark me-2"><i class="fas fa-clock me-1"></i>Chờ xác minh</span>';
+                                        } else {
+                                            echo '<span class="badge bg-secondary me-2">Chưa thanh toán</span>';
+                                        }
+
+                                        // Luôn hiển thị nút xác minh cho admin khi chưa thanh toán
+                                        $id_ctgt = $currentCtgt['id_ctgt'] ?? null;
+                                        if ($id_ctgt !== null): ?>
+                                            <form method="post" action="/gym/admin/user/verifyPayment/<?= htmlspecialchars((string)$id_ctgt) ?>" style="display:inline-block;">
+                                                <button type="submit" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-check me-1"></i>Xác minh thanh toán
+                                                </button>
+                                            </form>
+                                        <?php endif;
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
 
                     <div class="row">
                         <div class="col-md-6 mb-4">
