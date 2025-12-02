@@ -1,0 +1,399 @@
+:root {
+    --color-background: #fff;
+    --color-text: #2c3e50;
+    --color-primary: #8f2121;
+    --color-primary-darker: #c0392b;
+    /* For reduced-motion hover */
+    --color-secondary: #3498db;
+    --color-highlight-bg: #f2f5f7;
+    --font-family-sans-serif: "Nunito", system-ui, -apple-system, sans-serif;
+    --font-weight-bold: 700;
+    --navbar-height: 100px;
+    --navbar-padding: 1rem;
+    --container-width: 1140px;
+    --transition-speed: 0.3s;
+    --transition-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;700&display=swap');
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Prevent horizontal page scroll and ensure images scale to container */
+html, body {
+    overflow-x: hidden;
+}
+
+img,
+.carousel img,
+.carousel-item img,
+.card-custom img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family-sans-serif);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-background);
+}
+
+.content {
+    height: 200vh;
+    padding: 120px 2rem;
+    text-align: center;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/*
+        ========================================
+        Navbar Base & Mobile Styles
+        ========================================
+        */
+.navbar {
+    height: var(--navbar-height);
+    display: flex;
+    align-items: center;
+    background-color: var(--color-background);
+    border-bottom: 2px solid var(--color-highlight-bg);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 var(--navbar-padding);
+}
+
+.navbar__brand {
+    font-size: 1.75rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
+.navbar__toggle {
+    display: block;
+    border: none;
+    padding: 0.5rem;
+    background: transparent;
+    cursor: pointer;
+    position: relative; /* ensure z-index takes effect */
+    z-index: 1100; /* sit above other header elements when responsive */
+}
+
+.navbar__toggle .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: var(--color-text);
+    border-radius: 3px;
+    transition: all var(--transition-speed) var(--transition-bounce);
+}
+
+/* These transforms are for the mobile menu 'hamburger' to 'X' animation */
+.navbar__toggle.is-active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.navbar__toggle.is-active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar__toggle.is-active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+    background-color: #000;
+}
+
+.navbar__menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: var(--navbar-height);
+    left: 0;
+    background-color: #000;
+    border-bottom: 2px solid var(--color-highlight-bg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+    z-index: 999;
+}
+
+.navbar__menu.is-active {
+    display: flex;
+}
+
+.navbar__item {
+    text-align: center;
+}
+
+.navbar__link {
+    display: block;
+    padding: 1.5rem;
+    font-weight: var(--font-weight-bold);
+    transition: background-color var(--transition-speed) ease;
+}
+
+.navbar__link:hover,
+.navbar__link:focus {
+    background-color: #504e4eff;
+}
+
+:is(.navbar__toggle, .navbar__link):focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+
+/*
+        ========================================
+        Desktop Navbar Styles & Animations
+        ========================================
+        */
+@media (min-width: 768px) {
+    .navbar__toggle {
+        display: none;
+    }
+
+    .navbar__menu {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        position: static;
+        width: auto;
+        background: none;
+        border: none;
+        box-shadow: none;
+    }
+
+    .navbar__list {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .navbar__link {
+        padding: 0.5rem 1rem;
+        position: relative;
+    }
+
+    /* General hover rule that applies to non-CTA links. */
+    .navbar__link:not(.navbar__link--cta):hover,
+    .navbar__link:not(.navbar__link--cta):focus {
+        background-color: transparent;
+    }
+
+    /* Underline animation (exclude dropdown toggles so Bootstrap caret is not moved) */
+    .navbar__link:not(.navbar__link--cta):not(.dropdown-toggle)::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background-color: var(--color-secondary);
+        transition: all var(--transition-speed) ease;
+        transform: translateX(-50%);
+    }
+
+    .navbar__link:not(.navbar__link--cta):hover::after,
+    .navbar__link:not(.navbar__link--cta):focus::after {
+        width: 100%;
+    }
+
+    /* CTA Button */
+    .navbar__item--cta {
+        margin-left: 1rem;
+    }
+
+    .navbar__link--cta {
+        background-color: var(--color-primary);
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        transition: transform var(--transition-speed) var(--transition-bounce),
+            background-color var(--transition-speed) ease;
+    }
+
+    .navbar__link--cta:hover,
+    .navbar__link--cta:focus {
+        background-color: var(--color-primary);
+        transform: scale(1.1);
+    }
+}
+
+/* Reduced Motion Accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    /* Disable animations */
+    .navbar__toggle .bar,
+    .navbar__link:not(.navbar__link--cta)::after,
+    .navbar__link--cta {
+        transition: none;
+    }
+
+    /* Instantly show underline for non-CTA links on hover */
+    .navbar__link:not(.navbar__link--cta):hover::after,
+    .navbar__link:not(.navbar__link--cta):focus::after {
+        width: 100%;
+    }
+
+    /* Disable scaling on CTA and just change color for feedback */
+    .navbar__link--cta:hover,
+    .navbar__link--cta:focus {
+        transform: none;
+        background-color: var(--color-primary-darker);
+    }
+}
+
+/* *************************************** */
+/* Custom Styles for Navbar and Dropdown */
+/* *************************************** */
+header {
+    /* Các style đã có trong class */
+    padding: 5px 0;
+    text-align: left;
+}
+
+/* Nav links inside header */
+.navbar__list .navbar__link {
+    color: #fff;
+    /* Để đảm bảo màu trắng trên nền đen của header */
+    text-decoration: none;
+    padding: 5px 15px;
+    display: inline-block;
+    margin-right: 15px;
+    font-size: 1.1em;
+}
+
+/* Chỉnh lại màu cho mobile menu vì background #000 là trong menu */
+.navbar__menu a {
+    color: #fff !important;
+}
+
+.navbar img {
+    margin-right: 10px;
+}
+
+.nav-link.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    /* Đảm bảo nút dropdown bên phải cũng màu trắng */
+}
+
+.nav-link.dropdown-toggle img {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.nav-link.dropdown-toggle span {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Fix: ensure dropdown caret sits inline with text for both navbar__link and nav-link */
+.navbar__link.dropdown-toggle,
+.nav-link.dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Make the bootstrap caret align vertically center when link is a flex container */
+.navbar__link.dropdown-toggle::after,
+.nav-link.dropdown-toggle::after {
+    display: inline-block;
+    margin-left: 0.25rem;
+    vertical-align: middle;
+    align-self: center;
+    /* Ensure any earlier absolute positioning is removed so caret sits inline */
+    position: static !important;
+    bottom: auto !important;
+    left: auto !important;
+}
+
+/* Đảm bảo dropdown menu có màu nền và text phù hợp */
+.dropdown-menu {
+    background: rgba(15, 23, 42, 0.88) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 25px 50px rgba(15, 23, 42, 0.35);
+    backdrop-filter: blur(16px);
+    min-width: 220px;
+    padding: 0.35rem 0;
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.dropdown-menu .dropdown-item {
+    color: #f8fafc !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 600;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: rgba(248, 250, 252, 0.12) !important;
+    transform: translateY(-1px);
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.nav-link.dropdown-toggle::after,
+.navbar__link.dropdown-toggle::after {
+    transition: transform 0.3s ease;
+}
+
+.nav-item.dropdown.show .nav-link.dropdown-toggle::after,
+.nav-item.dropdown .nav-link.dropdown-toggle[aria-expanded="true"]::after,
+.navbar__item.dropdown.show .navbar__link.dropdown-toggle::after,
+.navbar__item.dropdown .navbar__link.dropdown-toggle[aria-expanded="true"]::after {
+    transform: rotate(180deg);
+}
+
+.nav-item.dropdown {
+    position: relative;
+}
+
+.nav-item.dropdown .dropdown-menu {
+    top: 120%;
+    right: 0;
+    left: auto;
+}
+
+.dropdown-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+

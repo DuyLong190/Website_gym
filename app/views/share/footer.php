@@ -1,3 +1,7 @@
+<?php
+?>
+<link rel="stylesheet" href="/Gym/public/css/footer.css">
+
 <footer class="footer">
     <div class="container">
         <div class="footer-content">
@@ -20,39 +24,4 @@
     </div>
 </footer>
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Bootstrap JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<style>
-    .footer {
-        background-color: #8f2121;
-        color: #fff;
-        padding: 20px 0;
-    }
-
-    .footer .container {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-    }
-
-    .footer-section h3 {
-        margin-bottom: 15px;
-    }
-
-    .footer-section ul li a {
-        color: #fff;
-        text-decoration: none;
-    }
-
-    @media (max-width: 768px) {
-        .footer .container {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-    }
-</style>
+<!-- Note: Bootstrap is already included in the header. Removed duplicate includes to avoid CSS/JS conflicts. -->
