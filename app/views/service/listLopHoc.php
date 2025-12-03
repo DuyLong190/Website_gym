@@ -1,163 +1,7 @@
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lớp học</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .package-card {
-            padding: 25px;
-            background: linear-gradient(135deg, rgba(45, 4, 0, 0.88), rgba(47, 45, 45, 0.96));
-            transition: transform 0.3s, box-shadow 0.3s;
-            margin-bottom: 24px;
-            border-radius: 18px;
-            box-shadow: 0 4px 16px rgba(31, 38, 135, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            height: 100%;
-        }
-
-        .package-card:hover {
-            transform: translateY(-7px) scale(1.02);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
-        }
-
-        .class-name {
-            font-size: 1.5rem;
-            background: linear-gradient(135deg, #8f2121, #d94444);
-            color: #fff;
-            font-weight: 700;
-            border-radius: 8px;
-            padding: 0.6em 1em;
-            margin-bottom: 1em;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .class-price {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #ffb700;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .currency-symbol {
-            font-size: 1rem;
-            vertical-align: super;
-        }
-
-        .card-text {
-            color: rgb(255, 255, 255);
-            font-size: 0.95rem;
-        }
-
-        .info-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.8rem;
-            gap: 8px;
-        }
-
-        .info-row i {
-            color: #ffb700;
-            width: 20px;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.35em 0.7em;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-top: 0.5rem;
-        }
-
-        .status-open {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .status-closed {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .status-cancelled {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .hero-section {
-            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            position: relative;
-            background-image: url('/Gym/public/images/banner.png');
-            background-size: cover;
-            background-position: center;
-            width: 100vw;
-            min-height: 40vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
-            box-shadow: 0 0 10px rgb(255, 255, 255), 0 0 30px rgb(253, 253, 253);
-            border-radius: 10px;
-        }
-
-        .line-custom {
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            margin: 1rem 0;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: auto;
-        }
-
-        .btn-custom {
-            flex: 1;
-            padding: 0.6rem 0.8rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            text-align: center;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .btn-register {
-            background-color: #ffb700;
-            color: #000;
-        }
-
-        .btn-register:hover {
-            background-color: #ffc922;
-            color: #000;
-        }
-
-        .btn-detail {
-            background-color: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            border: 1px solid #fff;
-        }
-
-        .btn-detail:hover {
-            background-color: rgba(255, 255, 255, 0.25);
-            color: #fff;
-        }
-    </style>
-</head>
-
-<body>
     <div class="container">
         <section class="hero-section text-white py-5 mb-5">
             <div class="container px-4">
-                <h1 class="text-center"><i class="fas fa-chalkboard-user me-3"></i>LỚP HỌC</h1>
+                <h1 class="text-center"><i></i>LỚP HỌC</h1>
             </div>
         </section>
 
@@ -276,7 +120,6 @@
         <?php endif; ?>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         async function registerClass(maLop) {
             try {
@@ -330,7 +173,3 @@
             }
         }
     </script>
-
-</body>
-
-</html>

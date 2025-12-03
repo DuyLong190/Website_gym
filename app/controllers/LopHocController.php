@@ -18,7 +18,11 @@ class LopHocController
     public function indexLopHoc()
     {
         $lophocs = $this->lophocModel->getLopHocsByTrangThai('Đang mở');
-
+        $pageTitle = 'Lớp học';
+        $additionalHeadContent = <<<HTML
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            <link rel="stylesheet" href="/Gym/public/css/lophoc.css">
+        HTML;
         require_once __DIR__ . '/../views/share/header.php';
         require_once __DIR__ . '/../views/service/listLopHoc.php';
         require_once __DIR__ . '/../views/share/footer.php';

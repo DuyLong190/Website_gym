@@ -18,9 +18,11 @@ class DvThuGianController
     public function indexDVTG()
     {
         $DVTGs = $this->dvtgModel->getDVTGs();
-
+        $pageTitle = 'Dịch vụ';
+        $additionalHeadContent = <<<HTML
+            <link rel="stylesheet" href="/Gym/public/css/dvtg.css">
+        HTML;
         require_once __DIR__ . '/../views/share/header.php';
-
         require_once __DIR__ . '/../views/service/listDVTG.php';
         require_once __DIR__ . '/../views/share/footer.php';
     }

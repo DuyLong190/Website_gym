@@ -24,6 +24,18 @@ class GoiTapController
     public function indexGoiTap()
     {
         $goiTaps = $this->goitapModel->getGoiTaps();
+        // Lấy thông tin hội viên nếu đã đăng nhập
+        $hoiVien = null;
+        if (isset($_SESSION['username'])) {
+            $hoiVien = $this->hoiVienModel->getHoiVienByUsername($_SESSION['username']);
+        }
+        $pageTitle = 'Gói tập';
+        $additionalHeadContent = <<<HTML
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            <link rel="stylesheet" href="/Gym/public/css/style.css">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+            <link rel="stylesheet" href="/Gym/public/css/goitap.css">
+        HTML;
         require_once __DIR__ . '/../views/share/header.php';
         require_once __DIR__ . '/../views/package/listGoiTap.php';
         require_once __DIR__ . '/../views/share/footer.php';

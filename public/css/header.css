@@ -273,6 +273,57 @@ a {
 /* *************************************** */
 /* Custom Styles for Navbar and Dropdown */
 /* *************************************** */
+/* Đảm bảo header luôn sử dụng font Nunito, không bị ảnh hưởng bởi Tailwind CSS */
+header,
+header *,
+#site-header,
+#site-header *,
+.navbar,
+.navbar *,
+.navbar__list,
+.navbar__list *,
+.navbar__link,
+.navbar__item,
+.nav-link,
+.nav-item,
+.dropdown-menu,
+.dropdown-menu * {
+    font-family: var(--font-family-sans-serif) !important;
+}
+
+/* Đồng bộ kích cỡ chữ cho header, override Tailwind CSS */
+.navbar__list .navbar__link,
+.navbar__link,
+.nav-link,
+.nav-item {
+    font-size: 1.125rem !important; /* tương đương text-lg */
+    line-height: 1.75rem !important;
+}
+
+.navbar__list .navbar__link.text-lg,
+.nav-link.text-lg,
+.nav-item.text-lg {
+    font-size: 1.125rem !important;
+}
+
+/* Logo text */
+.navbar h1,
+header h1 {
+    font-size: 1.875rem !important; /* tương đương text-3xl */
+    line-height: 2.25rem !important;
+}
+
+.navbar h1.text-3xl,
+header h1.text-3xl {
+    font-size: 1.875rem !important;
+}
+
+/* Dropdown menu items */
+.dropdown-menu .dropdown-item {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+}
+
 header {
     /* Các style đã có trong class */
     padding: 5px 0;
@@ -287,7 +338,7 @@ header {
     padding: 5px 15px;
     display: inline-block;
     margin-right: 15px;
-    font-size: 1.1em;
+    font-size: 1.125rem !important; /* Đồng bộ với text-lg */
 }
 
 /* Chỉnh lại màu cho mobile menu vì background #000 là trong menu */
@@ -371,15 +422,12 @@ header {
     pointer-events: auto;
 }
 
-.nav-link.dropdown-toggle::after,
-.navbar__link.dropdown-toggle::after {
+.nav-link.dropdown-toggle::after {
     transition: transform 0.3s ease;
 }
 
 .nav-item.dropdown.show .nav-link.dropdown-toggle::after,
-.nav-item.dropdown .nav-link.dropdown-toggle[aria-expanded="true"]::after,
-.navbar__item.dropdown.show .navbar__link.dropdown-toggle::after,
-.navbar__item.dropdown .navbar__link.dropdown-toggle[aria-expanded="true"]::after {
+.nav-item.dropdown .nav-link.dropdown-toggle[aria-expanded="true"]::after {
     transform: rotate(180deg);
 }
 
