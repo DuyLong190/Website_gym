@@ -38,7 +38,7 @@
             </div>
 
             <!-- Liên hệ -->
-            <div class="col-12 col-md-6 col-lg-2 footer-widget">
+            <div class="col-12 col-sm-6 col-lg footer-widget">
                 <div class="footer-widget-content">
                     <h5 class="widget-title">
                         <i class=""></i>
@@ -70,7 +70,7 @@
             </div>
 
             <!-- Support & Links -->
-            <div class="col-12 col-md-6 col-lg-3 footer-widget">
+            <div class="col-12 col-sm-6 col-lg footer-widget">
                 <div class="footer-widget-content">
                     <h5 class="widget-title">
                         <i class=""></i>
@@ -89,7 +89,7 @@
             </div>
 
             <!-- Giờ mở cửa -->
-            <div class="col-12 col-md-6 col-lg-3 footer-widget">
+            <div class="col-12 col-sm-6 col-lg footer-widget">
                 <div class="footer-widget-content">
                     <h5 class="widget-title">
                         <i class=""></i>
@@ -122,7 +122,7 @@
         </div>
 
         <!-- Copyright Section -->
-        <div class="footer-bottom">
+        <div class="footer-bottom ">
             <div class="container">
                 <div class="footer-bottom-content">
                     <p class="copyright-text">

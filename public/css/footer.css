@@ -1,6 +1,10 @@
-/* ========================================
-   Footer Styles - Modern & Responsive
-   ======================================== */
+@font-face {
+    font-family: 'F1';
+    src: url('../Formula1-Regular_web_0.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 
 :root {
     --footer-bg: linear-gradient(135deg, #111827 0%, #000000 100%);
@@ -71,6 +75,7 @@
     margin: 0;
     letter-spacing: -0.5px;
     line-height: 1.2;
+    font-family: 'F1', sans-serif !important;
 }
 
 .footer-description {
