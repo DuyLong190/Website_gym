@@ -1,73 +1,139 @@
 <?php
 ?>
-<link rel="stylesheet" href="/gym/public/css/footer.css">
+<link rel="stylesheet" href="/Gym/public/css/footer.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-
-<footer class="footer_area section_padding_130_0">
+<footer class="footer_area">
     <div class="container">
-        <div class="row">
-            <!-- Single Widget-->
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="single-footer-widget section_padding_0_130">
-                    <!-- Footer Logo-->
-                    <div class=" flex items-center mx-auto ">
-                        <img src="/Gym/public/images/logo.png" alt="LD Gym Logo" class="h-14 mb-1 mr-5">
-                        <h1 class="text-3xl font-extrabold tracking-tight whitespace-nowrap">LD Gym & Fitness</h1>
+        <div class="row footer-content">
+            <!-- Logo & Social Media -->
+            <div class="col-12 col-md-6 col-lg-4 footer-widget">
+                <div class="footer-logo-section">
+                    <div class="footer-logo-wrapper">
+                        <img src="/Gym/public/images/logo.png" alt="LD Gym Logo" class="footer-logo">
+                        <h2 class="footer-brand-name">LD Gym & Fitness</h2>
                     </div>
-
-                    <!-- Footer Social Area-->
+                    <p class="footer-description">
+                        Nơi bạn bắt đầu hành trình chinh phục giới hạn của bản thân.
+                        Mạnh mẽ từ bên trong - Khỏe đẹp từ bên ngoài.
+                    </p>
                     <div class="footer_social_area">
-                        <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Facebook"><i class="fa fa-facebook"></i></a>
-                        <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Pinterest"><i class="fa fa-pinterest"></i></a>
-                        <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Skype"><i class="fa fa-skype"></i></a>
-                        <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Twitter"><i class="fa fa-twitter"></i></a>
+                        <a href="#" class="social-link" aria-label="Facebook" title="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="YouTube" title="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="TikTok" title="TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Zalo" title="Zalo">
+                            <i class="fab fa-google"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-            <!-- Single Widget-->
-            <div class="col-12 col-sm-6 col-lg">
-                <div class="single-footer-widget section_padding_0_130">
-                    <!-- Widget Title-->
-                    <h5 class="widget-title">Liên hệ</h5>
-                    <!-- Footer Menu-->
+
+            <!-- Liên hệ -->
+            <div class="col-12 col-md-6 col-lg-2 footer-widget">
+                <div class="footer-widget-content">
+                    <h5 class="widget-title">
+                        <i class=""></i>
+                        Liên hệ
+                    </h5>
                     <div class="footer_menu">
                         <ul>
-                            <li><a href="#">Địa chỉ: <br>475A Điện Biên Phủ, Phường Thạnh Mỹ Tây, TP.HCM</a></li>
-                            <li><a href="#">Điện thoại: 0987.123.456</a></li>
-                            <li><a href="#">Email: ld.fitness@gmail.com</a></li>
+                            <li>
+                                <a href="https://maps.google.com/?q=475A+Điện+Biên+Phủ,+Phường+Thạnh+Mỹ+Tây,+TP.HCM" target="_blank" rel="noopener">
+                                    <i class="fas fa-location-dot contact-icon"></i>
+                                    <span>475A Điện Biên Phủ<br>Phường Thạnh Mỹ Tây, TP.HCM</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="tel:0987123456">
+                                    <i class="fas fa-phone contact-icon"></i>
+                                    <span>0987.123.456</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="mailto:ld.fitness@gmail.com">
+                                    <i class="fas fa-envelope contact-icon"></i>
+                                    <span>ld.fitness@gmail.com</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <!-- Single Widget-->
-            <div class="col-12 col-sm-6 col-lg">
-                <div class="single-footer-widget section_padding_0_130">
-                    <!-- Widget Title-->
-                    <h5 class="widget-title">Support</h5>
-                    <!-- Footer Menu-->
+
+            <!-- Support & Links -->
+            <div class="col-12 col-md-6 col-lg-3 footer-widget">
+                <div class="footer-widget-content">
+                    <h5 class="widget-title">
+                        <i class=""></i>
+                        Hỗ trợ
+                    </h5>
                     <div class="footer_menu">
                         <ul>
-                            <li><a href="#">Help</a></li>
-                            <li><a href="#">Support</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Term &amp; Conditions</a></li>
-                            <li><a href="#">Help &amp; Support</a></li>
+                            <li><a href="/gym/goitap"><i class="fas fa-dumbbell link-icon"></i> Gói tập</a></li>
+                            <li><a href="/gym/lophoc"><i class="fas fa-users link-icon"></i> Lớp học</a></li>
+                            <li><a href="/gym/DvThuGian"><i class="fas fa-spa link-icon"></i> Dịch vụ thư giãn</a></li>
+                            <li><a href="#"><i class="fas fa-question-circle link-icon"></i> Câu hỏi thường gặp</a></li>
+                            <li><a href="#"><i class="fas fa-shield-alt link-icon"></i> Chính sách bảo mật</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <!-- Single Widget-->
-            <div class="col-12 col-sm-6 col-lg">
-                <div class="single-footer-widget section_padding_0_130">
-                    <!-- Widget Title-->
-                    <h5 class="widget-title">Giờ mở cửa</h5>
-                    <!-- Footer Menu-->
+
+            <!-- Giờ mở cửa -->
+            <div class="col-12 col-md-6 col-lg-3 footer-widget">
+                <div class="footer-widget-content">
+                    <h5 class="widget-title">
+                        <i class=""></i>
+                        Giờ mở cửa
+                    </h5>
                     <div class="footer_menu">
                         <ul>
-                            <li><a>Thứ 2 - Thứ 6: 7:00 - 21:00</a></li>
-                            <li><a>Thứ 7 - Chủ nhật: 6:00 - 22:00</a></li>
+                            <li>
+                                <div class="opening-hours-item">
+                                    <i class="fas fa-clock widget-icon"></i>
+                                    <div class="time-details">
+                                        <strong>Thứ 2 - Thứ 6</strong>
+                                        <span>7:00 - 21:00</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="opening-hours-item">
+                                    <i class="fas fa-clock widget-icon"></i>
+                                    <div class="time-details">
+                                        <strong>Thứ 7 - Chủ nhật</strong>
+                                        <span>6:00 - 22:00</span>
+                                    </div>
+                                </div>
+                            </li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright Section -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="footer-bottom-content">
+                    <p class="copyright-text">
+                        © <?php echo date('Y'); ?> <strong>LD Gym & Fitness</strong>. Tất cả quyền được bảo lưu.
+                    </p>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Chính sách bảo mật</a>
+                        <span class="link-separator">•</span>
+                        <a href="#" class="footer-link">Điều khoản sử dụng</a>
+                        <span class="link-separator">•</span>
+                        <a href="#" class="footer-link">FAQ</a>
                     </div>
                 </div>
             </div>

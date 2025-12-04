@@ -1,4 +1,4 @@
-
+<link rel="stylesheet" href="/gym/public/css/trangchu.css">
 <script>
     tailwind.config = {
         darkMode: "class",
@@ -71,7 +71,7 @@
                     trải nghiệm tốt nhất cho hội viên.</p>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-                <div class="text-center flex flex-col items-center group cursor-pointer transform hover:scale-105 transition-all duration-300 p-4 rounded-xl hover:bg-white/5">
+                <div class="text-center flex flex-col items-center  p-4 rounded-xl ">
                     <div class="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
                         <span class="material-icons-outlined text-primary text-4xl">sell</span>
                     </div>
@@ -80,7 +80,7 @@
                     <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">299k 1 tháng lẻ,
                         897k 4 tháng</p>
                 </div>
-                <div class="text-center flex flex-col items-center group cursor-pointer transform hover:scale-105 transition-all duration-300 p-4 rounded-xl hover:bg-white/5">
+                <div class="text-center flex flex-col items-center  p-4 rounded-xl ">
                     <div class="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
                         <span class="material-icons-outlined text-primary text-4xl">description</span>
                     </div>
@@ -89,7 +89,7 @@
                     <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Không phí quản lý,
                         không ràng buộc</p>
                 </div>
-                <div class="text-center flex flex-col items-center group cursor-pointer transform hover:scale-105 transition-all duration-300 p-4 rounded-xl hover:bg-white/5">
+                <div class="text-center flex flex-col items-center  p-4 rounded-xl ">
                     <div class="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
                         <span class="material-icons-outlined text-primary text-4xl">schedule</span>
                     </div>
@@ -98,7 +98,7 @@
                     <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">(sau 22h, trước
                         6h nhấn chuông)</p>
                 </div>
-                <div class="text-center flex flex-col items-center group cursor-pointer transform hover:scale-105 transition-all duration-300 p-4 rounded-xl hover:bg-white/5">
+                <div class="text-center flex flex-col items-center  p-4 rounded-xl ">
                     <div class="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
                         <span class="material-icons-outlined text-primary text-4xl">groups</span>
                     </div>
@@ -106,7 +106,7 @@
                         Chào đón PT Freelancer</h4>
                     <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Cấm chào kéo</p>
                 </div>
-                <div class="text-center flex flex-col items-center group cursor-pointer transform hover:scale-105 transition-all duration-300 p-4 rounded-xl hover:bg-white/5">
+                <div class="text-center flex flex-col items-center  p-4 rounded-xl ">
                     <div class="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
                         <span class="material-icons-outlined text-primary text-4xl">all_inclusive</span>
                     </div>
@@ -115,7 +115,7 @@
                     <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Tập toàn hệ thống
                         không phụ phí</p>
                 </div>
-                <div class="text-center flex flex-col items-center group cursor-pointer transform hover:scale-105 transition-all duration-300 p-4 rounded-xl hover:bg-white/5">
+                <div class="text-center flex flex-col items-center  p-4 rounded-xl ">
                     <div class="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
                         <span class="material-icons-outlined text-primary text-4xl">local_drink</span>
                     </div>
@@ -124,7 +124,7 @@
                     <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">FREE: Nước, giữ
                         xe, khăn tập</p>
                 </div>
-                <div class="text-center flex flex-col items-center group cursor-pointer transform hover:scale-105 transition-all duration-300 p-4 rounded-xl hover:bg-white/5">
+                <div class="text-center flex flex-col items-center  p-4 rounded-xl ">
                     <div class="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
                         <span class="material-icons-outlined text-primary text-4xl">ac_unit</span>
                     </div>
@@ -133,7 +133,7 @@
                     <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Máy lạnh mát mẻ
                     </p>
                 </div>
-                <div class="text-center flex flex-col items-center group cursor-pointer transform hover:scale-105 transition-all duration-300 p-4 rounded-xl hover:bg-white/5">
+                <div class="text-center flex flex-col items-center  p-4 rounded-xl ">
                     <div class="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
                         <span class="material-icons-outlined text-primary text-4xl">cleaning_services</span>
                     </div>
