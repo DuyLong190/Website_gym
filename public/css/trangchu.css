@@ -136,8 +136,63 @@
      }
  }
 
- @media (max-width: 768px) {
-     .carousel-item img {
-         height: 60vh;
-     }
- }
+@media (max-width: 768px) {
+    .carousel-item img {
+        height: 60vh;
+    }
+}
+
+/* Styles for new sections */
+.facility-card,
+.training-card,
+.amenity-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.facility-card:hover,
+.training-card:hover,
+.amenity-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Image gallery hover effects */
+.gallery-image {
+    transition: transform 0.5s ease, filter 0.3s ease;
+}
+
+.gallery-image:hover {
+    transform: scale(1.1);
+    filter: brightness(1.1);
+}
+
+/* Statistics counter animation */
+.stat-number {
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover .stat-number {
+    transform: scale(1.1);
+}
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Enhanced image loading */
+img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+/* Responsive adjustments for new sections */
+@media (max-width: 640px) {
+    .facility-card,
+    .training-card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .gallery-image {
+        height: 200px;
+    }
+}
