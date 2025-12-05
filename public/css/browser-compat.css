@@ -1,0 +1,310 @@
+/* ============================================
+   BROWSER COMPATIBILITY FIXES
+   ============================================
+   File này chứa các fix để đảm bảo giao diện hiển thị nhất quán
+   giữa Chrome, Edge và các trình duyệt khác
+   ============================================ */
+
+/* CSS Reset cơ bản để đảm bảo tính nhất quán */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    /* Font smoothing cho tất cả trình duyệt */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Edge/IE font rendering */
+    -ms-font-feature-settings: "liga" 1;
+    font-feature-settings: "liga" 1;
+    text-rendering: optimizeLegibility;
+}
+
+/* Fix cho backdrop-filter - Edge cần prefix */
+.backdrop-blur,
+[class*="backdrop"] {
+    -webkit-backdrop-filter: blur(10px);
+    -ms-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+/* Fix cho transform với vendor prefixes */
+.transform,
+[class*="transform"] {
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    /* Force hardware acceleration */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000px;
+    perspective: 1000px;
+}
+
+/* Fix cho transition */
+.transition,
+[class*="transition"] {
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+/* Fix cho gradient - đảm bảo tương thích */
+.gradient,
+[class*="gradient"] {
+    background: -webkit-linear-gradient(135deg, #000 0%, #fff 100%);
+    background: -moz-linear-gradient(135deg, #000 0%, #fff 100%);
+    background: -ms-linear-gradient(135deg, #000 0%, #fff 100%);
+    background: -o-linear-gradient(135deg, #000 0%, #fff 100%);
+    background: linear-gradient(135deg, #000 0%, #fff 100%);
+}
+
+/* Fix cho flexbox - Edge cần prefix */
+.flex,
+[class*="flex"] {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+/* Fix cho image rendering */
+img {
+    -ms-interpolation-mode: bicubic;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: optimize-contrast;
+    /* Fix cho Edge */
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+/* Fix cho CSS Grid - Edge cần prefix */
+.grid,
+[class*="grid"] {
+    display: -ms-grid;
+    display: grid;
+}
+
+/* Fix cho user-select */
+.no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Fix cho appearance */
+input,
+button,
+select,
+textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+}
+
+/* Fix cho border-radius */
+.rounded,
+[class*="rounded"] {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    border-radius: 4px;
+}
+
+/* Fix cho box-shadow */
+.shadow,
+[class*="shadow"] {
+    -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    -ms-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Fix cho filter */
+.filter,
+[class*="filter"] {
+    -webkit-filter: blur(0);
+    -moz-filter: blur(0);
+    -ms-filter: blur(0);
+    filter: blur(0);
+}
+
+/* Fix cho animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.animate,
+[class*="animate"] {
+    -webkit-animation: fadeIn 0.3s ease;
+    -moz-animation: fadeIn 0.3s ease;
+    -ms-animation: fadeIn 0.3s ease;
+    -o-animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Fix cho sticky positioning - Edge cần prefix */
+.sticky {
+    position: -webkit-sticky;
+    position: -ms-sticky;
+    position: sticky;
+}
+
+/* Fix cho will-change */
+.will-change {
+    will-change: transform;
+    -webkit-will-change: transform;
+    -ms-will-change: transform;
+}
+
+/* Fix cho text-align-last */
+.text-justify {
+    text-align-last: justify;
+    -webkit-text-align-last: justify;
+    -ms-text-align-last: justify;
+}
+
+/* Fix cho scroll-behavior */
+html {
+    scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth;
+    -ms-scroll-behavior: smooth;
+}
+
+/* Fix cho button icon alignment - Căn chỉnh icon với text trong button */
+.btn i,
+button i,
+a.btn i,
+button.btn i {
+    vertical-align: middle;
+    line-height: 1;
+    display: inline-block;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-self: center;
+}
+
+/* Đảm bảo button với icon sử dụng flexbox để căn chỉnh */
+.btn:has(i),
+button.btn:has(i),
+a.btn:has(i) {
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Fallback cho trình duyệt không hỗ trợ :has() */
+.btn i,
+button.btn i,
+a.btn i {
+    margin-right: 0.5rem;
+}
+
+/* Loại bỏ margin nếu icon ở cuối */
+.btn i:last-child,
+button.btn i:last-child,
+a.btn i:last-child {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+/* Fix cho CSS Variables fallback cho Edge cũ */
+:root {
+    /* Đảm bảo các biến CSS có giá trị fallback */
+    --color-text: #2c3e50;
+    --color-primary: #8f2121;
+    --color-secondary: #3498db;
+}
+
+/* Fix cho backdrop-filter trong các class cụ thể */
+.dropdown-menu,
+.dichvu-dropdown-menu,
+.user-dropdown-menu {
+    -webkit-backdrop-filter: blur(20px);
+    -ms-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
+
+/* Fix cho transform trong carousel */
+.carousel-container .item,
+.carousel-container .slide .item {
+    -webkit-transform: translate(0, -50%);
+    -ms-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+    -webkit-transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -moz-transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -ms-transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -o-transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Fix cho package-card transform */
+.package-card:hover,
+.card.package-card:hover {
+    -webkit-transform: translateY(-7px) scale(1.02);
+    -ms-transform: translateY(-7px) scale(1.02);
+    transform: translateY(-7px) scale(1.02);
+}
+
+/* Fix cho button transform */
+.btn:hover {
+    -webkit-transform: translateY(-2px);
+    -ms-transform: translateY(-2px);
+    transform: translateY(-2px);
+}
+
+/* Fix cho navbar transform */
+.navbar__link--cta:hover {
+    -webkit-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+/* Edge-specific fixes */
+@supports (-ms-ime-align: auto) {
+    /* Chỉ áp dụng cho Edge */
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
+    .container {
+        display: block;
+    }
+}
+
+/* Chrome-specific fixes */
+@supports (-webkit-appearance: none) {
+    /* Chỉ áp dụng cho Chrome/Safari */
+    body {
+        -webkit-font-smoothing: antialiased;
+    }
+}
