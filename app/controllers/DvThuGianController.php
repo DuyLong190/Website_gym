@@ -23,7 +23,7 @@ class DvThuGianController
             <link rel="stylesheet" href="/Gym/public/css/dvtg.css">
         HTML;
         require_once __DIR__ . '/../views/share/header.php';
-        require_once __DIR__ . '/../views/service/listDVTG.php';
+        require_once __DIR__ . '/../views/membership/listDVTG.php';
         require_once __DIR__ . '/../views/share/footer.php';
     }
 
@@ -31,7 +31,7 @@ class DvThuGianController
     {
         $DVTG = $this->dvtgModel->getDVTG_ByID($id);
         if ($DVTG) {
-            include_once __DIR__ . '/../views/service/showDVTG.php';
+            include_once __DIR__ . '/../views/membership/showDVTG.php';
         } else {
             echo "Dịch vụ này không tồn tại.";
         }
@@ -39,7 +39,7 @@ class DvThuGianController
 
     public function add()
     {
-        include_once __DIR__ . '/../views/service/addDVTG.php';
+        include_once __DIR__ . '/../views/membership/addDVTG.php';
     }
 
     // Lưu gói tập mới
@@ -56,7 +56,7 @@ class DvThuGianController
             if (is_array($result)) {
                 // Nếu có lỗi validation, hiển thị form lại với lỗi
                 require_once __DIR__ . '/../views/share/header.php';
-                require_once __DIR__ . '/../views/service/addDVTG.php';
+                require_once __DIR__ . '/../views/membership/addDVTG.php';
                 require_once __DIR__ . '/../views/share/footer.php';
             } else if ($result === true) {
                 // Nếu thêm thành công, chuyển hướng về danh sách
@@ -73,7 +73,7 @@ class DvThuGianController
     {
         $DVTG = $this->dvtgModel->getDVTG_ByID($id);
         if ($DVTG) {
-            include_once __DIR__ . '/../views/service/editDVTG.php';
+            include_once __DIR__ . '/../views/membership/editDVTG.php';
         } else {
             echo "Dịch vụ này không tồn tại.";
         }

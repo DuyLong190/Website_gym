@@ -37,7 +37,8 @@ class GoiTapController
             <link rel="stylesheet" href="/Gym/public/css/goitap.css">
         HTML;
         require_once __DIR__ . '/../views/share/header.php';
-        require_once __DIR__ . '/../views/package/listGoiTap.php';
+        
+        require_once __DIR__ . '/../views/membership/listGoiTap.php';
         require_once __DIR__ . '/../views/share/footer.php';
     }
 
@@ -45,7 +46,7 @@ class GoiTapController
     {
         $goiTap = $this->goitapModel->getByMaGoiTap($MaGoiTap);
         if ($goiTap) {
-            include_once __DIR__ . '/../views/package/showGoiTap.php';
+            include_once __DIR__ . '/../views/membership/showGoiTap.php';
         } else {
             echo "Gói tập không tồn tại.";
         }
