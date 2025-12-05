@@ -20,10 +20,10 @@ class DvThuGianController
         $DVTGs = $this->dvtgModel->getDVTGs();
         $pageTitle = 'Dịch vụ';
         $additionalHeadContent = <<<HTML
-            <link rel="stylesheet" href="/Gym/public/css/dvtg.css">
+            <link rel="stylesheet" href="/Gym/public/css/dichvu.css">
         HTML;
         require_once __DIR__ . '/../views/share/header.php';
-        require_once __DIR__ . '/../views/membership/listDVTG.php';
+        require_once __DIR__ . '/../views/membership/listDichVu.php';
         require_once __DIR__ . '/../views/share/footer.php';
     }
 
@@ -31,7 +31,7 @@ class DvThuGianController
     {
         $DVTG = $this->dvtgModel->getDVTG_ByID($id);
         if ($DVTG) {
-            include_once __DIR__ . '/../views/membership/showDVTG.php';
+            include_once __DIR__ . '/../views/membership/showDichVu.php';
         } else {
             echo "Dịch vụ này không tồn tại.";
         }

@@ -1,5 +1,3 @@
-
-
 <div class="container">
     <section class="hero-section text-white py-5 mb-5">
         <div class="container px-4">
@@ -13,13 +11,8 @@
                     <ul class="product-plans">
                         <li class="product-plan">
                             <div class="title"><?php echo htmlspecialchars($goiTap['TenGoiTap'] ?? ''); ?></div>
-                            <div class="price"><?php
-                                                $giaTien = $goiTap['GiaTien'] ?? 0;
-                                                echo $giaTien ? number_format((float)$giaTien) : '';
-                                                ?>
-                                <?php if ($giaTien): ?>
-                                    <span class="currency-symbol">Đ</span>
-                                <?php endif; ?>
+                            <div class="price"><?php echo number_format($goiTap['GiaTien']); ?>
+                                <span class="currency-symbol">Đ</span>
                             </div>
                             <div class="duration-info">
                                 <i class="fa fa-calendar-alt"></i>
