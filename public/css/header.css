@@ -6,7 +6,6 @@
     font-display: swap;
 }
 :root {
-    --color-background: #fff;
     --color-text: #2c3e50;
     --color-primary: #8f2121;
     --color-primary-darker: #c0392b;
@@ -49,7 +48,9 @@ body {
     font-weight: 500;
     line-height: 1.6;
     color: var(--color-text);
-    background-color: var(--color-background);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 .content {
@@ -123,6 +124,8 @@ a {
 
 /* These transforms are for the mobile menu 'hamburger' to 'X' animation */
 .navbar__toggle.is-active .bar:nth-child(1) {
+    -webkit-transform: translateY(8px) rotate(45deg);
+    -ms-transform: translateY(8px) rotate(45deg);
     transform: translateY(8px) rotate(45deg);
 }
 
@@ -131,6 +134,8 @@ a {
 }
 
 .navbar__toggle.is-active .bar:nth-child(3) {
+    -webkit-transform: translateY(-8px) rotate(-45deg);
+    -ms-transform: translateY(-8px) rotate(-45deg);
     transform: translateY(-8px) rotate(-45deg);
     background-color: #000;
 }
@@ -221,7 +226,13 @@ a {
         width: 0;
         height: 3px;
         background-color: var(--color-secondary);
+        -webkit-transition: all var(--transition-speed) ease;
+        -moz-transition: all var(--transition-speed) ease;
+        -ms-transition: all var(--transition-speed) ease;
+        -o-transition: all var(--transition-speed) ease;
         transition: all var(--transition-speed) ease;
+        -webkit-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
         transform: translateX(-50%);
     }
 
@@ -240,6 +251,14 @@ a {
         color: #fff;
         padding: 0.75rem 1.5rem;
         border-radius: 50px;
+        -webkit-transition: transform var(--transition-speed) var(--transition-bounce),
+            background-color var(--transition-speed) ease;
+        -moz-transition: transform var(--transition-speed) var(--transition-bounce),
+            background-color var(--transition-speed) ease;
+        -ms-transition: transform var(--transition-speed) var(--transition-bounce),
+            background-color var(--transition-speed) ease;
+        -o-transition: transform var(--transition-speed) var(--transition-bounce),
+            background-color var(--transition-speed) ease;
         transition: transform var(--transition-speed) var(--transition-bounce),
             background-color var(--transition-speed) ease;
     }
@@ -247,6 +266,8 @@ a {
     .navbar__link--cta:hover,
     .navbar__link--cta:focus {
         background-color: var(--color-primary);
+        -webkit-transform: scale(1.1);
+        -ms-transform: scale(1.1);
         transform: scale(1.1);
     }
 }
@@ -270,6 +291,8 @@ a {
     /* Disable scaling on CTA and just change color for feedback */
     .navbar__link--cta:hover,
     .navbar__link--cta:focus {
+        -webkit-transform: none;
+        -ms-transform: none;
         transform: none;
         background-color: var(--color-primary-darker);
     }
@@ -411,12 +434,20 @@ header {
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: 0.75rem !important;
     box-shadow: 0 25px 50px rgba(15, 23, 42, 0.35);
+    -webkit-backdrop-filter: blur(16px);
+    -ms-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
     min-width: 220px;
     padding: 0.35rem 0;
     opacity: 0;
+    -webkit-transform: translateY(10px) scale(0.97);
+    -ms-transform: translateY(10px) scale(0.97);
     transform: translateY(10px) scale(0.97);
     pointer-events: none;
+    -webkit-transition: opacity 0.25s ease, transform 0.25s ease;
+    -moz-transition: opacity 0.25s ease, transform 0.25s ease;
+    -ms-transition: opacity 0.25s ease, transform 0.25s ease;
+    -o-transition: opacity 0.25s ease, transform 0.25s ease;
     transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
@@ -424,16 +455,24 @@ header {
     color: #f8fafc !important;
     padding: 0.75rem 1.5rem !important;
     font-weight: 600;
+    -webkit-transition: transform 0.2s ease, background-color 0.2s ease;
+    -moz-transition: transform 0.2s ease, background-color 0.2s ease;
+    -ms-transition: transform 0.2s ease, background-color 0.2s ease;
+    -o-transition: transform 0.2s ease, background-color 0.2s ease;
     transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .dropdown-menu .dropdown-item:hover {
     background-color: rgba(248, 250, 252, 0.12) !important;
+    -webkit-transform: translateY(-1px);
+    -ms-transform: translateY(-1px);
     transform: translateY(-1px);
 }
 
 .dropdown-menu.show {
     opacity: 1;
+    -webkit-transform: translateY(0) scale(1);
+    -ms-transform: translateY(0) scale(1);
     transform: translateY(0) scale(1);
     pointer-events: auto;
 }
@@ -495,8 +534,12 @@ header {
     position: absolute;
     top: calc(100% + 10px);
     left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-10px);
+    -ms-transform: translateX(-50%) translateY(-10px);
     transform: translateX(-50%) translateY(-10px);
     background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+    -webkit-backdrop-filter: blur(20px);
+    -ms-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -508,7 +551,13 @@ header {
     margin: 0;
     opacity: 0;
     visibility: hidden;
+    -webkit-transform: translateX(-50%) translateY(-10px) scale(0.95);
+    -ms-transform: translateX(-50%) translateY(-10px) scale(0.95);
     transform: translateX(-50%) translateY(-10px) scale(0.95);
+    -webkit-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -moz-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -ms-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -o-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
     pointer-events: none;
@@ -518,6 +567,8 @@ header {
 .dichvu-dropdown.active .dichvu-dropdown-menu {
     opacity: 1;
     visibility: visible;
+    -webkit-transform: translateX(-50%) translateY(0) scale(1);
+    -ms-transform: translateX(-50%) translateY(0) scale(1);
     transform: translateX(-50%) translateY(0) scale(1);
     pointer-events: auto;
 }
@@ -550,6 +601,8 @@ header {
     background: linear-gradient(90deg, rgba(52, 152, 219, 0.15) 0%, rgba(41, 128, 185, 0.1) 100%);
     color: #ffffff !important;
     padding-left: 24px;
+    -webkit-transform: translateX(4px);
+    -ms-transform: translateX(4px);
     transform: translateX(4px);
 }
 
@@ -695,6 +748,8 @@ header {
     top: calc(100% + 10px);
     right: 0;
     background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+    -webkit-backdrop-filter: blur(20px);
+    -ms-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -706,7 +761,13 @@ header {
     margin: 0;
     opacity: 0;
     visibility: hidden;
+    -webkit-transform: translateY(-10px) scale(0.95);
+    -ms-transform: translateY(-10px) scale(0.95);
     transform: translateY(-10px) scale(0.95);
+    -webkit-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -moz-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -ms-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -o-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
     pointer-events: none;
@@ -716,6 +777,8 @@ header {
 .user-dropdown.active .user-dropdown-menu {
     opacity: 1;
     visibility: visible;
+    -webkit-transform: translateY(0) scale(1);
+    -ms-transform: translateY(0) scale(1);
     transform: translateY(0) scale(1);
     pointer-events: auto;
 }
@@ -748,6 +811,8 @@ header {
     background: linear-gradient(90deg, rgba(52, 152, 219, 0.15) 0%, rgba(41, 128, 185, 0.1) 100%);
     color: #ffffff !important;
     padding-left: 24px;
+    -webkit-transform: translateX(4px);
+    -ms-transform: translateX(4px);
     transform: translateX(4px);
 }
 

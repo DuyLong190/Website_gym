@@ -24,6 +24,6 @@ class HomeController
         require_once 'app/views/share/trangchu.php';
 
         require_once 'app/views/share/footer.php';
-
+        // require_once 'app/views/share/carousel.php';           
     }
 }

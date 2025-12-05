@@ -181,8 +181,10 @@ html {
 
 /* Enhanced image loading */
 img {
+    -webkit-image-rendering: -webkit-optimize-contrast;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
+    -ms-interpolation-mode: bicubic;
 }
 
 /* Responsive adjustments for new sections */
