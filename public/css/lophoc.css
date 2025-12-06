@@ -7,6 +7,38 @@
     padding: 0 15px;
 }
 
+.page-wrapper {
+    min-height: calc(100vh - 80px);
+    background: #d8e1eb;
+    /* background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf6 25%, #fff3e0 50%, #fce4ec 75%, #f3e5f5 100%); */
+    background-size: 400% 400%;
+    position: relative;
+    overflow-x: hidden;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.page-wrapper>.container {
+    position: relative;
+    z-index: 1;
+}
+
+ul.product-plans li.product-plan {
+    background: #fff;
+}
 /* ============================================
    PACKAGE HERO SECTION
    ============================================ */
@@ -94,14 +126,12 @@ ul.product-plans {
 }
 
 ul.product-plans li.product-plan {
-    --accent-color: #1279a8;
+    --accent-color: #0d72a1;
     --overlap-size: 1.5rem;
     --border-radius: 5rem;
     width: min(22rem, 100%);
     margin-inline: var(--overlap-size);
     padding-block: 2rem;
-    display: grid;
-    grid-template-rows: max-content max-content max-content 1fr max-content;
     gap: 1rem;
     border-radius: var(--border-radius) 0 var(--border-radius) 0;
     box-shadow: 0.25rem 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
@@ -125,8 +155,10 @@ ul.product-plans li.product-plan .title {
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
     margin: 0 auto 0.5rem auto;
-    display: inline-block;
+    display: flex;
     width: fit-content;
+    justify-content: center;
+    
 }
 
 ul.product-plans li.product-plan .price {
@@ -240,7 +272,6 @@ ul.product-plans li.product-plan .duration-info .duration-label {
 ul.product-plans li.product-plan .duration-info .duration-value {
     font-weight: 700;
     color: var(--accent-color);
-    margin-left: auto;
     font-size: 0.95rem;
 }
 
@@ -390,7 +421,7 @@ ul.product-plans li.product-plan .capacity-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--accent-color) 0%, #0d8a3f 100%);
+    background:  var(--accent-color);
     border-radius: 10px;
     color: white;
     font-size: 1.1rem;
@@ -630,5 +661,3 @@ ul.product-plans li.product-plan .action-buttons {
     margin-top: auto;
     padding-top: 1rem;
 }
-
-/* ============================================
