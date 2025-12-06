@@ -1,0 +1,269 @@
+/* ============================================
+   Register Page - Minimalist Design
+   ============================================ */
+
+/* Background đơn giản */
+.register-wrapper {
+    background: #f5f5f5;
+    min-height: 100vh;
+    padding: 2rem 0;
+    display: flex;
+    align-items: center;
+}
+
+/* Container chính */
+.register-container {
+    width: 100%;
+}
+
+/* Card chính - tối giản */
+.register-main-card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* Header - tối giản */
+.register-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.register-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+/* Error Alert - đơn giản */
+.register-error-alert {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.register-error-alert ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    list-style: none;
+}
+
+.register-error-alert li {
+    color: #dc2626;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.register-error-alert li:last-child {
+    margin-bottom: 0;
+}
+
+/* Success Alert */
+.register-success-alert {
+    background: #d1fae5;
+    border: 1px solid #86efac;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    color: #065f46;
+}
+
+/* Form Groups */
+.form-group-modern {
+    margin-bottom: 0.875rem;
+}
+
+.form-input-modern {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #111827;
+    transition: border-color 0.2s ease;
+    outline: none;
+}
+
+.form-input-modern:focus {
+    border-color: #4b5563;
+    outline: none;
+}
+
+.form-input-modern::placeholder {
+    color: #9ca3af;
+}
+
+/* Select */
+.form-select-modern {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #111827;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234b5563' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2.5rem;
+}
+
+.form-select-modern:focus {
+    border-color: #4b5563;
+    outline: none;
+}
+
+/* Gender Radio Buttons - đơn giản */
+.gender-group-modern {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.gender-card {
+    flex: 1;
+    min-width: 80px;
+    position: relative;
+}
+
+.gender-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.gender-card label {
+    display: block;
+    padding: 0.625rem 0.875rem;
+    border: 1.5px solid #d1d5db;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #ffffff;
+    font-weight: 400;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.gender-card input[type="radio"]:checked + label {
+    border-color: #4b5563;
+    background: #f3f4f6;
+    color: #1f2937;
+}
+
+.gender-card label:hover {
+    border-color: #9ca3af;
+}
+
+/* PT Fields Section */
+.pt-fields-modern {
+    background: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Button - đơn giản */
+.btn-register-modern {
+    width: 100%;
+    padding: 0.875rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+    background: #1f2937;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 0.5rem;
+}
+
+.btn-register-modern:hover {
+    background: #374151;
+}
+
+.btn-register-modern:active {
+    background: #4b5563;
+}
+
+/* Footer */
+.register-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.register-footer-text {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.register-login-link {
+    color: #1f2937;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.register-login-link:hover {
+    color: #4b5563;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .register-wrapper {
+        padding: 1rem 0;
+    }
+
+    .register-main-card {
+        padding: 1.5rem;
+        margin: 0.5rem;
+    }
+
+    .register-title {
+        font-size: 1.375rem;
+    }
+
+    .gender-group-modern {
+        flex-direction: column;
+    }
+
+    .gender-card {
+        min-width: 100%;
+    }
+
+    .pt-fields-modern {
+        padding: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-main-card {
+        padding: 1.25rem;
+    }
+
+    .register-title {
+        font-size: 1.25rem;
+    }
+}
+
+/* Loading state */
+.btn-register-modern:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
