@@ -51,9 +51,23 @@ class PtApiController
             header('Location: /gym');
             exit;
         }
-
-        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        ob_start();
         require_once __DIR__ . '/../views/pt/profile.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 
     // Danh sách lớp học để PT đăng ký đứng lớp (web)
@@ -84,8 +98,23 @@ class PtApiController
             $lichDay = $this->lichLopHocModel->getByMaLops($maLops);
         }
 
-        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        ob_start();
         require_once __DIR__ . '/../views/pt/lophoc.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 
     // Trang lịch dạy PT (web)
@@ -124,9 +153,23 @@ class PtApiController
                 }
             }
         }
-
-        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        ob_start();
         require_once __DIR__ . '/../views/pt/lichday.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 
     public function danhsach_lop()
@@ -258,9 +301,23 @@ class PtApiController
                 });
             }
         }
-
-        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        ob_start();
         require_once __DIR__ . '/../views/pt/lichsu.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 
     // Trang chỉnh sửa PT (web)
@@ -276,8 +333,23 @@ class PtApiController
             exit;
         }
 
-        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        ob_start();
         require_once __DIR__ . '/../views/pt/edit.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/pt/sidebarPT.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 
     // Cập nhật thông tin PT (web)

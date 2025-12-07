@@ -10,13 +10,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #667eea;
+            --primary-color: #8f2121;
             --secondary-color: #8f2121;
-            --success-color: #12a84c;
+            --success-color: #667eea;
             --info-color: #1c3be6ff;
             --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             --card-hover-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
             --border-radius: 20px;
+            /* Light mode colors */
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e2e8f0;
+            --calendar-bg: #ffffff;
+            --calendar-toolbar-bg: #f8fafc;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #111827;
+            --card-bg: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --border-color: #374151;
+            --calendar-bg: #1f2937;
+            --calendar-toolbar-bg: #111827;
+            --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            --card-hover-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
 
         * {
@@ -26,11 +46,13 @@
         }
 
         body {
-            background: #f3f4f6;
+            background: var(--bg-color);
+            color: var(--text-primary);
             min-height: 100vh;
             margin-left: 8.5rem;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             padding: 2rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .main-content {
@@ -49,95 +71,11 @@
             }
         }
 
-        .page-header {
-            background: var(--primary-color);
-            border-radius: var(--border-radius);
-            padding: 1rem 2rem;
-            margin: 0 auto 1rem auto;
-            box-shadow: var(--card-shadow);
-            width: 50%;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .page-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 300px;
-            height: 300px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        .page-header::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -5%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        .page-header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            position: relative;
-            z-index: 1;
-            letter-spacing: -0.3px;
-        }
-
-        .page-header h1 .icon-wrapper {
-            width: 48px;
-            height: 48px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        .page-header h1 i {
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        .page-header h1 .title-text {
-            display: flex;
-            flex-direction: column;
-            gap: 0.15rem;
-        }
-
-        .page-header h1 .title-main {
-            font-size: 1.5rem;
-            font-weight: 800;
-            line-height: 1.2;
-            white-space: nowrap;
-        }
-
         .admin-card {
             border-radius: var(--border-radius);
             box-shadow: var(--card-shadow);
-            border: none;
-            background: #ffffff;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
             overflow: hidden;
             transition: all 0.3s ease;
             margin-bottom: 2rem;
@@ -220,9 +158,10 @@
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
             padding: 1rem;
-            background: #f8fafc;
+            background: var(--calendar-toolbar-bg);
             border-radius: 16px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .calendar-view-toggle .btn {
@@ -242,11 +181,15 @@
 
         .calendar-container {
             border-radius: 20px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--border-color);
             overflow: hidden;
-            background: #ffffff;
+            background: var(--calendar-bg);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            transition: box-shadow 0.3s ease;
+            transition: box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        [data-theme="dark"] .calendar-container {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .calendar-container:hover {
@@ -293,8 +236,9 @@
             grid-template-columns: 100px repeat(7, 1fr);
             max-height: 700px;
             overflow-y: auto;
-            background: #ffffff;
+            background: var(--calendar-bg);
             position: relative;
+            transition: background-color 0.3s ease;
         }
 
         .calendar-events-overlay {
@@ -352,16 +296,16 @@
 
         .calendar-day-cell {
             position: relative;
-            border-top: 1px solid #e2e8f0;
-            border-left: 1px solid #e2e8f0;
+            border-top: 1px solid var(--border-color);
+            border-left: 1px solid var(--border-color);
             padding: 4px;
             min-height: 70px;
-            background: #ffffff;
+            background: var(--calendar-bg);
             transition: background-color 0.2s ease;
         }
 
         .calendar-day-cell:hover {
-            background: #f8fafc;
+            background: var(--calendar-toolbar-bg);
         }
 
         .calendar-day-cell:nth-child(8n+1) {
@@ -746,23 +690,6 @@
                 padding: 1rem;
             }
 
-            .page-header {
-                padding: 0.75rem 1rem;
-                width: 100%;
-            }
-
-            .page-header h1 {
-                flex-direction: column;
-                align-items: center;
-                gap: 0.5rem;
-            }
-
-            .page-header h1 .title-main {
-                font-size: 1.25rem;
-                white-space: normal;
-                text-align: center;
-            }
-
             .calendar-header-row {
                 font-size: 0.8rem;
             }
@@ -776,22 +703,176 @@
                 max-width: calc(100% - 2rem);
             }
         }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--card-shadow);
+        }
+
+        .dark-mode-toggle:hover {
+            box-shadow: var(--card-hover-shadow);
+            transform: translateY(-2px);
+        }
+
+        .dark-mode-toggle i {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            transition: transform 0.3s ease;
+        }
+
+        .dark-mode-toggle span {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .dark-mode-toggle i.fa-sun {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .dark-mode-toggle span {
+                display: none;
+            }
+
+            .dark-mode-toggle {
+                padding: 0.5rem;
+                width: 40px;
+                height: 40px;
+                justify-content: center;
+            }
+        }
+
+        /* Dark Mode Styles */
+        [data-theme="dark"] .text-muted {
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="dark"] .form-control,
+        [data-theme="dark"] .form-select {
+            background: var(--card-bg);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .form-control:focus,
+        [data-theme="dark"] .form-select:focus {
+            background: var(--card-bg);
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .alert-success {
+            background: #064e3b;
+            color: #a7f3d0;
+            border: 1px solid #065f46;
+        }
+
+        [data-theme="dark"] .alert-danger {
+            background: #7f1d1d;
+            color: #fecaca;
+            border: 1px solid #991b1b;
+        }
+
+        [data-theme="dark"] .alert-warning {
+            background: #78350f;
+            color: #fde68a;
+            border: 1px solid #92400e;
+        }
+
+        [data-theme="dark"] .modal-content {
+            background: var(--card-bg);
+            border-color: var(--border-color);
+        }
+
+        [data-theme="dark"] .modal-body {
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .calendar-time-slot {
+            border-color: var(--border-color);
+        }
+
+        [data-theme="dark"] .calendar-time-slot:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        [data-theme="dark"] .calendar-class-item {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        [data-theme="dark"] .calendar-class-item:hover {
+            background: #5568d3;
+        }
+
+        [data-theme="dark"] .calendar-time-label {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .calendar-header-row {
+            background: #4F46E5;
+        }
+
+        [data-theme="dark"] .calendar-header-cell {
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        [data-theme="dark"] .btn-outline-secondary {
+            border-color: var(--text-secondary);
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .btn-outline-secondary:hover {
+            background: var(--text-secondary);
+            color: var(--card-bg);
+        }
+
+        [data-theme="dark"] .table {
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .table-striped>tbody>tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        [data-theme="dark"] .table tbody tr:hover {
+            background-color: rgba(102, 126, 234, 0.1) !important;
+        }
     </style>
 </head>
 
 <body>
     <?php require_once __DIR__ . '/../../admin/sidebarAdmin.php'; ?>
+    <div class="dark-mode-toggle" id="darkModeToggle" title="Chuyển đổi chế độ sáng/tối">
+        <i class="fas fa-moon" id="darkModeIcon"></i>
+        <span id="darkModeText">Tối</span>
+    </div>
     <div class="main-content">
-        <div class="page-header">
-            <h1>
-                <div class="icon-wrapper">
-                    <i class="fas fa-calendar-alt"></i>
-                </div>
-                <div class="title-text">
-                    <span class="title-main">Quản lý lịch lớp học</span>
-                </div>
-            </h1>
-        </div>
 
         <div class="admin-card">
             <div class="card-body">
@@ -1063,6 +1144,44 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Dark Mode Toggle
+        (function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const darkModeIcon = document.getElementById('darkModeIcon');
+            const darkModeText = document.getElementById('darkModeText');
+
+            // Load saved theme preference
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateDarkModeUI(savedTheme);
+
+            // Toggle dark mode
+            if (darkModeToggle) {
+                darkModeToggle.addEventListener('click', function() {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateDarkModeUI(newTheme);
+                });
+            }
+
+            function updateDarkModeUI(theme) {
+                if (darkModeIcon && darkModeText) {
+                    if (theme === 'dark') {
+                        darkModeIcon.classList.remove('fa-moon');
+                        darkModeIcon.classList.add('fa-sun');
+                        darkModeText.textContent = 'Sáng';
+                    } else {
+                        darkModeIcon.classList.remove('fa-sun');
+                        darkModeIcon.classList.add('fa-moon');
+                        darkModeText.textContent = 'Tối';
+                    }
+                }
+            }
+        })();
+
         function openEditModal(id, maLop, ngayHoc, gioBatDau, gioKetThuc, phongHoc) {
             document.getElementById('edit-id').value = id;
             document.getElementById('edit-MaLop').value = maLop;

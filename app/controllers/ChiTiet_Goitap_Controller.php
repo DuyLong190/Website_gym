@@ -16,7 +16,6 @@ class ChiTiet_Goitap_Controller {
 
     public function index_ctgt($id_ctgt = null) {
         require_once __DIR__ . '/../views/user/sidebarUser.php';
-        // Bắt buộc đăng nhập
         if (!isset($_SESSION['username'])) {
             header('Location: /gym/account/login');
             exit;
@@ -25,24 +24,37 @@ class ChiTiet_Goitap_Controller {
         $chiTiet = [];
 
         if ($id_ctgt !== null) {
-            // Trường hợp truy cập trực tiếp theo id chi tiết gói tập
             $chiTiet = $this->ctgtModel->getChiTietById($id_ctgt);
         } else {
-            // Lấy thông tin hội viên theo username hiện tại
             $username = $_SESSION['username'];
             $hoiVien = $this->hoiVienModel->getHoiVienByUsername($username);
-
             if ($hoiVien && isset($hoiVien->MaHV)) {
                 $current = $this->ctgtModel->getCurrentByMaHV((int)$hoiVien->MaHV);
                 if ($current) {
-                    // View đang nhận $chiTiet là mảng, phần tử đầu tiên là bản ghi chi tiết
                     $chiTiet = [$current];
                 }
             }
         }
 
         if (!empty($chiTiet)) {
-            include_once __DIR__ . '/../views/user/chitiet_goitap/show.php';
+            ob_start();
+            require __DIR__ . '/../views/user/chitiet_goitap/show.php';
+            $content = ob_get_clean();
+
+            ob_start();
+            require __DIR__ . '/../views/user/sidebarUser.php';
+            $sidebar = ob_get_clean();
+            if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+                $headContent = $headMatches[1];
+                $content = preg_replace('/(<\/head>)/i', $headContent . '$1', $content, 1);
+            }
+
+            if (preg_match('/<body[^>]*>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+                $sidebarBodyContent = $bodyMatches[1];
+                $content = preg_replace('/(<body[^>]*>)/i', '$1' . $sidebarBodyContent, $content, 1);
+            }
+
+            echo $content;
         } else {
             echo "Chi tiết gói tập không tồn tại hoặc bạn chưa đăng ký gói tập nào.";
         }
@@ -50,14 +62,10 @@ class ChiTiet_Goitap_Controller {
 
     public function purchase($id_ctgt)
     {
-        require_once __DIR__ . '/../views/user/sidebarUser.php';
-
         if (!isset($_SESSION['username'])) {
             header('Location: /gym/account/login');
             exit;
         }
-
-        // Lấy hội viên hiện tại
         $username = $_SESSION['username'];
         $hoiVien = $this->hoiVienModel->getHoiVienByUsername($username);
 
@@ -65,21 +73,16 @@ class ChiTiet_Goitap_Controller {
             echo "Không tìm thấy thông tin hội viên.";
             return;
         }
-
         $chiTietArr = $this->ctgtModel->getChiTietById($id_ctgt);
         if (empty($chiTietArr)) {
             echo "Chi tiết gói tập không tồn tại.";
             return;
         }
-
         $item = $chiTietArr[0];
-
-        // Đảm bảo chi tiết thuộc về hội viên hiện tại
         if ((int)($item['MaHV'] ?? 0) !== (int)$hoiVien->MaHV) {
             echo "Bạn không có quyền truy cập chi tiết gói tập này.";
             return;
         }
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ok = $this->ctgtModel->requestPayment((int)$id_ctgt);
             if ($ok) {
@@ -90,7 +93,22 @@ class ChiTiet_Goitap_Controller {
             header('Location: /gym/user/chitiet_goitap/' . (int)$id_ctgt);
             exit;
         }
+        ob_start();
+        require_once __DIR__ . '/../views/user/chitiet_goitap/purchase.php';
+        $content = ob_get_clean();
 
-        include_once __DIR__ . '/../views/user/chitiet_goitap/purchase.php';
+        ob_start();
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 }

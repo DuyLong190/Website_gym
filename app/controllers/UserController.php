@@ -37,8 +37,23 @@ class UserController
         if (!$hoiVien) {
             error_log("Không tìm thấy thông tin hội viên cho username: " . $username);
         }
-        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        ob_start();
         require_once __DIR__ . '/../views/user/info/profile.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 
     public function edit_profile() {
@@ -57,8 +72,23 @@ class UserController
             header('Location: /gym/user/profile');
             exit;
         }
-        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        ob_start();
         require_once __DIR__ . '/../views/user/info/edit_profile.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 
     public function update_profile() {
@@ -140,8 +170,23 @@ class UserController
         $MaHV = (int)$hoiVien->MaHV;
         $dangKys = $this->dangKyLopHocModel->getByHoiVien($MaHV);
 
-        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        ob_start();
         require_once __DIR__ . '/../views/user/lophoc.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 
     public function lichlophoc()
@@ -187,8 +232,23 @@ class UserController
 
         $lichLops = !empty($maLops) ? $this->lichLopHocModel->getByMaLops($maLops) : [];
 
-        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        ob_start();
         require_once __DIR__ . '/../views/user/lichlophoc.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 
     // Xử lý upload ảnh

@@ -68,7 +68,7 @@ if (isset($chiTiet) && is_array($chiTiet) && count($chiTiet) > 0) {
                         <div class="col-md-4">
                             <div class="pkg-image">
                                 <div class="text-center">
-                                    <i class="fas fa-dumbbell fa-3x text-muted"></i>
+                                    <i class="fas fa-ticket fa-3x text-muted"></i>
                                     <div class="mt-2 fw-semibold"><?= htmlspecialchars((string)($item['TenGoiTap'] ?? ($item['MaGoiTap'] ?? 'Gói tập'))); ?></div>
                                 </div>
                             </div>

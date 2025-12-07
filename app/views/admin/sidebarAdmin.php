@@ -4,20 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/Gym/public/css/sidebarAdmin.css">
+    <link rel="stylesheet" href="/Gym/public/css/sidebar.css">
     <script src="https://unpkg.com/feather-icons"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        .navbar__link {
+            text-decoration: none !important;
+        }
+
+        .navbar__link i,
+        .navbar__link svg {
+            text-decoration: none !important;
+        }
+
         .navbar__link .fa-clover,
         .navbar__link .fa-people-roof,
-        .navbar__link .fa-clipboard-user {
+        .navbar__link .fa-clipboard-user,
+        .navbar__link .fa-ticket,
+        .navbar__link .fa-clock-rotate-left,
+        .navbar__link .fa-arrow-right-from-bracket {
             font-size: 1.5rem !important;
             width: 1.75rem;
             height: 1.75rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            text-decoration: none !important;
         }
     </style>
 </head>
