@@ -291,6 +291,20 @@ class PtApiController
         }
 
         $ptId = (int)$_SESSION['pt_id'];
+        $pt = $this->ptModel->getPTById($ptId);
+        $oldImagePath = $pt->image ?? null;
+
+        // Xử lý upload ảnh nếu có
+        $imagePath = $oldImagePath;
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            try {
+                $imagePath = $this->handleImageUpload('image', $oldImagePath);
+            } catch (Exception $e) {
+                $_SESSION['error'] = $e->getMessage();
+                header('Location: /gym/pt/edit');
+                exit;
+            }
+        }
 
         $HoTen = trim($_POST['HoTen'] ?? '');
         $NgaySinh = !empty($_POST['NgaySinh']) ? $_POST['NgaySinh'] : null;
@@ -303,6 +317,10 @@ class PtApiController
         $Luong = ($_POST['Luong'] ?? '') !== '' ? $_POST['Luong'] : null;
 
         if ($HoTen === '' || $SDT === '') {
+            // Nếu có lỗi validation và đã upload ảnh mới, xóa ảnh mới
+            if ($imagePath && $imagePath !== $oldImagePath) {
+                $this->deleteImage($imagePath);
+            }
             $_SESSION['error'] = 'Họ tên và số điện thoại không được để trống.';
             header('Location: /gym/pt/edit');
             exit;
@@ -318,7 +336,8 @@ class PtApiController
             $DiaChi,
             $ChuyenMon,
             $KinhNghiem,
-            $Luong
+            $Luong,
+            $imagePath
         );
 
         if ($updated) {
@@ -326,6 +345,11 @@ class PtApiController
             $_SESSION['success'] = 'Cập nhật thông tin thành công.';
             header('Location: /gym/pt');
             exit;
+        }
+
+        // Nếu cập nhật thất bại và đã upload ảnh mới, xóa ảnh mới
+        if ($imagePath && $imagePath !== $oldImagePath) {
+            $this->deleteImage($imagePath);
         }
 
         $_SESSION['error'] = 'Cập nhật thông tin thất bại. Vui lòng thử lại.';
@@ -365,31 +389,57 @@ class PtApiController
     // POST /api/pt - Tạo PT mới
     public function save()
     {
-        $payload = $this->getJsonInput();
-        $HoTen = $payload['HoTen'] ?? null;
-        $NgaySinh = $payload['NgaySinh'] ?? null;
-        $GioiTinh = $payload['GioiTinh'] ?? null;
-        $SDT = $payload['SDT'] ?? null;
-        $Email = $payload['Email'] ?? null;
-        $DiaChi = $payload['DiaChi'] ?? null;
-        $ChuyenMon = $payload['ChuyenMon'] ?? null;
-        $KinhNghiem = $payload['KinhNghiem'] ?? null;
-        $Luong = $payload['Luong'] ?? null;
+        try {
+            // Xử lý upload ảnh nếu có
+            $imagePath = null;
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                try {
+                    $imagePath = $this->handleImageUpload('image');
+                } catch (Exception $e) {
+                    http_response_code(400);
+                    return ['success' => false, 'message' => $e->getMessage()];
+                }
+            }
 
-        $result = $this->ptModel->addPT($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $ChuyenMon, $KinhNghiem, $Luong);
+            // Lấy dữ liệu từ form hoặc JSON
+            $payload = $this->getJsonInput();
+            $HoTen = $payload['HoTen'] ?? null;
+            $NgaySinh = $payload['NgaySinh'] ?? null;
+            $GioiTinh = $payload['GioiTinh'] ?? null;
+            $SDT = $payload['SDT'] ?? null;
+            $Email = $payload['Email'] ?? null;
+            $DiaChi = $payload['DiaChi'] ?? null;
+            $ChuyenMon = $payload['ChuyenMon'] ?? null;
+            $KinhNghiem = $payload['KinhNghiem'] ?? null;
+            $Luong = $payload['Luong'] ?? null;
 
-        if (is_array($result)) {
-            http_response_code(422);
-            return ['success' => false, 'errors' => $result];
+            $result = $this->ptModel->addPT($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $ChuyenMon, $KinhNghiem, $Luong, $imagePath);
+
+            if (is_array($result)) {
+                // Nếu có lỗi validation, xóa ảnh đã upload
+                if ($imagePath) {
+                    $this->deleteImage($imagePath);
+                }
+                http_response_code(422);
+                return ['success' => false, 'errors' => $result];
+            }
+
+            if ($result) {
+                http_response_code(201);
+                return ['success' => true, 'message' => 'Tạo HLV thành công'];
+            }
+
+            // Nếu thêm thất bại, xóa ảnh đã upload
+            if ($imagePath) {
+                $this->deleteImage($imagePath);
+            }
+
+            http_response_code(500);
+            return ['success' => false, 'message' => 'Không thể tạo HLV'];
+        } catch (Exception $e) {
+            http_response_code(500);
+            return ['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()];
         }
-
-        if ($result) {
-            http_response_code(201);
-            return ['success' => true, 'message' => 'Tạo HLV thành công'];
-        }
-
-        http_response_code(500);
-        return ['success' => false, 'message' => 'Không thể tạo HLV'];
     }
 
     // PUT /api/pt/{id} - Cập nhật PT
@@ -407,25 +457,52 @@ class PtApiController
             return ['success' => false, 'message' => 'Không tìm thấy HLV'];
         }
 
-        $payload = $this->getJsonInput();
-        $HoTen = $payload['HoTen'] ?? null;
-        $NgaySinh = $payload['NgaySinh'] ?? null;
-        $GioiTinh = $payload['GioiTinh'] ?? null;
-        $SDT = $payload['SDT'] ?? null;
-        $Email = $payload['Email'] ?? null;
-        $DiaChi = $payload['DiaChi'] ?? null;
-        $ChuyenMon = $payload['ChuyenMon'] ?? null;
-        $KinhNghiem = $payload['KinhNghiem'] ?? null;
-        $Luong = $payload['Luong'] ?? null;
+        try {
+            // Xử lý upload ảnh nếu có
+            $imagePath = null;
+            $oldImagePath = $existingPT->image ?? null;
+            
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                try {
+                    $imagePath = $this->handleImageUpload('image', $oldImagePath);
+                } catch (Exception $e) {
+                    http_response_code(400);
+                    return ['success' => false, 'message' => $e->getMessage()];
+                }
+            } else {
+                // Nếu không có ảnh mới, giữ nguyên ảnh cũ
+                $imagePath = $oldImagePath;
+            }
 
-        $result = $this->ptModel->updatePT((int)$pt_id, $HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $ChuyenMon, $KinhNghiem, $Luong);
-        
-        if ($result) {
-            return ['success' => true, 'message' => 'Cập nhật HLV thành công'];
+            $payload = $this->getJsonInput();
+            $HoTen = $payload['HoTen'] ?? null;
+            $NgaySinh = $payload['NgaySinh'] ?? null;
+            $GioiTinh = $payload['GioiTinh'] ?? null;
+            $SDT = $payload['SDT'] ?? null;
+            $Email = $payload['Email'] ?? null;
+            $DiaChi = $payload['DiaChi'] ?? null;
+            $ChuyenMon = $payload['ChuyenMon'] ?? null;
+            $KinhNghiem = $payload['KinhNghiem'] ?? null;
+            $Luong = $payload['Luong'] ?? null;
+
+            // Chỉ cập nhật image nếu có ảnh mới
+            $result = $this->ptModel->updatePT((int)$pt_id, $HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $ChuyenMon, $KinhNghiem, $Luong, $imagePath);
+            
+            if ($result) {
+                return ['success' => true, 'message' => 'Cập nhật HLV thành công'];
+            }
+
+            // Nếu cập nhật thất bại và đã upload ảnh mới, xóa ảnh mới và giữ ảnh cũ
+            if ($imagePath && $imagePath !== $oldImagePath) {
+                $this->deleteImage($imagePath);
+            }
+
+            http_response_code(500);
+            return ['success' => false, 'message' => 'Không thể cập nhật HLV'];
+        } catch (Exception $e) {
+            http_response_code(500);
+            return ['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()];
         }
-
-        http_response_code(500);
-        return ['success' => false, 'message' => 'Không thể cập nhật HLV'];
     }
 
     // DELETE /api/pt/{id} - Xóa PT
@@ -444,6 +521,9 @@ class PtApiController
         }
 
         try {
+            // Lấy thông tin PT để xóa ảnh
+            $imagePath = $existingPT->image ?? null;
+
             // Bắt đầu transaction để xóa an toàn cả tài khoản và hồ sơ PT
             $this->db->beginTransaction();
 
@@ -459,6 +539,12 @@ class PtApiController
             }
 
             $this->db->commit();
+
+            // Xóa ảnh sau khi xóa thành công
+            if ($imagePath) {
+                $this->deleteImage($imagePath);
+            }
+
             return ['success' => true, 'message' => 'Xóa HLV và tài khoản liên quan thành công'];
         } catch (Exception $e) {
             if ($this->db->inTransaction()) {
@@ -483,12 +569,76 @@ class PtApiController
     // Lấy dữ liệu từ JSON input hoặc form data
     private function getJsonInput()
     {
+        // Nếu có $_POST (từ FormData hoặc form-encoded), ưu tiên dùng
+        if (!empty($_POST)) {
+            return $_POST;
+        }
+        
         $raw = file_get_contents('php://input');
         $data = json_decode($raw, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            // Cho phép form-encoded như fallback
-            return $_POST;
+            return [];
         }
         return $data ?? [];
+    }
+
+    // Xử lý upload ảnh
+    private function handleImageUpload($fileInput, $oldImagePath = null)
+    {
+        // Kiểm tra xem có file được upload không
+        if (!isset($_FILES[$fileInput]) || $_FILES[$fileInput]['error'] !== UPLOAD_ERR_OK) {
+            // Nếu không có file mới và có ảnh cũ, giữ nguyên ảnh cũ
+            return $oldImagePath;
+        }
+
+        $file = $_FILES[$fileInput];
+        
+        // Validate file
+        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        $maxSize = 5 * 1024 * 1024; // 5MB
+
+        if (!in_array($file['type'], $allowedTypes)) {
+            throw new Exception('Chỉ chấp nhận file ảnh định dạng JPG, PNG, GIF');
+        }
+
+        if ($file['size'] > $maxSize) {
+            throw new Exception('Kích thước file không được vượt quá 5MB');
+        }
+
+        // Tạo thư mục upload nếu chưa tồn tại
+        $uploadDir = __DIR__ . '/../../public/images/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        // Tạo tên file unique
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $fileName = 'pt_' . time() . '_' . uniqid() . '.' . $extension;
+        $filePath = $uploadDir . $fileName;
+
+        // Upload file
+        if (!move_uploaded_file($file['tmp_name'], $filePath)) {
+            throw new Exception('Không thể upload file');
+        }
+
+        // Xóa ảnh cũ nếu có
+        if ($oldImagePath && file_exists(__DIR__ . '/../../' . $oldImagePath)) {
+            @unlink(__DIR__ . '/../../' . $oldImagePath);
+        }
+
+        // Trả về đường dẫn relative từ root
+        return 'public/images/' . $fileName;
+    }
+
+    // Xóa ảnh
+    private function deleteImage($imagePath)
+    {
+        if ($imagePath) {
+            // Xử lý cả đường dẫn cũ (uploads/pt/) và mới (public/images/)
+            $fullPath = __DIR__ . '/../../' . $imagePath;
+            if (file_exists($fullPath)) {
+                @unlink($fullPath);
+            }
+        }
     }
 }

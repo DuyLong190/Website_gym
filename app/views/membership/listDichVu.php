@@ -34,9 +34,11 @@
                                     <a href="#" class="btn ">
                                         <i class=""></i> Chọn
                                     </a>
-                                    <a href="/gym/DvThuGian/show/<?php echo $DVTG->id; ?>" class="btn-detail">
+                                    
+                                    <!-- Nút chi tiết  -->
+                                    <!-- <a href="/gym/DvThuGian/show/<?php echo $DVTG->id; ?>" class="btn-detail">
                                         <i class="fa fa-arrow-right"></i>
-                                    </a>
+                                    </a> -->
                                 </div>
                             </li>
                         </ul>

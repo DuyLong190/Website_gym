@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #667eea;
+            --primary-color: #8f2121;
             --secondary-color: #8f2121;
             --success-color: #12a84c;
             --info-color: #1c3be6ff;
@@ -144,11 +144,6 @@
             transition: all 0.3s ease;
         }
 
-        .admin-card:hover {
-            box-shadow: var(--card-hover-shadow);
-            transform: translateY(-2px);
-        }
-
         .card-header {
             background: var(--primary-color);
             color: white;
@@ -209,6 +204,28 @@
 
         .btn-add-user i {
             margin: 0;
+        }
+
+        .total-count-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .total-count-badge i {
+            font-size: 1rem;
+        }
+
+        .total-count-badge strong {
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
         .btn-success {
@@ -319,6 +336,35 @@
             font-weight: 500;
         }
 
+        .profile-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-img-placeholder {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-size: 20px;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
         .card-body {
             padding: 2rem;
         }
@@ -326,6 +372,194 @@
         .table-responsive {
             border-radius: 12px;
             overflow: hidden;
+        }
+
+        /* DataTables pagination icons */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5rem 0.75rem;
+            margin: 0 0.25rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: var(--primary-color) !important;
+            color: white !important;
+            border: 1px solid var(--primary-color) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--primary-color) !important;
+            color: white !important;
+            border: 1px solid var(--primary-color) !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button i {
+            font-size: 1rem;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Modal Delete Confirmation */
+        .delete-modal .modal-content {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .delete-modal .modal-header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #c53030 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .delete-modal .modal-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .delete-modal .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .delete-modal .modal-title i {
+            font-size: 1.75rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .delete-modal .modal-body {
+            padding: 1.5rem;
+            background: #fafafa;
+        }
+
+        .delete-modal .warning-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .delete-modal .warning-icon i {
+            font-size: 2.5rem;
+            color: #d97706;
+        }
+
+        .delete-modal .warning-text {
+            text-align: center;
+            color: #1f2937;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .delete-modal .account-info {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border: 2px solid #fee2e2;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .delete-modal .account-info-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .delete-modal .account-info-value {
+            font-size: 1.1rem;
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .delete-modal .modal-footer {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: #f9fafb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .delete-modal .btn-cancel {
+            background: #6b7280;
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .delete-modal .btn-cancel:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+            color: white;
+        }
+
+        .delete-modal .btn-delete {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #c53030 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .delete-modal .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+            color: white;
         }
 
         @media (max-width: 768px) {
@@ -381,20 +615,26 @@
                     <i class="fas fa-table"></i>
                     Danh sách hội viên
                 </div>
-                <a href="/gym/admin/user/addUser" class="btn btn-add-user" title="Thêm hội viên">
-                    <i class="fas fa-plus"></i>
-                </a>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="total-count-badge">
+                        <i class="fas fa-user me-2"></i>
+                        <span>Tổng: <strong><?php echo count($hoiVien ?? []); ?></strong></span>
+                    </div>
+                    <a href="/gym/admin/user/addUser" class="btn btn-add-user" title="Thêm hội viên">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="hoiVienTable" class="table table-bordered table-striped align-middle">
                         <thead>
                             <tr>
+                                <th class="text-center">Ảnh đại diện</th>
                                 <th class="text-center">Họ và tên</th>
                                 <th class="text-center">Ngày sinh</th>
                                 <th class="text-center">Giới tính</th>
                                 <th class="text-center">SĐT</th>
-                                <th class="text-center">Email</th>
                                 <th class="text-center">Gói tập</th>
                                 <th class="text-center">Trạng thái</th>
                                 <th class="text-center">Thao tác</th>
@@ -403,6 +643,21 @@
                         <tbody>
                             <?php foreach ($hoiVien as $hv): ?>
                                 <tr>
+                                    <td class="text-center">
+                                        <?php
+                                        $imageUrl = !empty($hv->image) ? '/gym/' . $hv->image : '/gym/public/images/user.png';
+                                        ?>
+                                        <?php if (!empty($hv->image)): ?>
+                                            <img src="<?php echo htmlspecialchars($imageUrl); ?>"
+                                                alt="<?php echo htmlspecialchars($hv->HoTen ?? 'Hội viên'); ?>"
+                                                class="profile-img"
+                                                onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'profile-img-placeholder\'><i class=\'fa-solid fa-user\'></i></div>';">
+                                        <?php else: ?>
+                                            <div class="profile-img-placeholder">
+                                                <i class="fa-solid fa-user"></i>
+                                            </div>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="profile-value"><?= htmlspecialchars($hv->HoTen) ?></td>
                                     <td class="profile-value">
                                         <?= $hv->NgaySinh ? date('d/m/Y', strtotime($hv->NgaySinh)) : '' ?>
@@ -412,9 +667,6 @@
                                     </td>
                                     <td class="profile-value">
                                         <?= $hv->SDT ? htmlspecialchars($hv->SDT) : '' ?>
-                                    </td>
-                                    <td class="profile-value">
-                                        <?= $hv->Email ? htmlspecialchars($hv->Email) : '' ?>
                                     </td>
                                     <td class="profile-value">
                                         <?= !empty($hv->TenGoiTap) ? htmlspecialchars($hv->TenGoiTap) : '' ?>
@@ -438,18 +690,16 @@
                                             class="btn btn-sm btn-info me-1" title="Sửa">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="/gym/admin/user/deleteUser/<?= $hv->MaHV ?>"
-                                            class="btn btn-sm btn-danger me-1"
-                                            onclick="return confirm('Bạn có chắc chắn muốn xóa hội viên này?')"
-                                            title="Xóa">
+                                        <button onclick="confirmDeleteHoiVien(<?= $hv->MaHV; ?>, '<?php echo htmlspecialchars($hv->HoTen ?? 'N/A', ENT_QUOTES); ?>')"
+                                            class="btn btn-sm btn-danger me-1" title="Xóa">
                                             <i class="fas fa-trash"></i>
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                             <?php if (empty($hoiVien)): ?>
                                 <tr>
-                                    <td colspan="11" class="text-center text-muted">Không có hội viên nào.</td>
+                                    <td colspan="8" class="text-center text-muted">Không có hội viên nào.</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -459,6 +709,43 @@
         </div>
     </div>
     </div>
+
+    <!-- Modal Xác nhận Xóa -->
+    <div class="modal fade delete-modal" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Xác nhận xóa hội viên</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="warning-text">
+                        Bạn có chắc chắn muốn xóa hội viên này?<br>
+                        <strong class="text-danger">Thao tác này không thể hoàn tác!</strong>
+                    </div>
+                    <div class="account-info">
+                        <div class="account-info-label">Họ và tên</div>
+                        <div class="account-info-value" id="deleteHoiVienName"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>
+                    </button>
+                    <button type="button" class="btn btn-delete" id="confirmDeleteBtn">
+                        <i class="fas fa-trash me-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
@@ -469,6 +756,12 @@
             $('#hoiVienTable').DataTable({
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/vi.json',
+                    paginate: {
+                        first: '<i class="fas fa-angle-double-left"></i>',
+                        previous: '<i class="fas fa-angle-left"></i>',
+                        next: '<i class="fas fa-angle-right"></i>',
+                        last: '<i class="fas fa-angle-double-right"></i>'
+                    }
                 },
                 responsive: true,
                 pageLength: 10,
@@ -477,14 +770,38 @@
                     [10, 25, 50, "Tất cả"]
                 ],
                 order: [
-                    [0, 'asc']
+                    [1, 'asc']
                 ],
                 columnDefs: [{
-                        orderable: false,
-                        targets: 7
-                    } // Disable sorting for action column
-                ]
+                    orderable: false,
+                    targets: [0, 7] // Disable sorting for image and action columns
+                }]
             });
+        });
+
+        let hoiVienIdToDelete = null;
+
+        function confirmDeleteHoiVien(id, name) {
+            hoiVienIdToDelete = id;
+
+            // Cập nhật thông tin hội viên trong modal
+            document.getElementById('deleteHoiVienName').textContent = name;
+
+            // Hiển thị modal
+            const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+            modal.show();
+        }
+
+        // Xử lý khi click nút xác nhận xóa
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            if (hoiVienIdToDelete) {
+                window.location.href = '/gym/admin/user/deleteUser/' + hoiVienIdToDelete;
+            }
+        });
+
+        // Reset khi modal đóng
+        document.getElementById('deleteConfirmModal').addEventListener('hidden.bs.modal', function() {
+            hoiVienIdToDelete = null;
         });
     </script>
 </body>

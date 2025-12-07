@@ -115,9 +115,12 @@
                                     <a href="javascript:void(0)" class="btn" onclick="registerClass(<?php echo $lophoc->MaLop; ?>)">
                                         <i class=""></i>Chọn
                                     </a>
+
+                                    <!-- Nút chi tiết
                                     <a href="/gym/lophoc/show/<?php echo $lophoc->MaLop; ?>" class="btn-detail">
                                         <i class="fa fa-arrow-right"></i>
-                                    </a>
+                                    </a> -->
+
                                 </div>
                             </li>
                         </ul>

@@ -52,9 +52,12 @@
                                             <i class=""></i> Đăng ký
                                         </a>
                                     <?php endif; ?>
+
+                                    <!-- Nút chi tiết
                                     <a href="/gym/goitap/show/<?php echo $goiTap['MaGoiTap']; ?>" class="btn-detail">
                                         <i class="fa fa-arrow-right"></i>
-                                    </a>
+                                    </a> -->
+
                                 </div>
                             </li>
                         </ul>

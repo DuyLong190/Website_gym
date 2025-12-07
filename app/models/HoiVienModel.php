@@ -38,7 +38,7 @@ class HoiVienModel
         }
     }
 
-    public function addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap) {
+    public function addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $image = null) {
         try {
             // Validate required fields
             if (empty($HoTen)) {
@@ -46,8 +46,8 @@ class HoiVienModel
             }
 
             // Chuẩn bị câu query
-            $query = "INSERT INTO HoiVien (HoTen, NgaySinh, GioiTinh, ChieuCao, CanNang, SDT, Email, DiaChi, MaGoiTap) 
-                    VALUES (:HoTen, :NgaySinh, :GioiTinh, :ChieuCao, :CanNang, :SDT, :Email, :DiaChi, :MaGoiTap)";
+            $query = "INSERT INTO HoiVien (HoTen, NgaySinh, GioiTinh, ChieuCao, CanNang, SDT, Email, DiaChi, MaGoiTap, image) 
+                    VALUES (:HoTen, :NgaySinh, :GioiTinh, :ChieuCao, :CanNang, :SDT, :Email, :DiaChi, :MaGoiTap, :image)";
             $stmt = $this->conn->prepare($query);
 
             // Làm sạch dữ liệu
@@ -60,6 +60,7 @@ class HoiVienModel
             $Email = $Email ? htmlspecialchars(strip_tags($Email)) : null;
             $DiaChi = $DiaChi ? htmlspecialchars(strip_tags($DiaChi)) : null;
             $MaGoiTap = $MaGoiTap ? htmlspecialchars(strip_tags($MaGoiTap)) : null;
+            $image = $image ? htmlspecialchars(strip_tags($image)) : null;
 
             // Bind các tham số
             $stmt->bindParam(':HoTen', $HoTen);
@@ -71,6 +72,7 @@ class HoiVienModel
             $stmt->bindParam(':Email', $Email);
             $stmt->bindParam(':DiaChi', $DiaChi);
             $stmt->bindParam(':MaGoiTap', $MaGoiTap);
+            $stmt->bindParam(':image', $image);
 
             // Thực thi query
             if ($stmt->execute()) {
@@ -91,19 +93,35 @@ class HoiVienModel
         }
     }
 
-    public function updateHoiVien($MaHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $TrangThai) {
+    public function updateHoiVien($MaHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $TrangThai, $image = null) {
         try {
-            $query = "UPDATE " . $this->table_name . " SET HoTen = :HoTen, 
-                        NgaySinh = :NgaySinh, 
-                        GioiTinh = :GioiTinh,
-                        ChieuCao = :ChieuCao,
-                        CanNang = :CanNang,
-                        SDT = :SDT, 
-                        Email = :Email, 
-                        DiaChi = :DiaChi, 
-                        MaGoiTap = :MaGoiTap, 
-                        TrangThai = :TrangThai 
-                    WHERE MaHV = :MaHV";
+            // Nếu có image mới, cập nhật cả image, nếu không thì giữ nguyên
+            if ($image !== null) {
+                $query = "UPDATE " . $this->table_name . " SET HoTen = :HoTen, 
+                            NgaySinh = :NgaySinh, 
+                            GioiTinh = :GioiTinh,
+                            ChieuCao = :ChieuCao,
+                            CanNang = :CanNang,
+                            SDT = :SDT, 
+                            Email = :Email, 
+                            DiaChi = :DiaChi, 
+                            MaGoiTap = :MaGoiTap, 
+                            TrangThai = :TrangThai,
+                            image = :image
+                        WHERE MaHV = :MaHV";
+            } else {
+                $query = "UPDATE " . $this->table_name . " SET HoTen = :HoTen, 
+                            NgaySinh = :NgaySinh, 
+                            GioiTinh = :GioiTinh,
+                            ChieuCao = :ChieuCao,
+                            CanNang = :CanNang,
+                            SDT = :SDT, 
+                            Email = :Email, 
+                            DiaChi = :DiaChi, 
+                            MaGoiTap = :MaGoiTap, 
+                            TrangThai = :TrangThai
+                        WHERE MaHV = :MaHV";
+            }
             $stmt = $this->conn->prepare($query);
 
             // Bind các tham số
@@ -118,6 +136,9 @@ class HoiVienModel
             $stmt->bindParam(':DiaChi', $DiaChi);
             $stmt->bindParam(':MaGoiTap', $MaGoiTap);
             $stmt->bindParam(':TrangThai', $TrangThai);
+            if ($image !== null) {
+                $stmt->bindParam(':image', $image);
+            }
 
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -192,7 +213,7 @@ class HoiVienModel
         }
     }
 
-    public function updateHoiVienProfile($maHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi) {
+    public function updateHoiVienProfile($maHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $image = null) {
         try {
             // Lấy thông tin hiện tại của hội viên
             $currentInfo = $this->getHoiVienById($maHV);
@@ -210,11 +231,20 @@ class HoiVienModel
             $Email = $Email ?: $currentInfo->Email;
             $DiaChi = $DiaChi ?: $currentInfo->DiaChi;
 
-            $sql = "UPDATE HoiVien 
-                    SET HoTen = ?, NgaySinh = ?, GioiTinh = ?, ChieuCao = ?, CanNang = ?, SDT = ?, Email = ?, DiaChi = ? 
-                    WHERE MaHV = ?";
-            $stmt = $this->conn->prepare($sql);
-            return $stmt->execute([$HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $maHV]);
+            // Nếu có image mới, cập nhật cả image, nếu không thì giữ nguyên
+            if ($image !== null) {
+                $sql = "UPDATE HoiVien 
+                        SET HoTen = ?, NgaySinh = ?, GioiTinh = ?, ChieuCao = ?, CanNang = ?, SDT = ?, Email = ?, DiaChi = ?, image = ? 
+                        WHERE MaHV = ?";
+                $stmt = $this->conn->prepare($sql);
+                return $stmt->execute([$HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $image, $maHV]);
+            } else {
+                $sql = "UPDATE HoiVien 
+                        SET HoTen = ?, NgaySinh = ?, GioiTinh = ?, ChieuCao = ?, CanNang = ?, SDT = ?, Email = ?, DiaChi = ? 
+                        WHERE MaHV = ?";
+                $stmt = $this->conn->prepare($sql);
+                return $stmt->execute([$HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $maHV]);
+            }
         } catch (PDOException $e) {
             error_log("Error in updateHoiVienProfile: " . $e->getMessage());
             return false;

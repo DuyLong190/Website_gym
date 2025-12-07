@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #667eea;
+            --primary-color: #8f2121;
             --success-color: #10b981;
             --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             --card-hover-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
@@ -43,6 +43,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -73,13 +74,22 @@
             right: -50%;
             width: 200%;
             height: 200%;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             animation: pulse 3s ease-in-out infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
         }
 
         .page-header h1 {
@@ -127,8 +137,15 @@
         }
 
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .admin-card {
@@ -138,11 +155,6 @@
             background: #ffffff;
             overflow: hidden;
             transition: all 0.3s ease;
-        }
-
-        .admin-card:hover {
-            box-shadow: var(--card-hover-shadow);
-            transform: translateY(-5px);
         }
 
         .card-header {
@@ -209,8 +221,8 @@
             padding-left: 3rem;
         }
 
-        .input-group-icon .form-control:focus + i,
-        .input-group-icon .form-select:focus + i {
+        .input-group-icon .form-control:focus+i,
+        .input-group-icon .form-select:focus+i {
             color: var(--primary-color);
         }
 
@@ -412,7 +424,32 @@
                 Thông tin hội viên
             </div>
             <div class="card-body">
-                <form action="/gym/admin/user/updateUser/<?php echo $hoiVien->MaHV ?>" method="POST">
+                <form action="/gym/admin/user/updateUser/<?php echo $hoiVien->MaHV ?>" method="POST" enctype="multipart/form-data">
+                    <!-- Ảnh đại diện -->
+                    <div class="form-section">
+                        <div class="row">
+                            <div class="col-12 form-group">
+                                <label for="image" class="form-label">
+                                    <i class="fas fa-image"></i>
+                                    Ảnh đại diện
+                                </label>
+                                <div class="input-group-icon">
+                                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                    <small class="text-muted d-block mt-1">Chấp nhận: JPG, PNG, GIF (tối đa 5MB). Để trống nếu không muốn thay đổi.</small>
+                                    <div class="mt-2" id="image_preview">
+                                        <?php if (!empty($hoiVien->image)): ?>
+                                            <?php
+                                            $imageUrl = '/gym/' . $hoiVien->image;
+                                            ?>
+                                            <img id="image_preview_img" src="<?php echo htmlspecialchars($imageUrl); ?>" alt="Current image" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #e5e7eb;" onerror="this.style.display='none';">
+                                        <?php else: ?>
+                                            <img id="image_preview_img" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #e5e7eb; display: none;">
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Thông tin cá nhân -->
                     <div class="form-section">
                         <div class="row">
@@ -543,10 +580,10 @@
 
                     <div class="form-actions">
                         <a href="/gym/admin/user" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-2"></i>Quay lại
+                            <i class="fas fa-arrow-left me-2"></i>
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>Cập nhật thông tin
+                            <i class="fas fa-save me-2"></i>
                         </button>
                     </div>
                 </form>
@@ -554,6 +591,21 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Preview image before upload
+        document.getElementById('image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewImg = document.getElementById('image_preview_img');
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 </body>
 
 </html>

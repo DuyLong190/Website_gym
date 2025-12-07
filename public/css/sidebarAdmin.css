@@ -14,6 +14,13 @@ body {
     padding: 1rem 0;
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.03);
     height: calc(100vh - 4rem);
+    z-index: 1030;
+    transition: z-index 0.3s ease;
+}
+
+/* Đặt sidebar phía sau modal khi modal được hiển thị */
+body.modal-open .navbar {
+    z-index: 1020;
 }
 
 .navbar__link {
@@ -40,6 +47,13 @@ body {
     transition: 250ms ease all;
     border-radius: 17.5px;
     white-space: nowrap;
+    z-index: 1031;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Đặt span tooltip phía sau modal khi modal được hiển thị */
+body.modal-open .navbar__link span {
+    z-index: 1021;
 }
 
 .navbar__link:hover {

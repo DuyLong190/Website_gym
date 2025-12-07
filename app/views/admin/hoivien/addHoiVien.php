@@ -51,8 +51,8 @@
         .page-header {
             background: var(--primary-color);
             border-radius: var(--border-radius);
-            padding: 2rem 2.5rem;
-            margin-bottom: 2rem;
+            padding: 1rem 1rem;
+            margin-bottom: 1rem;
             box-shadow: var(--card-shadow);
             color: white;
             text-align: center;
@@ -88,7 +88,7 @@
         .card-header {
             background: var(--primary-color);
             color: white;
-            padding: 1.5rem 2rem;
+            padding: 1rem 2rem;
             border: none;
             font-size: 1.1rem;
             font-weight: 600;
@@ -186,8 +186,6 @@
             display: flex;
             justify-content: space-between;
             gap: 1rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
             border-top: 2px solid #f3f4f6;
         }
 
@@ -255,7 +253,20 @@
                                         </ul>
                                     </div>
                                 <?php endif; ?>
-                                <form action="/gym/admin/user/saveUser" method="POST">
+                                <form action="/gym/admin/user/saveUser" method="POST" enctype="multipart/form-data">
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <label for="image" class="form-label">
+                                                <i class="fas fa-image me-1"></i>
+                                                Ảnh đại diện
+                                            </label>
+                                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                            <small class="text-muted">Chấp nhận: JPG, PNG, GIF (tối đa 5MB)</small>
+                                            <div class="mt-2" id="image_preview" style="display: none;">
+                                                <img id="image_preview_img" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #e5e7eb;">
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="HoTen" class="form-label">Họ và tên <span class="text-danger">*</span></label>
@@ -303,18 +314,36 @@
                                         <textarea class="form-control" id="DiaChi" name="DiaChi" rows="3"><?= htmlspecialchars($_POST['DiaChi'] ?? '') ?></textarea>
                                     </div>
                                     <div class="form-actions">
-                                        <a href="/gym/admin/user" class="btn btn-secondary">
-                                            <i class="fas fa-arrow-left me-2"></i>Quay lại
-                                        </a>
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-save me-2"></i>Lưu
+                                            <i class="fas fa-save me-2"></i>
                                         </button>
+                                        <a href="/gym/admin/user" class="btn btn-secondary">
+                                            <i class="fas fa-arrow-left me-2"></i>
+                                        </a>
                                     </div>
                                 </form>
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Preview image before upload
+        document.getElementById('image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('image_preview');
+                    const previewImg = document.getElementById('image_preview_img');
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('image_preview').style.display = 'none';
+            }
+        });
+    </script>
 </body>
 
 </html>
