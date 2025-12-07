@@ -7,134 +7,605 @@
     <title>Chỉnh sửa hội viên</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #8f2121;
+            --success-color: #10b981;
+            --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --card-hover-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+            --border-radius: 20px;
+            --input-focus-color: #667eea;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: linear-gradient(120deg, #f8fafc 0%, #dbeafe 100%);
+            background: #f3f4f6;
             min-height: 100vh;
-            margin-top: -60px;
+            margin-left: 8.5rem;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 1rem;
+        }
+
+        .main-content {
+            animation: fadeInUp 0.6s ease-out;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-header {
+            background: var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 1rem 2rem;
+            margin: 0 auto 1rem auto;
+            box-shadow: var(--card-shadow);
+            width: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.3px;
+        }
+
+        .page-header h1 .title-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .page-header h1 .title-main {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .page-header h1 .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-header h1 i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .admin-card {
-            border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.13);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
             border: none;
-            background: #fff;
+            background: #ffffff;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .admin-title {
-            color: #6366f1;
-            font-weight: 800;
-            font-size: 2rem;
+        .card-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .card-header i {
+            margin-right: 0.75rem;
+            font-size: 1.3rem;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            min-width: 150px;
+        }
+
+        .form-label i {
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .input-group-icon {
+            position: relative;
+            flex: 1;
+        }
+
+        .input-group-icon i {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            z-index: 10;
+            transition: color 0.3s ease;
+        }
+
+        .input-group-icon .form-control,
+        .input-group-icon .form-select {
+            padding-left: 3rem;
+        }
+
+        .input-group-icon .form-control:focus+i,
+        .input-group-icon .form-select:focus+i {
+            color: var(--primary-color);
+        }
+
+        .form-control,
+        .form-select {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 0.625rem 1rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            background: #fafafa;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--input-focus-color);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+            background: #ffffff;
+        }
+
+        .form-control:hover,
+        .form-select:hover {
+            border-color: #c7d2fe;
+            background: #ffffff;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group textarea.form-control {
+            min-width: 100%;
+        }
+
+        .text-danger {
+            color: #ef4444 !important;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .form-section {
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .form-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 0.375rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .section-title i {
+            font-size: 1.2rem;
         }
 
         .btn-primary {
-            background: linear-gradient(90deg, #6366f1 0%, #0ea5e9 100%);
+            background: var(--success-color);
             border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
             font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            font-size: 0.95rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            background: #059669;
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 2px solid #f3f4f6;
+        }
+
+        .required-field {
+            color: #ef4444;
+            margin-left: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .page-header {
+                padding: 0.75rem 1rem;
+                width: 100%;
+            }
+
+            .page-header h1 {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .page-header h1 .title-main {
+                font-size: 1.25rem;
+                white-space: normal;
+                text-align: center;
+            }
+
+            .page-header h1 .icon-wrapper {
+                width: 44px;
+                height: 44px;
+            }
+
+            .page-header h1 .icon-wrapper i {
+                font-size: 1.25rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-label {
+                min-width: auto;
+                margin-bottom: 0.5rem;
+                width: 100%;
+            }
+
+            .input-group-icon {
+                width: 100%;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-                <h1 class="mb-4 admin-title text-center">
-                    <i class="fa-solid fa-user-edit me-2"></i>Sửa thông tin hội viên
-                </h1>
-                <div class="row justify-content-center">
-                    <div class="col-lg-8 col-md-10">
-                        <div class="card admin-card mb-4">
-                            <div class="card-header bg-white border-0 fw-bold">
-                                <i class="fas fa-user-edit me-1"></i>
-                                Thông tin hội viên
-                            </div>
-                            <div class="card-body">
-                                <form action="/gym/admin/user/updateUser/<?php echo $hoiVien->MaHV ?>" method="POST">
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="HoTen" class="form-label">Họ tên <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="HoTen" name="HoTen" value="<?php echo $hoiVien->HoTen ?>" required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="NgaySinh" class="form-label">Ngày sinh <span class="text-danger">*</span></label>
-                                            <input type="date" class="form-control" id="NgaySinh" name="NgaySinh" value="<?php echo $hoiVien->NgaySinh ?>" required>
-                                        </div>
+    <div class="main-content">
+        <div class="page-header">
+            <h1>
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-user-edit"></i>
+                </div>
+                <div class="title-text">
+                    <span class="title-main">Sửa thông tin hội viên</span>
+                </div>
+            </h1>
+        </div>
+        <div class="card admin-card">
+            <div class="card-header">
+                <i class="fas fa-user-edit"></i>
+                Thông tin hội viên
+            </div>
+            <div class="card-body">
+                <form action="/gym/admin/user/updateUser/<?php echo $hoiVien->MaHV ?>" method="POST" enctype="multipart/form-data">
+                    <!-- Ảnh đại diện -->
+                    <div class="form-section">
+                        <div class="row">
+                            <div class="col-12 form-group">
+                                <label for="image" class="form-label">
+                                    <i class="fas fa-image"></i>
+                                    Ảnh đại diện
+                                </label>
+                                <div class="input-group-icon">
+                                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                    <small class="text-muted d-block mt-1">Chấp nhận: JPG, PNG, GIF (tối đa 5MB). Để trống nếu không muốn thay đổi.</small>
+                                    <div class="mt-2" id="image_preview">
+                                        <?php if (!empty($hoiVien->image)): ?>
+                                            <?php
+                                            $imageUrl = '/gym/' . $hoiVien->image;
+                                            ?>
+                                            <img id="image_preview_img" src="<?php echo htmlspecialchars($imageUrl); ?>" alt="Current image" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #e5e7eb;" onerror="this.style.display='none';">
+                                        <?php else: ?>
+                                            <img id="image_preview_img" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #e5e7eb; display: none;">
+                                        <?php endif; ?>
                                     </div>
-                                    <div class = "row mb-3">
-                                        <div class="col-md-6">
-                                            <label for= "ChieuCao" class="form-label">Chiều cao (cm)</label>
-                                            <input type="number" class="form-control" id="ChieuCao" name="ChieuCao" value="<?php echo $hoiVien->ChieuCao ?>" step="1" min="0">
-                                        </div>
-                                        <div class ="col-md-6">
-                                            <label for= "CanNang" class="form-label">Cân nặng (kg)</label>
-                                            <input type="number" class="form-control" id="CanNang" name="CanNang" value="<?php echo $hoiVien->CanNang ?>" step="1" min="0">
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="GioiTinh" class="form-label">Giới tính <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="GioiTinh" name="GioiTinh" required>
-                                                <option value="">Chọn giới tính</option>
-                                                <option value="Nam" <?php echo $hoiVien->GioiTinh === 'Nam' ? 'selected' : '' ?>>Nam</option>
-                                                <option value="Nữ" <?php echo $hoiVien->GioiTinh === 'Nữ' ? 'selected' : '' ?>>Nữ</option>
-                                                <option value="Khác" <?php echo $hoiVien->GioiTinh === 'Khác' ? 'selected' : '' ?>>Khác</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="SDT" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
-                                            <input type="tel" class="form-control" id="SDT" name="SDT" value="<?= htmlspecialchars((string)($hoiVien->SDT ?? '')) ?>" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="Email" class="form-label">Email</label>
-                                            <input type="email" class="form-control" id="Email" name="Email" value="<?= htmlspecialchars((string)($hoiVien->Email ?? '')) ?>">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="MaGoiTap" class="form-label">Gói tập <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="MaGoiTap" name="MaGoiTap">
-                                                <option value="" <?= empty($hoiVien->MaGoiTap) ? 'selected' : '' ?>>Chọn gói tập</option>
-                                                <?php foreach ($goiTap as $goitap): ?>
-                                                    <option value="<?= $goitap['MaGoiTap'] ?>" <?= (!empty($hoiVien->MaGoiTap) && $hoiVien->MaGoiTap == $goitap['MaGoiTap']) ? 'selected' : '' ?>>
-                                                        <?= htmlspecialchars($goitap['TenGoiTap']) ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="DiaChi" class="form-label">Địa chỉ</label>
-                                            <textarea class="form-control" id="DiaChi" name="DiaChi" rows="3"><?= htmlspecialchars((string)($hoiVien->DiaChi ?? '')) ?></textarea>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="TrangThai" class="form-label">Trạng thái <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="TrangThai" name="TrangThai" required>
-                                                <option value="Đang hoạt động" <?php echo $hoiVien->TrangThai === 'Đang hoạt động' ? 'selected' : '' ?>>Đang hoạt động</option>
-                                                <option value="Tạm ngưng" <?php echo $hoiVien->TrangThai === 'Tạm ngưng' ? 'selected' : '' ?>>Tạm ngưng</option>
-                                                <option value="Đã hủy" <?php echo $hoiVien->TrangThai === 'Đã hủy' ? 'selected' : '' ?>>Đã hủy</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <a href="/gym/admin/user" class="btn btn-secondary">
-                                            <i class="fas fa-arrow-left"></i> Quay lại
-                                        </a>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-save"></i> Lưu
-                                        </button>
-                                    </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </main>
+                    <!-- Thông tin cá nhân -->
+                    <div class="form-section">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="HoTen" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Họ tên <span class="required-field">*</span>
+                                </label>
+                                <div class="input-group-icon">
+                                    <input type="text" class="form-control" id="HoTen" name="HoTen" value="<?php echo htmlspecialchars($hoiVien->HoTen) ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label for="NgaySinh" class="form-label">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Ngày sinh <span class="required-field">*</span>
+                                </label>
+                                <div class="input-group-icon">
+                                    <input type="date" class="form-control" id="NgaySinh" name="NgaySinh" value="<?php echo $hoiVien->NgaySinh ?>" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="GioiTinh" class="form-label">
+                                    <i class="fas fa-venus-mars"></i>
+                                    Giới tính <span class="required-field">*</span>
+                                </label>
+                                <div class="input-group-icon">
+                                    <select class="form-select" id="GioiTinh" name="GioiTinh" required>
+                                        <option value="">Chọn giới tính</option>
+                                        <option value="Nam" <?php echo $hoiVien->GioiTinh === 'Nam' ? 'selected' : '' ?>>Nam</option>
+                                        <option value="Nữ" <?php echo $hoiVien->GioiTinh === 'Nữ' ? 'selected' : '' ?>>Nữ</option>
+                                        <option value="Khác" <?php echo $hoiVien->GioiTinh === 'Khác' ? 'selected' : '' ?>>Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label for="SDT" class="form-label">
+                                    <i class="fas fa-phone"></i>
+                                    Số điện thoại <span class="required-field">*</span>
+                                </label>
+                                <div class="input-group-icon">
+                                    <input type="tel" class="form-control" id="SDT" name="SDT" value="<?= htmlspecialchars((string)($hoiVien->SDT ?? '')) ?>" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thông tin thể chất -->
+                    <div class="form-section">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="ChieuCao" class="form-label">
+                                    <i class="fas fa-ruler-vertical"></i>
+                                    Chiều cao (cm)
+                                </label>
+                                <div class="input-group-icon">
+                                    <input type="number" class="form-control" id="ChieuCao" name="ChieuCao" value="<?php echo $hoiVien->ChieuCao ?>" step="1" min="0" placeholder="Nhập chiều cao">
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label for="CanNang" class="form-label">
+                                    <i class="fas fa-weight"></i>
+                                    Cân nặng (kg)
+                                </label>
+                                <div class="input-group-icon">
+                                    <input type="number" class="form-control" id="CanNang" name="CanNang" value="<?php echo $hoiVien->CanNang ?>" step="1" min="0" placeholder="Nhập cân nặng">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thông tin liên hệ & Gói tập -->
+                    <div class="form-section">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="Email" class="form-label">
+                                    <i class="fas fa-envelope"></i>
+                                    Email
+                                </label>
+                                <div class="input-group-icon">
+                                    <input type="email" class="form-control" id="Email" name="Email" value="<?= htmlspecialchars((string)($hoiVien->Email ?? '')) ?>" placeholder="example@email.com">
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label for="MaGoiTap" class="form-label">
+                                    <i class="fas fa-ticket-alt"></i>
+                                    Gói tập <span class="required-field">*</span>
+                                </label>
+                                <div class="input-group-icon">
+                                    <select class="form-select" id="MaGoiTap" name="MaGoiTap">
+                                        <option value="" <?= empty($hoiVien->MaGoiTap) ? 'selected' : '' ?>>Chọn gói tập</option>
+                                        <?php foreach ($goiTap as $goitap): ?>
+                                            <option value="<?= $goitap['MaGoiTap'] ?>" <?= (!empty($hoiVien->MaGoiTap) && $hoiVien->MaGoiTap == $goitap['MaGoiTap']) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($goitap['TenGoiTap']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="DiaChi" class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Địa chỉ
+                                </label>
+                                <div style="flex: 1;">
+                                    <textarea class="form-control" id="DiaChi" name="DiaChi" rows="3" placeholder="Nhập địa chỉ"><?= htmlspecialchars((string)($hoiVien->DiaChi ?? '')) ?></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label for="TrangThai" class="form-label">
+                                    <i class="fas fa-toggle-on"></i>
+                                    Trạng thái <span class="required-field">*</span>
+                                </label>
+                                <div class="input-group-icon">
+                                    <select class="form-select" id="TrangThai" name="TrangThai" required>
+                                        <option value="Đang hoạt động" <?php echo $hoiVien->TrangThai === 'Đang hoạt động' ? 'selected' : '' ?>>Đang hoạt động</option>
+                                        <option value="Tạm ngưng" <?php echo $hoiVien->TrangThai === 'Tạm ngưng' ? 'selected' : '' ?>>Tạm ngưng</option>
+                                        <option value="Đã hủy" <?php echo $hoiVien->TrangThai === 'Đã hủy' ? 'selected' : '' ?>>Đã hủy</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="/gym/admin/user" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Preview image before upload
+        document.getElementById('image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewImg = document.getElementById('image_preview_img');
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 </body>
 
 </html>

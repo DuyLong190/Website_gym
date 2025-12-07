@@ -14,8 +14,9 @@
         }
 
         .pt-wrapper {
-            margin-left: 18%;
-            padding: 40px 30px;
+            margin-left: calc(5.5rem + 2rem);
+            padding: 2rem 2rem;
+            min-height: 100vh;
         }
 
         .card-calendar {
@@ -172,7 +173,7 @@
         @media (max-width: 991px) {
             .pt-wrapper {
                 margin-left: 0;
-                padding: 120px 16px 40px;
+                padding: 8rem 1rem 2rem;
             }
 
             .calendar-header-row {

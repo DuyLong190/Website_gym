@@ -1,123 +1,46 @@
-/* ============================================
-   DARK THEME BASE
-   ============================================ */
-body {
-    background-color: #0f0f0f;
-    color: #e0e0e0;
-}
+@import url("https://pro.fontawesome.com/releases/v6.0.0-beta1/css/all.css");
 
 .container {
     background-color: transparent;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
 }
 
-.package-card,
-.card.package-card {
-    padding: 25px;
-    background: linear-gradient(145deg, #1a1a1a 0%, #2d2d2d 100%) !important;
-    transition: transform 0.3s, box-shadow 0.3s;
-    margin-bottom: 24px;
-    border-radius: 18px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    height: 100%;
+.page-wrapper {
+    min-height: calc(100vh - 80px);
+    background: #d8e1eb;
+    background-size: 400% 400%;
+    position: relative;
+    overflow-x: hidden;
+    animation: gradientShift 15s ease infinite;
 }
 
-/* Override Bootstrap card-body background to transparent so parent gradient shows */
-.package-card .card-body,
-.card.package-card .card-body {
-    background: transparent !important;
-    color: inherit;
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
-.package-card:hover,
-.card.package-card:hover {
-    transform: translateY(-7px) scale(1.02);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 107, 53, 0.2);
-    border-color: rgba(255, 107, 53, 0.3);
+.page-wrapper>.container {
+    position: relative;
+    z-index: 1;
 }
 
-.class-name {
-    font-size: 1.5rem;
-    background: linear-gradient(135deg, #8f2121 0%, #d94444 100%);
-    color: #fff;
-    font-weight: 700;
-    border-radius: 8px;
-    padding: 0.6em 1em;
-    margin-bottom: 1em;
-    display: inline-block;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(143, 33, 33, 0.4);
+ul.product-plans li.product-plan {
+    background: #fff;
 }
-
-.class-price {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #ffb700;
-    text-align: center;
-    margin-bottom: 1rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.currency-symbol {
-    font-size: 1rem;
-    vertical-align: super;
-    color: #ffb700;
-}
-
-.card-text {
-    color: rgb(230, 230, 230);
-    font-size: 0.95rem;
-}
-
-.info-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.8rem;
-    gap: 8px;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.info-row:hover {
-    background: rgba(255, 183, 0, 0.1);
-    transform: translateX(5px);
-}
-
-.info-row i {
-    color: #ffb700;
-    width: 20px;
-    font-size: 1.1rem;
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 0.35em 0.7em;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-top: 0.5rem;
-}
-
-.status-open {
-    background-color: #28a745;
-    color: white;
-    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
-}
-
-.status-closed {
-    background-color: #dc3545;
-    color: white;
-    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
-}
-
-.status-cancelled {
-    background-color: #6c757d;
-    color: white;
-    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
-}
-
+/* ============================================
+   PACKAGE HERO SECTION
+   ============================================ */
 .hero-section {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     position: relative;
@@ -129,13 +52,13 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    align-items: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    position: relative;
+    border-radius: 0;
+    margin-bottom: 60px;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    overflow: hidden;
 }
 
 .hero-section::before {
@@ -145,12 +68,12 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 26, 26, 0.8) 100%);
-    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(143, 33, 33, 0.5) 100%);
+    border-radius: 0;
     z-index: 0;
 }
 
-.hero-section > * {
+.hero-section>* {
     position: relative;
     z-index: 1;
 }
@@ -161,96 +84,579 @@ body {
     letter-spacing: 0.1em;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
     color: #fff;
+    margin: 0;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 2;
 }
 
 @media (max-width: 768px) {
+    .hero-section {
+        min-height: 30vh;
+    }
+
     .hero-section h1 {
         font-size: 2.5rem;
     }
 }
 
-.line-custom {
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    margin: 1rem 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 183, 0, 0.3) 50%, transparent 100%);
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.action-buttons {
+ul.product-plans {
+    width: min(60rem, 90%);
+    margin-inline: auto;
     display: flex;
-    gap: 0.5rem;
-    margin-top: auto;
-}
-
-.btn-custom {
-    flex: 1;
-    padding: 0.6rem 0.8rem;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 600;
-    text-align: center;
-    transition: all 0.3s;
-    font-size: 0.9rem;
-    display: -webkit-inline-flex;
-    display: -ms-inline-flexbox;
-    display: inline-flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
+    row-gap: 3.5rem;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 0.5rem;
+    list-style: none;
 }
 
-.btn-custom i {
-    vertical-align: middle;
-    line-height: 1;
+.row>.col-md-6.col-lg-4 {
+    margin-bottom: 3.5rem;
+}
+
+ul.product-plans li.product-plan {
+    --accent-color: #0d72a1;
+    --overlap-size: 1.5rem;
+    --border-radius: 5rem;
+    width: min(22rem, 100%);
+    margin-inline: var(--overlap-size);
+    padding-block: 2rem;
+    gap: 1rem;
+    border-radius: var(--border-radius) 0 var(--border-radius) 0;
+    box-shadow: 0.25rem 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
+    height: 100%;
+    align-items: start;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+ul.product-plans li.product-plan:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+ul.product-plans li.product-plan .title {
+    font-size: 2rem;
+    color: var(--accent-color);
+    text-align: center;
+    padding: 0.2rem 1rem;
+    border: 4px solid var(--accent-color);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    margin: 0 auto 0.5rem auto;
+    display: flex;
+    width: fit-content;
+    justify-content: center;
+    
+}
+
+ul.product-plans li.product-plan .price {
+    margin-right: calc(var(--overlap-size) * -1);
+    justify-self: end;
+    padding-block: 0.25rem;
+    padding-inline: var(--overlap-size);
+    background-color: var(--accent-color);
+    color: white;
+    position: relative;
+}
+
+ul.product-plans li.product-plan .price::after {
+    content: "";
+    position: absolute;
+    height: var(--overlap-size);
+    width: var(--overlap-size);
+    right: 0;
+    top: 100%;
+    background-color: inherit;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+ul.product-plans li.product-plan .btn {
+    justify-self: start;
+    margin-left: calc(var(--overlap-size) * -1);
+    padding-block: 0.5rem;
+    padding-inline: 2.5rem;
+
+    border: none;
+    font-family: inherit;
+    color: white;
+    font-size: 1.1rem;
+
+    background-color: var(--accent-color);
+    background-image: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.25) 0);
+    background-size: 100% 200%;
+    transition: background-position 100ms ease;
+
+    position: relative;
+    cursor: pointer;
+}
+
+ul.product-plans li.product-plan .btn:focus-visible {
+    outline-offset: 5px;
+    outline: 2px solid var(--accent-color);
+    background-position: 0 100%;
+}
+
+ul.product-plans li.product-plan .btn:hover {
+    background-position: 0 100%;
+}
+
+ul.product-plans li.product-plan .btn::after {
+    content: "";
+    position: absolute;
+    height: var(--overlap-size);
+    width: var(--overlap-size);
+    left: 0;
+    bottom: 100%;
+    background-color: inherit;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+ul.product-plans li.product-plan .btn:active {
+    transform: scale(0.95);
+}
+
+ul.product-plans li.product-plan .btn:active::after {
+    transform-origin: left bottom;
+    transform: scale(0.9);
+}
+
+/* Phần Button Container - luôn ở dưới cùng */
+ul.product-plans li.product-plan>div:last-child {
+    margin-top: auto;
+    align-self: end;
+}
+
+/* Phần Thời hạn - Thiết kế đơn giản hiện đại */
+ul.product-plans li.product-plan .duration-info {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.875rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent-color);
+    margin: 0;
     font-size: 0.9rem;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-self: center;
     flex-shrink: 0;
 }
 
-/* Nếu icon có class me-1 (margin-end) từ Bootstrap, giữ nguyên */
-.btn-custom i.me-1 {
-    margin-right: 0.25rem !important;
-    margin-left: 0 !important;
+ul.product-plans li.product-plan .duration-info i {
+    color: var(--accent-color);
+    font-size: 1rem;
+    width: 1.25rem;
+    text-align: center;
+    flex-shrink: 0;
 }
 
-.btn-register {
-    background: linear-gradient(135deg, #ffb700 0%, #ffc922 100%);
-    color: #000;
-    box-shadow: 0 4px 12px rgba(255, 183, 0, 0.4);
+ul.product-plans li.product-plan .duration-info .duration-label {
+    font-weight: 700;
+    color: #212529;
+    font-size: 1rem;
+    letter-spacing: 0.2px;
 }
 
-.btn-register:hover {
-    background: linear-gradient(135deg, #ffc922 0%, #ffb700 100%);
-    color: #000;
-    box-shadow: 0 6px 18px rgba(255, 183, 0, 0.6);
+ul.product-plans li.product-plan .duration-info .duration-value {
+    font-weight: 700;
+    color: var(--accent-color);
+    font-size: 0.95rem;
+}
+
+/* Phần Mô tả - Bố cục đẹp mắt */
+ul.product-plans li.product-plan .description-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.625rem;
+    flex: 1;
+    min-height: 0;
+    padding: 0.5rem 0;
+}
+
+ul.product-plans li.product-plan .description-item {
+    padding: 0.1rem 0.75rem;
+    font-size: 0.875rem;
+    color: #495057;
+    background: #ffffff;
+    position: relative;
+    padding-left: 2rem;
+}
+
+ul.product-plans li.product-plan .description-item::before {
+    content: '•';
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Nút Chi tiết */
+ul.product-plans li.product-plan .btn-detail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 3rem !important;
+    height: 3rem !important;
+    min-width: 3rem !important;
+    min-height: 3rem !important;
+    max-width: 3rem !important;
+    max-height: 3rem !important;
+    aspect-ratio: 1;
+    padding: 0;
+    border: 2px solid #17a2b8;
+    background-color: transparent;
+    color: #17a2b8;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    flex: 0 0 3rem;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 3rem;
+    margin-left: auto;
+    margin-right: 2rem;
+}
+
+ul.product-plans li.product-plan .btn-detail::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+ul.product-plans li.product-plan .btn-detail:hover::before {
+    left: 100%;
+}
+
+ul.product-plans li.product-plan .btn-detail:hover {
+    background-color: #17a2b8;
+    color: white;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+    border-color: #17a2b8;
 }
 
-.btn-detail {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+ul.product-plans li.product-plan .btn-detail:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(23, 162, 184, 0.3);
 }
 
-.btn-detail:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+ul.product-plans li.product-plan .btn-detail i {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
 }
 
-/* Dark theme for alert */
-.alert-warning {
-    background-color: rgba(255, 193, 7, 0.15);
-    border-color: rgba(255, 193, 7, 0.3);
-    color: #ffc107;
+ul.product-plans li.product-plan .btn-detail:hover i {
+    transform: rotate(360deg);
 }
 
+/* Currency symbol */
+ul.product-plans li.product-plan .price .currency-symbol {
+    font-size: 0.9rem;
+    vertical-align: super;
+}
+
+/* Line custom */
+.line-custom {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 1rem 0;
+    opacity: 0.3;
+}
+
+/* ============================================
+   CAPACITY INFO - Thông tin số lượng học viên
+   ============================================ */
+   ul.product-plans li.product-plan .capacity-info {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 0.75rem 0;
+    border: 2px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+ul.product-plans li.product-plan .capacity-info:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 12px rgba(18, 168, 76, 0.15);
+}
+
+ul.product-plans li.product-plan .capacity-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+ul.product-plans li.product-plan .capacity-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:  var(--accent-color);
+    border-radius: 10px;
+    color: white;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(18, 168, 76, 0.3);
+}
+
+ul.product-plans li.product-plan .capacity-stats {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+ul.product-plans li.product-plan .capacity-numbers {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+ul.product-plans li.product-plan .capacity-registered {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+}
+
+ul.product-plans li.product-plan .capacity-separator {
+    font-size: 1.2rem;
+    color: #6c757d;
+    font-weight: 400;
+}
+
+ul.product-plans li.product-plan .capacity-max {
+    font-size: 1.2rem;
+    color: #495057;
+}
+
+ul.product-plans li.product-plan .capacity-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+ul.product-plans li.product-plan .capacity-status {
+    flex-shrink: 0;
+}
+
+ul.product-plans li.product-plan .status-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+/* Trạng thái: Còn chỗ */
+ul.product-plans li.product-plan .status-available .status-badge {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+}
+
+ul.product-plans li.product-plan .status-available .progress-bar-fill {
+    background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+}
+
+/* Trạng thái: Gần đầy */
+ul.product-plans li.product-plan .status-warning .status-badge {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+}
+
+ul.product-plans li.product-plan .status-warning .progress-bar-fill {
+    background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+}
+
+/* Trạng thái: Đã đầy */
+ul.product-plans li.product-plan .status-full .status-badge {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+}
+
+ul.product-plans li.product-plan .status-full .progress-bar-fill {
+    background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+}
+
+/* Trạng thái: Không xác định */
+ul.product-plans li.product-plan .status-unknown .status-badge {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(107, 114, 128, 0.3);
+}
+
+ul.product-plans li.product-plan .status-unknown .progress-bar-fill {
+    background: linear-gradient(90deg, #6b7280 0%, #4b5563 100%);
+}
+
+/* Progress Bar */
+ul.product-plans li.product-plan .capacity-progress {
+    margin-top: 0.75rem;
+}
+
+ul.product-plans li.product-plan .progress-bar-wrapper {
+    width: 100%;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    position: relative;
+}
+
+ul.product-plans li.product-plan .progress-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+ul.product-plans li.product-plan .progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        rgba(255, 255, 255, 0.3) 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+ul.product-plans li.product-plan .capacity-details {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+}
+
+ul.product-plans li.product-plan .capacity-details .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #495057;
+    flex: 1;
+    min-width: fit-content;
+}
+
+ul.product-plans li.product-plan .capacity-details .detail-item i {
+    color: var(--accent-color);
+    font-size: 0.85rem;
+    width: 1rem;
+    text-align: center;
+}
+
+ul.product-plans li.product-plan .capacity-details .detail-item strong {
+    color: #212529;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    ul.product-plans li.product-plan .capacity-header {
+        flex-wrap: wrap;
+    }
+    
+    ul.product-plans li.product-plan .capacity-status {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    
+    ul.product-plans li.product-plan .capacity-details {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+/* ============================================
+   INFO ROW - Thông tin khác
+   ============================================ */
+   ul.product-plans li.product-plan .info-row {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.875rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent-color);
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+ul.product-plans li.product-plan .info-row i {
+    color: var(--accent-color);
+    font-size: 1rem;
+    width: 1.25rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+ul.product-plans li.product-plan .info-row .card-text {
+    color: #495057;
+    flex: 1;
+}
+
+ul.product-plans li.product-plan .info-row .card-text strong {
+    color: #212529;
+    font-weight: 600;
+}
+
+/* ============================================
+   ACTION BUTTONS
+   ============================================ */
+ul.product-plans li.product-plan .action-buttons {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 1rem;
+}

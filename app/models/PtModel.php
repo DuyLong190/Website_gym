@@ -45,7 +45,7 @@ class PtModel
     }
 
     // Thêm mới PT
-    public function addPT($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $ChuyenMon, $KinhNghiem, $Luong) {
+    public function addPT($HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $ChuyenMon, $KinhNghiem, $Luong, $image = null) {
         $errors = [];
         
         // Validate dữ liệu
@@ -67,8 +67,8 @@ class PtModel
         }
 
         try {
-            $query = "INSERT INTO " . $this->table_name . " (HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, ChuyenMon, KinhNghiem, Luong) 
-                     VALUES (:HoTen, :NgaySinh, :GioiTinh, :SDT, :Email, :DiaChi, :ChuyenMon, :KinhNghiem, :Luong)";
+            $query = "INSERT INTO " . $this->table_name . " (HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, ChuyenMon, KinhNghiem, Luong, image) 
+                     VALUES (:HoTen, :NgaySinh, :GioiTinh, :SDT, :Email, :DiaChi, :ChuyenMon, :KinhNghiem, :Luong, :image)";
             $stmt = $this->conn->prepare($query);
 
             // Làm sạch dữ liệu
@@ -81,6 +81,7 @@ class PtModel
             $ChuyenMon = $ChuyenMon ? htmlspecialchars(strip_tags($ChuyenMon)) : null;
             $KinhNghiem = $KinhNghiem ? htmlspecialchars(strip_tags($KinhNghiem)) : null;
             $Luong = $Luong ? htmlspecialchars(strip_tags($Luong)) : null;
+            $image = $image ? htmlspecialchars(strip_tags($image)) : null;
 
             // Bind các tham số
             $stmt->bindParam(':HoTen', $HoTen);
@@ -92,6 +93,7 @@ class PtModel
             $stmt->bindParam(':ChuyenMon', $ChuyenMon);
             $stmt->bindParam(':KinhNghiem', $KinhNghiem);
             $stmt->bindParam(':Luong', $Luong);
+            $stmt->bindParam(':image', $image);
 
             // Thực thi query
             if ($stmt->execute()) {
@@ -105,19 +107,35 @@ class PtModel
     }
 
     // Cập nhật PT
-    public function updatePT($pt_id, $HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $ChuyenMon, $KinhNghiem, $Luong) {
+    public function updatePT($pt_id, $HoTen, $NgaySinh, $GioiTinh, $SDT, $Email, $DiaChi, $ChuyenMon, $KinhNghiem, $Luong, $image = null) {
         try {
-            $query = "UPDATE " . $this->table_name . " SET 
-                        HoTen = :HoTen, 
-                        NgaySinh = :NgaySinh, 
-                        GioiTinh = :GioiTinh,
-                        SDT = :SDT, 
-                        Email = :Email, 
-                        DiaChi = :DiaChi, 
-                        ChuyenMon = :ChuyenMon, 
-                        KinhNghiem = :KinhNghiem, 
-                        Luong = :Luong 
-                    WHERE pt_id = :pt_id";
+            // Nếu có image mới, cập nhật cả image, nếu không thì giữ nguyên
+            if ($image !== null) {
+                $query = "UPDATE " . $this->table_name . " SET 
+                            HoTen = :HoTen, 
+                            NgaySinh = :NgaySinh, 
+                            GioiTinh = :GioiTinh,
+                            SDT = :SDT, 
+                            Email = :Email, 
+                            DiaChi = :DiaChi, 
+                            ChuyenMon = :ChuyenMon, 
+                            KinhNghiem = :KinhNghiem, 
+                            Luong = :Luong,
+                            image = :image
+                        WHERE pt_id = :pt_id";
+            } else {
+                $query = "UPDATE " . $this->table_name . " SET 
+                            HoTen = :HoTen, 
+                            NgaySinh = :NgaySinh, 
+                            GioiTinh = :GioiTinh,
+                            SDT = :SDT, 
+                            Email = :Email, 
+                            DiaChi = :DiaChi, 
+                            ChuyenMon = :ChuyenMon, 
+                            KinhNghiem = :KinhNghiem, 
+                            Luong = :Luong
+                        WHERE pt_id = :pt_id";
+            }
             
             $stmt = $this->conn->prepare($query);
 
@@ -131,6 +149,9 @@ class PtModel
             $ChuyenMon = $ChuyenMon ? htmlspecialchars(strip_tags($ChuyenMon)) : null;
             $KinhNghiem = $KinhNghiem ? htmlspecialchars(strip_tags($KinhNghiem)) : null;
             $Luong = $Luong ? htmlspecialchars(strip_tags($Luong)) : null;
+            if ($image !== null) {
+                $image = htmlspecialchars(strip_tags($image));
+            }
 
             // Chuyển đổi pt_id thành số nếu có thể
             if (is_numeric($pt_id)) {
@@ -148,6 +169,9 @@ class PtModel
             $stmt->bindParam(':ChuyenMon', $ChuyenMon);
             $stmt->bindParam(':KinhNghiem', $KinhNghiem);
             $stmt->bindParam(':Luong', $Luong);
+            if ($image !== null) {
+                $stmt->bindParam(':image', $image);
+            }
 
             return $stmt->execute();
         } catch (PDOException $e) {

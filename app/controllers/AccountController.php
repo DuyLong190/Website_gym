@@ -31,7 +31,12 @@ class AccountController
                 return $role->role_id != 0; // Loại bỏ admin role
             });
             
+            $pageTitle = 'Đăng Ký - LD Gym & Fitness';
+            $additionalHeadContent = '<link rel="stylesheet" href="/Gym/public/css/register.css">';
+            
+            require_once __DIR__ . '/../views/share/header.php';
             require_once __DIR__ . '/../views/account/register.php';
+            include_once 'app/views/share/footer.php';
         }
         else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->save();
@@ -85,7 +90,28 @@ class AccountController
             $roles = array_filter($this->roleModel->getAllRoles(), function($role) {
                 return $role->role_id != 0;
             });
-            require_once __DIR__ . '/../views/account/register.php';
+            
+            // Kiểm tra xem form được submit từ login.php hay register.php
+            $fromLogin2 = isset($_POST['from_login2']) && $_POST['from_login2'] == '1';
+            
+            if ($fromLogin2) {
+                // Hiển thị lại trên login.php
+                $pageTitle = 'Đăng Nhập - LD Gym & Fitness';
+                $additionalHeadContent = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+                    <link rel="stylesheet" href="/Gym/public/css/login.css">';
+                
+                require_once __DIR__ . '/../views/share/header.php';
+                require_once __DIR__ . '/../views/account/login.php';
+                include_once 'app/views/share/footer.php';
+            } else {
+                // Hiển thị lại trên register.php (giữ nguyên logic cũ)
+                $pageTitle = 'Đăng Ký - LD Gym & Fitness';
+                $additionalHeadContent = '<link rel="stylesheet" href="/Gym/public/css/register.css">';
+                
+                require_once __DIR__ . '/../views/share/header.php';
+                require_once __DIR__ . '/../views/account/register.php';
+                include_once 'app/views/share/footer.php';
+            }
             return;
         }
 
@@ -160,13 +186,45 @@ class AccountController
             $roles = array_filter($this->roleModel->getAllRoles(), function($role) {
                 return $role->role_id != 0;
             });
-            require_once __DIR__ . '/../views/account/register.php';
+            
+            // Kiểm tra xem form được submit từ login.php hay register.php
+            $fromLogin2 = isset($_POST['from_login2']) && $_POST['from_login2'] == '1';
+            
+            if ($fromLogin2) {
+                // Hiển thị lại trên login.php
+                $pageTitle = 'Đăng Nhập - LD Gym & Fitness';
+                $additionalHeadContent = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+                    <link rel="stylesheet" href="/Gym/public/css/login.css">';
+                
+                require_once __DIR__ . '/../views/share/header.php';
+                require_once __DIR__ . '/../views/account/login.php';
+                include_once 'app/views/share/footer.php';
+            } else {
+                // Hiển thị lại trên register.php (giữ nguyên logic cũ)
+                $pageTitle = 'Đăng Ký - LD Gym & Fitness';
+                $additionalHeadContent = '<link rel="stylesheet" href="/Gym/public/css/register.css">';
+                
+                require_once __DIR__ . '/../views/share/header.php';
+                require_once __DIR__ . '/../views/account/register.php';
+                include_once 'app/views/share/footer.php';
+            }
         }
     }
 
     public function login()
     {
-        include_once 'app/views/account/login.php';
+        // Lấy danh sách roles từ database (chỉ lấy user và pt role, không hiển thị admin)
+        $roles = array_filter($this->roleModel->getAllRoles(), function($role) {
+            return $role->role_id != 0; // Loại bỏ admin role
+        });
+        
+        $pageTitle = 'Đăng Nhập - LD Gym & Fitness';
+        $additionalHeadContent = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+            <link rel="stylesheet" href="/Gym/public/css/login.css">';
+        
+        require_once __DIR__ . '/../views/share/header.php';
+        require_once __DIR__ . '/../views/account/login.php';
+        include_once 'app/views/share/footer.php';
     }
 
 
@@ -181,12 +239,37 @@ class AccountController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
+            $errors = [];
+
+            // Validation
+            if (empty($username)) {
+                $errors[] = 'Tên tài khoản không được để trống';
+            }
+            if (empty($password)) {
+                $errors[] = 'Mật khẩu không được để trống';
+            }
+
+            // Nếu có lỗi validation, hiển thị lại form
+            if (!empty($errors)) {
+                $pageTitle = 'Đăng Nhập - LD Gym & Fitness';
+                $additionalHeadContent = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+                    <link rel="stylesheet" href="/Gym/public/css/login.css">';
+                
+                require_once __DIR__ . '/../views/share/header.php';
+                require_once __DIR__ . '/../views/account/login.php';
+                include_once 'app/views/share/footer.php';
+                return;
+            }
+
+            // Kiểm tra tài khoản
             $account = $this->accountModel->getAccountByUsername($username);
 
             if ($account) {
                 $pwd_hashed = $account->password;
                 if (password_verify($password, $pwd_hashed)) {
-                    session_start();
+                    if (session_status() === PHP_SESSION_NONE) {
+                        session_start();
+                    }
                     $_SESSION['username'] = $account->username;
                     $_SESSION['role_id'] = $account->role_id;
                     $_SESSION['role_name'] = $account->role_name;
@@ -212,10 +295,21 @@ class AccountController
                     header('Location: /gym');
                     exit;
                 } else {
-                    echo "<script>alert('Mật khẩu không đúng.'); window.history.back();</script>";
+                    $errors[] = 'Mật khẩu không đúng';
                 }
             } else {
-                echo "<script>alert('Không tìm thấy tài khoản.'); window.history.back();</script>";
+                $errors[] = 'Tên tài khoản không tồn tại';
+            }
+
+            // Hiển thị lại form với lỗi
+            if (!empty($errors)) {
+                $pageTitle = 'Đăng Nhập - LD Gym & Fitness';
+                $additionalHeadContent = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+                    <link rel="stylesheet" href="/Gym/public/css/login.css">';
+                
+                require_once __DIR__ . '/../views/share/header.php';
+                require_once __DIR__ . '/../views/account/login.php';
+                include_once 'app/views/share/footer.php';
             }
         }
     }

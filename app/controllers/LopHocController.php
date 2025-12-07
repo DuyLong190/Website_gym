@@ -24,7 +24,7 @@ class LopHocController
             <link rel="stylesheet" href="/Gym/public/css/lophoc.css">
         HTML;
         require_once __DIR__ . '/../views/share/header.php';
-        require_once __DIR__ . '/../views/service/listLopHoc.php';
+        require_once __DIR__ . '/../views/membership/listLopHoc.php';
         require_once __DIR__ . '/../views/share/footer.php';
     }
 
@@ -32,7 +32,7 @@ class LopHocController
     {
         $lophoc = $this->lophocModel->getLopHoc_ByID($Malop);
         if ($lophoc) {
-            include_once __DIR__ . '/../views/service/showLopHoc.php';
+            include_once __DIR__ . '/../views/membership/showLopHoc.php';
         } else {
             echo "Lớp học này không tồn tại.";
         }
@@ -40,7 +40,7 @@ class LopHocController
 
     public function add()
     {
-        include_once __DIR__ . '/../views/service/addDVTL.php';
+        include_once __DIR__ . '/../views/membership/addDVTL.php';
     }
 
     public function save()
@@ -63,7 +63,7 @@ class LopHocController
                 // có thể tái sử dụng biến để prefill form
                 $old = compact('TenLop', 'GiaTien', 'MoTa', 'NgayBatDau', 'NgayKetThuc', 'SoLuongToiDa', 'TrangThai');
                 require_once __DIR__ . '/../views/share/header.php';
-                require_once __DIR__ . '/../views/service/addDVTL.php';
+                require_once __DIR__ . '/../views/membership/addDVTL.php';
                 require_once __DIR__ . '/../views/share/footer.php';
                 return;
             } else if ($result) {
@@ -87,7 +87,7 @@ class LopHocController
     {
         $lophoc = $this->lophocModel->getLopHoc_ByID($MaLop);
         if ($lophoc) {
-            include_once __DIR__ . '/../views/service/editDVTL.php';
+            include_once __DIR__ . '/../views/membership/editDVTL.php';
         } else {
             echo "Lớp học này không tồn tại.";
         }

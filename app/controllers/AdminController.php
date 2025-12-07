@@ -44,16 +44,55 @@ class AdminController
     public function indexGoitap()
     {
         $goiTaps = $this->goitapModel->getGoiTaps();
-        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        
+        // Bắt đầu output buffering để chèn sidebar vào đúng vị trí
+        ob_start();
         require_once __DIR__ . '/../views/admin/goitap/adminGoiTap.php';
+        $content = ob_get_clean();
+        
+        // Lấy nội dung sidebar
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+        
+        // Tách phần head (CSS và script) từ sidebar
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            // Chèn CSS và script vào head của adminGoiTap (trước thẻ </head>)
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        
+        // Tách phần navbar từ body của sidebar
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            // Chèn navbar vào body của adminGoiTap (ngay sau thẻ <body>)
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        
+        echo $content;
     }
 
     public function showGoiTap($MaGoiTap)
     {
         $goiTap = $this->goitapModel->getByMaGoiTap($MaGoiTap);
         if ($goiTap) {
-            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            ob_start();
             require_once __DIR__ . '/../views/admin/goitap/showGoiTap.php';
+            $content = ob_get_clean();
+
+            ob_start();
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            $sidebar = ob_get_clean();
+
+            if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+                $headContent = $headMatches[1];
+                $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+            }
+            if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+                $navbarContent = $bodyMatches[1];
+                $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+            }
+            echo $content;
         } else {
             echo "Gói tập không tồn tại.";
         }
@@ -93,8 +132,23 @@ class AdminController
     {
         $goiTap = $this->goitapModel->getByMaGoiTap($MaGoiTap);
         if ($goiTap) {
-            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            ob_start();
             require_once __DIR__ . '/../views/admin/goitap/editGoiTap.php';
+            $content = ob_get_clean();
+
+            ob_start();
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            $sidebar = ob_get_clean();
+
+            if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+                $headContent = $headMatches[1];
+                $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+            }
+            if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+                $navbarContent = $bodyMatches[1];
+                $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+            }
+            echo $content;
         } else {
             echo "Gói tập không tồn tại.";
         }
@@ -134,15 +188,45 @@ class AdminController
     {
         $DVTGs = $this->dvtgModel->getDVTGs();
 
-        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        ob_start();
         require_once __DIR__ . '/../views/admin/dvtg/adminDVTG.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
     public function showDVTG($id)
     {
         $DVTG = $this->dvtgModel->getDVTG_ByID($id);
         if ($DVTG) {
+            ob_start();
+            require_once __DIR__ . '/../views/admin/dvtg/showDVTG.php';
+            $content = ob_get_clean();
+
+            ob_start();
             require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
-            include_once __DIR__ . '/../views/admin/dvtg/showDVTG.php';
+            $sidebar = ob_get_clean();
+
+            if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+                $headContent = $headMatches[1];
+                $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+            }
+            if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+                $navbarContent = $bodyMatches[1];
+                $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+            }
+            echo $content;
         } else {
             echo "Dịch vụ này không tồn tại.";
         }
@@ -181,8 +265,23 @@ class AdminController
     {
         $DVTG = $this->dvtgModel->getDVTG_ByID($id);
         if ($DVTG) {
+            ob_start();
+            require_once __DIR__ . '/../views/admin/dvtg/editDVTG.php';
+            $content = ob_get_clean();
+
+            ob_start();
             require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
-            include_once __DIR__ . '/../views/admin/dvtg/editDVTG.php';
+            $sidebar = ob_get_clean();
+
+            if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+                $headContent = $headMatches[1];
+                $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+            }
+            if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+                $navbarContent = $bodyMatches[1];
+                $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+            }
+            echo $content;
         } else {
             echo "Dịch vụ này không tồn tại.";
         }
@@ -219,16 +318,45 @@ class AdminController
     public function indexLopHoc()
     {
         $lophocs = $this->lophocModel->getLopHocs();
-
-        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        ob_start();
         require_once __DIR__ . '/../views/admin/lophoc/adminLopHoc.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+        
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
     public function showLopHoc($id)
     {
         $lophoc = $this->lophocModel->getLopHoc_ByID($id);
         if ($lophoc) {
-            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            ob_start();
             require_once __DIR__ . '/../views/admin/lophoc/showLopHoc.php';
+            $content = ob_get_clean();
+
+            ob_start();
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            $sidebar = ob_get_clean();
+
+            if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+                $headContent = $headMatches[1];
+                $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+            }
+            if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+                $navbarContent = $bodyMatches[1];
+                $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+            }
+            echo $content;
         } else {
             echo "Lớp học không tồn tại.";
         }
@@ -285,8 +413,23 @@ class AdminController
     {
         $lophoc = $this->lophocModel->getLopHoc_ByID($MaLop);
         if ($lophoc) {
-            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            ob_start();
             require_once __DIR__ . '/../views/admin/lophoc/editLopHoc.php';
+            $content = ob_get_clean();
+
+            ob_start();
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            $sidebar = ob_get_clean();
+
+            if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+                $headContent = $headMatches[1];
+                $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+            }
+            if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+                $navbarContent = $bodyMatches[1];
+                $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+            }
+            echo $content;
         } else {
             echo "Lớp học không tồn tại.";
         }
@@ -340,8 +483,28 @@ class AdminController
         $cauhinhs = $this->cauHinhLichHocModel->getAll();
         $lophocs = $this->lophocModel->getLopHocs();
 
-        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        // Bắt đầu output buffering để chèn sidebar vào đúng vị trí
+        ob_start();
         require_once __DIR__ . '/../views/admin/lichlophoc/adminCauHinhLichHoc.php';
+        $content = ob_get_clean();
+
+        
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+
+        
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+
+        echo $content;
     }
 
     public function saveCauhinhlichhoc()
@@ -423,8 +586,28 @@ class AdminController
         $lichLopHocs = $this->lichLopHocModel->getAll();
         $lophocs = $this->lophocModel->getLopHocs();
 
-        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        // Bắt đầu output buffering để chèn sidebar vào đúng vị trí
+        ob_start();
         require_once __DIR__ . '/../views/admin/lichlophoc/adminLichLopHoc.php';
+        $content = ob_get_clean();
+
+        
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+
+        
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+
+        echo $content;
     }
 
     public function saveLichLopHoc()
@@ -529,8 +712,29 @@ class AdminController
     {
         $hoiVien = $this->hoiVienModel->getAllHoiVien();
         $goiTap = $this->goitapModel->getGoiTaps();
-        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+
+        // Bắt đầu output buffering để chèn sidebar vào đúng vị trí
+        ob_start();
         require_once __DIR__ . '/../views/admin/hoivien/adminHoiVien.php';
+        $content = ob_get_clean();
+
+        
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+
+        
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+
+        echo $content;
     }
     public function showUser($maHV)
     {
@@ -538,8 +742,29 @@ class AdminController
         if ($hoiVien) {
             // Lấy chi tiết gói tập hiện tại (nếu có) để hiển thị và xác minh thanh toán
             $currentCtgt = $this->ctgtModel->getCurrentByMaHV((int)$maHV);
-            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            ob_start();
             require_once __DIR__ . '/../views/admin/hoivien/showHoiVien.php';
+            $content = ob_get_clean();
+
+            
+            ob_start();
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            $sidebar = ob_get_clean();
+
+            if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+                $headContent = $headMatches[1];
+                // Chèn CSS và script vào head của adminGoiTap (trước thẻ </head>)
+                $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+            }
+
+            // Tách phần navbar từ body của sidebar
+            if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+                $navbarContent = $bodyMatches[1];
+                // Chèn navbar vào body của adminGoiTap (ngay sau thẻ <body>)
+                $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+            }
+
+            echo $content;
         } else {
             echo "Hội viên không tồn tại.";
         }
@@ -569,6 +794,20 @@ class AdminController
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
+                // Xử lý upload ảnh nếu có
+                $imagePath = null;
+                if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                    try {
+                        $imagePath = $this->handleImageUpload('image');
+                    } catch (Exception $e) {
+                        $_SESSION['error'] = $e->getMessage();
+                        $goiTap = $this->goitapModel->getGoiTaps();
+                        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+                        require_once __DIR__ . '/../views/admin/hoivien/addHoiVien.php';
+                        return;
+                    }
+                }
+
                 $HoTen = $_POST['HoTen'] ?? '';
                 $NgaySinh = $_POST['NgaySinh'] ?? null;
                 $GioiTinh = $_POST['GioiTinh'] ?? null;
@@ -579,7 +818,7 @@ class AdminController
                 $DiaChi = $_POST['DiaChi'] ?? null;
                 $MaGoiTap = $_POST['MaGoiTap'] ?? null;
 
-                $result = $this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap);
+                $result = $this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $imagePath);
 
                 if ($result) {
                     $_SESSION['success'] = "Thêm hội viên thành công";
@@ -590,7 +829,7 @@ class AdminController
                 $_SESSION['error'] = $e->getMessage();
                 $goiTap = $this->goitapModel->getGoiTaps();
                 require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
-                require_once __DIR__ . '/../views/admin/user/addHoiVien.php';
+                require_once __DIR__ . '/../views/admin/hoivien/addHoiVien.php';
             }
         }
     }
@@ -606,9 +845,28 @@ class AdminController
             }
             $goiTap = $this->goitapModel->getGoiTaps();
 
-            // Load view
-            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            ob_start();
             require_once __DIR__ . '/../views/admin/hoivien/editHoiVien.php';
+            $content = ob_get_clean();
+
+            
+            ob_start();
+            require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+            $sidebar = ob_get_clean();
+
+            
+            if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+                $headContent = $headMatches[1];
+                $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+            }
+
+            // Tách phần navbar từ body của sidebar
+            if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+                $navbarContent = $bodyMatches[1];
+                $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+            }
+
+            echo $content;
         } catch (Exception $e) {
             // Xử lý lỗi nếu có
             error_log("Error in editUser: " . $e->getMessage());
@@ -618,24 +876,38 @@ class AdminController
     }
     public function updateUser($maHV) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $HoTen = $_POST['HoTen'];
-            $NgaySinh = $_POST['NgaySinh'];
-            $GioiTinh = $_POST['GioiTinh'];
-            $ChieuCao = $_POST['ChieuCao'];
-            $CanNang = $_POST['CanNang'];
-            $SDT = $_POST['SDT'];
-            $Email = $_POST['Email'];
-            $DiaChi = $_POST['DiaChi'];
-            $MaGoiTap = isset($_POST['MaGoiTap']) && $_POST['MaGoiTap'] !== '' ? $_POST['MaGoiTap'] : null;
-            $TrangThai = $_POST['TrangThai'];
-
             try {
-                // Lấy thông tin hội viên hiện tại để so sánh gói tập
+                // Lấy thông tin hội viên hiện tại
                 $currentHoiVien = $this->hoiVienModel->getHoiVienById($maHV);
+                $oldImagePath = $currentHoiVien->image ?? null;
+
+                // Xử lý upload ảnh nếu có
+                $imagePath = null;
+                if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                    try {
+                        $imagePath = $this->handleImageUpload('image', $oldImagePath);
+                    } catch (Exception $e) {
+                        $_SESSION['error'] = $e->getMessage();
+                        header('Location: /gym/admin/user/editUser/' . $maHV);
+                        exit;
+                    }
+                }
+
+                $HoTen = $_POST['HoTen'];
+                $NgaySinh = $_POST['NgaySinh'];
+                $GioiTinh = $_POST['GioiTinh'];
+                $ChieuCao = $_POST['ChieuCao'];
+                $CanNang = $_POST['CanNang'];
+                $SDT = $_POST['SDT'];
+                $Email = $_POST['Email'];
+                $DiaChi = $_POST['DiaChi'];
+                $MaGoiTap = isset($_POST['MaGoiTap']) && $_POST['MaGoiTap'] !== '' ? $_POST['MaGoiTap'] : null;
+                $TrangThai = $_POST['TrangThai'];
 
                 $this->db->beginTransaction();
 
-                $okUpdate = $this->hoiVienModel->updateHoiVien($maHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $TrangThai);
+                // Chỉ cập nhật image nếu có ảnh mới (nếu $imagePath !== null)
+                $okUpdate = $this->hoiVienModel->updateHoiVien($maHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $TrangThai, $imagePath);
                 if (!$okUpdate) {
                     throw new Exception('Không thể cập nhật hội viên');
                 }
@@ -716,9 +988,27 @@ class AdminController
             $dangkyHv = [];
             $dangkyPt = [];
         }
-
-        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        // Bắt đầu output buffering để chèn sidebar vào đúng vị trí
+        ob_start();
         require_once __DIR__ . '/../views/admin/dangky/indexDangky.php';
+        $content = ob_get_clean();
+
+        
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+
+        echo $content;
     }
 
 
@@ -733,8 +1023,27 @@ class AdminController
         }
 
         $yeuCaus = $this->yeuCauThanhToanModel->getPending();
-        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        // Bắt đầu output buffering để chèn sidebar vào đúng vị trí
+        ob_start();
         require_once __DIR__ . '/../views/admin/yeucau/indexYeucau.php';
+        $content = ob_get_clean();
+        
+        
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+        
+        
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 
     public function confirmYeuCau($id)
@@ -855,8 +1164,28 @@ class AdminController
     public function indexPt()
     {
         $pts = $this->ptModel->getAllPTs();
+        // Bắt đầu output buffering để chèn sidebar vào đúng vị trí
+        ob_start();
+        require_once __DIR__ . '/../views/admin/pt/adminPt.php';
+        $content = ob_get_clean();
+
+        
+        ob_start();
         require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
-        require_once __DIR__ . '/../views/admin/pt/adminPT.php';
+        $sidebar = ob_get_clean();
+
+        
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+
+        echo $content;
     }
 
     public function showPt($pt_id)
@@ -993,10 +1322,28 @@ class AdminController
 
         // Lấy thống kê từ model
         $statistics = $this->getStatistics();
-        
-        // Load view
-        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+
+        // Bắt đầu output buffering để chèn sidebar vào đúng vị trí
+        ob_start();
         require_once __DIR__ . '/../views/admin/statistics.php';
+        $content = ob_get_clean();
+
+        
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+
+        
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 
     private function getStatistics()
@@ -1072,8 +1419,29 @@ class AdminController
         }
 
         $accounts = $this->accountModel->getAllAccounts();
-        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+
+        // Bắt đầu output buffering để chèn sidebar vào đúng vị trí
+        ob_start();
         require_once __DIR__ . '/../views/admin/account/adminAccount.php';
+        $content = ob_get_clean();
+
+        
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+
+        
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+
+        echo $content;
     }
 
     public function editAccount($accountId)
@@ -1187,5 +1555,64 @@ class AdminController
 
         header('Location: /gym/admin/account');
         exit;
+    }
+
+    // Xử lý upload ảnh
+    private function handleImageUpload($fileInput, $oldImagePath = null)
+    {
+        // Kiểm tra xem có file được upload không
+        if (!isset($_FILES[$fileInput]) || $_FILES[$fileInput]['error'] !== UPLOAD_ERR_OK) {
+            // Nếu không có file mới và có ảnh cũ, giữ nguyên ảnh cũ
+            return $oldImagePath;
+        }
+
+        $file = $_FILES[$fileInput];
+        
+        // Validate file
+        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        $maxSize = 5 * 1024 * 1024; // 5MB
+
+        if (!in_array($file['type'], $allowedTypes)) {
+            throw new Exception('Chỉ chấp nhận file ảnh định dạng JPG, PNG, GIF');
+        }
+
+        if ($file['size'] > $maxSize) {
+            throw new Exception('Kích thước file không được vượt quá 5MB');
+        }
+
+        // Tạo thư mục upload nếu chưa tồn tại
+        $uploadDir = __DIR__ . '/../../public/images/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        // Tạo tên file unique
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $fileName = 'hoivien_' . time() . '_' . uniqid() . '.' . $extension;
+        $filePath = $uploadDir . $fileName;
+
+        // Upload file
+        if (!move_uploaded_file($file['tmp_name'], $filePath)) {
+            throw new Exception('Không thể upload file');
+        }
+
+        // Xóa ảnh cũ nếu có
+        if ($oldImagePath && file_exists(__DIR__ . '/../../' . $oldImagePath)) {
+            @unlink(__DIR__ . '/../../' . $oldImagePath);
+        }
+
+        // Trả về đường dẫn relative từ root
+        return 'public/images/' . $fileName;
+    }
+
+    // Xóa ảnh
+    private function deleteImage($imagePath)
+    {
+        if ($imagePath) {
+            $fullPath = __DIR__ . '/../../' . $imagePath;
+            if (file_exists($fullPath)) {
+                @unlink($fullPath);
+            }
+        }
     }
 }

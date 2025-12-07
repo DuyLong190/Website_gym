@@ -10,15 +10,24 @@
         body {
             background-color: #0f172a;
             color: #e5e7eb;
+            margin: 0;
+            padding: 0;
         }
         .user-wrapper {
-            margin-left: 18%;
+            margin-left: 120px;
             padding: 40px 30px;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
         }
         @media (max-width: 991px) {
             .user-wrapper {
                 margin-left: 0;
-                padding: 120px 16px 40px;
+                padding: 100px 16px 40px;
+            }
+        }
+        @media (min-width: 992px) and (max-width: 1200px) {
+            .user-wrapper {
+                margin-left: 100px;
             }
         }
         .card-schedule {

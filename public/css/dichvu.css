@@ -1,5 +1,4 @@
 @import url("https://pro.fontawesome.com/releases/v6.0.0-beta1/css/all.css");
-@import url("https://fonts.googleapis.com/css2?family=Jura:wght@500;600;900&display=swap");
 
 .container {
     background-color: transparent;
@@ -7,10 +6,9 @@
     margin: 0 auto;
     padding: 0 15px;
 }
-
 .page-wrapper {
     min-height: calc(100vh - 80px);
-    background: #bdbdbd;
+    background: #c7f5d6;
     /* background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf6 25%, #fff3e0 50%, #fce4ec 75%, #f3e5f5 100%); */
     background-size: 400% 400%;
     position: relative;
@@ -22,18 +20,21 @@
     0% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
+
     100% {
         background-position: 0% 50%;
     }
 }
 
-.page-wrapper > .container {
+.page-wrapper>.container {
     position: relative;
     z-index: 1;
 }
+
 ul.product-plans li.product-plan {
     background: #fff;
 }
@@ -72,7 +73,7 @@ ul.product-plans li.product-plan {
     z-index: 0;
 }
 
-.hero-section > * {
+.hero-section>* {
     position: relative;
     z-index: 1;
 }
@@ -119,52 +120,12 @@ ul.product-plans {
     list-style: none;
 }
 
-.row > .col-md-6.col-lg-4 {
+.row>.col-md-6.col-lg-4 {
     margin-bottom: 3.5rem;
 }
 
-/* Gradient màu từ xám nhạt → vàng → đỏ (từ nhạt đến đậm) */
-.row > div:nth-child(1) ul.product-plans li.product-plan {
-    --accent-color: #8c98ad; /* Xám nhạt */
-}
-
-.row > div:nth-child(2) ul.product-plans li.product-plan {
-    --accent-color: #ffe460; /* Vàng nhạt */
-}
-
-.row > div:nth-child(3) ul.product-plans li.product-plan {
-    --accent-color: #fbbf24; /* Vàng */
-}
-
-.row > div:nth-child(4) ul.product-plans li.product-plan {
-    --accent-color: #f59e0b; /* Vàng cam */
-}
-
-.row > div:nth-child(5) ul.product-plans li.product-plan {
-    --accent-color: #f97316; /* Cam */
-}
-
-.row > div:nth-child(6) ul.product-plans li.product-plan {
-    --accent-color: #ef4444; /* Đỏ nhạt */
-}
-
-.row > div:nth-child(7) ul.product-plans li.product-plan {
-    --accent-color: #dc2626; /* Đỏ đậm */
-}
-
-.row > div:nth-child(8) ul.product-plans li.product-plan {
-    --accent-color: #b91c1c; /* Đỏ rất đậm */
-}
-
-.row > div:nth-child(9) ul.product-plans li.product-plan {
-    --accent-color: #991b1b; /* Đỏ cực đậm */
-}
-
-.row > div:nth-child(n+10) ul.product-plans li.product-plan {
-    --accent-color: #7f1d1d; /* Đỏ tối nhất */
-}
-
 ul.product-plans li.product-plan {
+    --accent-color: #12a84c;
     --overlap-size: 1.5rem;
     --border-radius: 5rem;
     width: min(22rem, 100%);
@@ -273,7 +234,7 @@ ul.product-plans li.product-plan .btn:active::after {
 }
 
 /* Phần Button Container - luôn ở dưới cùng */
-ul.product-plans li.product-plan > div:last-child {
+ul.product-plans li.product-plan>div:last-child {
     margin-top: auto;
     align-self: end;
 }
@@ -315,15 +276,6 @@ ul.product-plans li.product-plan .duration-info .duration-value {
 }
 
 /* Phần Mô tả - Bố cục đẹp mắt */
-ul.product-plans li.product-plan .description-section {
-    margin-top: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    flex: 1;
-}
-
 ul.product-plans li.product-plan .description-content {
     display: grid;
     grid-template-columns: 1fr;
@@ -423,4 +375,17 @@ ul.product-plans li.product-plan .btn-detail i {
 
 ul.product-plans li.product-plan .btn-detail:hover i {
     transform: rotate(360deg);
+}
+
+/* Currency symbol */
+ul.product-plans li.product-plan .price .currency-symbol {
+    font-size: 0.9rem;
+    vertical-align: super;
+}
+
+/* Line custom */
+.line-custom {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 1rem 0;
+    opacity: 0.3;
 }
