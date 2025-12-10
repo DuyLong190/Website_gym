@@ -40,7 +40,6 @@
         </div>
     </section>
     <section class="py-16 sm:py-24">
-
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div
                 class="max-w-4xl mx-auto bg-surface-dark dark:bg-surface-dark p-8 sm:p-12 lg:p-16 rounded-2xl shadow-2xl -mt-32 md:-mt-48 relative z-10 border border-white/10 backdrop-blur-sm hover:shadow-3xl transition-all duration-300">
@@ -413,7 +412,7 @@
                             <span class="material-icons-outlined text-primary text-3xl">local_drink</span>
                         </div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 flex flex-col">
                         <h4 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Nước uống miễn phí</h4>
                         <p class="text-text-light-secondary dark:text-text-dark-secondary">Hệ thống nước lọc tinh khiết, luôn sẵn sàng phục vụ bạn</p>
                     </div>
@@ -425,7 +424,7 @@
                             <span class="material-icons-outlined text-primary text-3xl">local_parking</span>
                         </div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 flex flex-col">
                         <h4 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Giữ xe miễn phí</h4>
                         <p class="text-text-light-secondary dark:text-text-dark-secondary">Bãi đỗ xe rộng rãi, an toàn và miễn phí cho hội viên</p>
                     </div>
@@ -437,7 +436,7 @@
                             <span class="material-icons-outlined text-primary text-3xl">dry_cleaning</span>
                         </div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 flex flex-col">
                         <h4 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Khăn tập miễn phí</h4>
                         <p class="text-text-light-secondary dark:text-text-dark-secondary">Khăn sạch sẽ, được giặt và thay mới hàng ngày</p>
                     </div>
@@ -449,7 +448,7 @@
                             <span class="material-icons-outlined text-primary text-3xl">shower</span>
                         </div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 flex flex-col">
                         <h4 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">Phòng tắm & thay đồ</h4>
                         <p class="text-text-light-secondary dark:text-text-dark-secondary">Phòng tắm sạch sẽ, đầy đủ tiện nghi, tủ đồ cá nhân</p>
                     </div>
@@ -461,7 +460,7 @@
                             <span class="material-icons-outlined text-primary text-3xl">wifi</span>
                         </div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 flex flex-col">
                         <h4 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">WiFi miễn phí</h4>
                         <p class="text-text-light-secondary dark:text-text-dark-secondary">Kết nối internet tốc độ cao, phủ sóng toàn bộ phòng tập</p>
                     </div>
@@ -473,7 +472,7 @@
                             <span class="material-icons-outlined text-primary text-3xl">security</span>
                         </div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 flex flex-col">
                         <h4 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">An ninh 24/7</h4>
                         <p class="text-text-light-secondary dark:text-text-dark-secondary">Hệ thống camera giám sát, bảo vệ an toàn cho hội viên</p>
                     </div>
@@ -505,5 +504,3 @@
 
 </main>
 <script src="/Gym/public/js/carousel.js"></script>
-<!-- Uncomment dòng dưới để chạy debug script trong Console -->
-<!-- <script src="/Gym/public/js/carousel-debug.js"></script> -->

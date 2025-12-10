@@ -51,6 +51,42 @@ class PtApiController
             header('Location: /gym');
             exit;
         }
+
+        // Đếm số lớp đang đăng ký (TrangThai = 'Đăng ký')
+        $dangKys = $this->ptLopHocDkModel->getByPt($ptId);
+        $soLopDangKy = 0;
+        if (!empty($dangKys)) {
+            foreach ($dangKys as $row) {
+                if (($row['TrangThai'] ?? '') === 'Đăng ký') {
+                    $soLopDangKy++;
+                }
+            }
+        }
+        $pt->SoLopDangKy = $soLopDangKy;
+
+        // Đếm số buổi tập đã dạy từ LichLopHoc (có thể tính từ các lớp đã dạy)
+        // Lấy danh sách lớp mà PT đang dạy
+        $maLops = [];
+        if (!empty($dangKys)) {
+            foreach ($dangKys as $row) {
+                if (($row['TrangThai'] ?? '') === 'Đăng ký' && !empty($row['MaLop'])) {
+                    $maLops[] = (int)$row['MaLop'];
+                }
+            }
+        }
+        $soBuoiTapDaDay = 0;
+        if (!empty($maLops)) {
+            $lichLops = $this->lichLopHocModel->getByMaLops($maLops);
+            // Đếm số buổi học đã diễn ra (NgayHoc <= ngày hiện tại)
+            $today = date('Y-m-d');
+            foreach ($lichLops as $lich) {
+                if (isset($lich['NgayHoc']) && $lich['NgayHoc'] <= $today) {
+                    $soBuoiTapDaDay++;
+                }
+            }
+        }
+        $pt->SoBuoiTapDaDay = $soBuoiTapDaDay;
+
         ob_start();
         require_once __DIR__ . '/../views/pt/profile.php';
         $content = ob_get_clean();

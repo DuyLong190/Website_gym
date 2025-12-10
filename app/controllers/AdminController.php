@@ -9,6 +9,7 @@ require_once __DIR__ . '/../models/PtModel.php';
 require_once __DIR__ . '/../models/AccountModel.php';
 require_once __DIR__ . '/../models/ChiTiet_Goitap_Model.php';
 require_once __DIR__ . '/../models/YeuCauThanhToanModel.php';
+require_once __DIR__ . '/../models/DangKyLopHocModel.php';
 require_once __DIR__ . '/../config/database.php';
 
 class AdminController
@@ -24,6 +25,7 @@ class AdminController
     private $accountModel;
     private $ctgtModel;
     private $yeuCauThanhToanModel;
+    private $dangKyLopHocModel;
 
     public function __construct()
     {
@@ -39,6 +41,7 @@ class AdminController
         $this->accountModel = new AccountModel($this->db);
         $this->ctgtModel = new ChiTiet_Goitap_Model($this->db);
         $this->yeuCauThanhToanModel = new YeuCauThanhToanModel($this->db);
+        $this->dangKyLopHocModel = new DangKyLopHocModel($this->db);
     }
     //Gói tập----------------------------------------------------------------------------------------------------------------------
     public function indexGoitap()
@@ -184,12 +187,12 @@ class AdminController
     }
 
     //Dịch vụ thư giãn---------------------------------------------------------------------------------------------------------------
-    public function indexDvThuGian()
+    public function indexDichVu()
     {
         $DVTGs = $this->dvtgModel->getDVTGs();
 
         ob_start();
-        require_once __DIR__ . '/../views/admin/dvtg/adminDVTG.php';
+        require_once __DIR__ . '/../views/admin/dichvu/adminDVTG.php';
         $content = ob_get_clean();
 
         ob_start();
@@ -211,7 +214,7 @@ class AdminController
         $DVTG = $this->dvtgModel->getDVTG_ByID($id);
         if ($DVTG) {
             ob_start();
-            require_once __DIR__ . '/../views/admin/dvtg/showDVTG.php';
+            require_once __DIR__ . '/../views/admin/dichvu/showDVTG.php';
             $content = ob_get_clean();
 
             ob_start();
@@ -234,7 +237,7 @@ class AdminController
 
     public function addDVTG()
     {
-        include_once __DIR__ . '/../views/admin/dvtg/addDVTG.php';
+        include_once __DIR__ . '/../views/admin/dichvu/addDVTG.php';
     }
 
     public function saveDVTG()
@@ -252,7 +255,7 @@ class AdminController
                 require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
             } else if ($result === true) {
                 // Nếu thêm thành công, chuyển hướng về danh sách
-                header('Location: /gym/admin/DvThuGian');
+                header('Location: /gym/admin/dichvu');
                 exit();
             } else {
                 // Nếu có lỗi khác
@@ -266,7 +269,7 @@ class AdminController
         $DVTG = $this->dvtgModel->getDVTG_ByID($id);
         if ($DVTG) {
             ob_start();
-            require_once __DIR__ . '/../views/admin/dvtg/editDVTG.php';
+            require_once __DIR__ . '/../views/admin/dichvu/editDVTG.php';
             $content = ob_get_clean();
 
             ob_start();
@@ -298,7 +301,7 @@ class AdminController
 
             $edit = $this->dvtgModel->updateDVTG($id, $TenTG, $GiaTG, $ThoiGianTG, $MoTaTG);
             if ($edit) {
-                header('Location: /gym/admin/DvThuGian');
+                header('Location: /gym/admin/dichvu');
             } else {
                 echo "Cập nhật dịch vụ không thành công.";
             }
@@ -308,7 +311,7 @@ class AdminController
     public function deleteDVTG($id)
     {
         if ($this->dvtgModel->deleteDVTG($id)) {
-            header('Location: /gym/admin/DvThuGian');
+            header('Location: /gym/admin/dichvu');
         } else {
             echo "Xóa dịch vụ không thành công.";
         }
@@ -476,6 +479,133 @@ class AdminController
         } else {
             echo "Xóa lớp học không thành công.";
         }
+    }
+
+    public function danhSachDangKy($MaLop)
+    {
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        $lophoc = $this->lophocModel->getLopHoc_ByID($MaLop);
+        if (!$lophoc) {
+            $_SESSION['error'] = 'Lớp học không tồn tại.';
+            header('Location: /gym/admin/lophoc');
+            exit;
+        }
+
+        $danhSachDangKy = $this->dangKyLopHocModel->getActiveMembersByLop($MaLop);
+        
+        ob_start();
+        require_once __DIR__ . '/../views/admin/lophoc/danhSachDangKy.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+        
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
+    }
+
+    public function exportExcelDangKy($MaLop)
+    {
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        $lophoc = $this->lophocModel->getLopHoc_ByID($MaLop);
+        if (!$lophoc) {
+            $_SESSION['error'] = 'Lớp học không tồn tại.';
+            header('Location: /gym/admin/lophoc');
+            exit;
+        }
+
+        $danhSachDangKy = $this->dangKyLopHocModel->getActiveMembersByLop($MaLop);
+
+        $tenLop = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $lophoc->TenLop);
+        $filename = 'DanhSachDangKy_' . $tenLop . '_' . date('Y-m-d_His') . '.xls';
+
+        header('Content-Type: application/vnd.ms-excel; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header('Expires: 0');
+
+        echo "\xEF\xBB\xBF"; // UTF-8 BOM để Excel đọc tiếng Việt 
+        echo '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+        echo '<head>';
+        echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">';
+        echo '<style>
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                font-family: "Times New Roman", Times, serif;
+            }
+            th {
+                background-color: #4F46E5;
+                color: white;
+                font-weight: bold;
+                padding: 8px;
+                border: 1px solid #ddd;
+                text-align: center;
+                font-family: "Times New Roman", Times, serif;
+            }
+            td {
+                padding: 8px;
+                border: 1px solid #ddd;
+                font-family: "Times New Roman", Times, serif;
+            }
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+        </style>';
+        echo '</head>';
+        echo '<body>';
+        echo '<table>';
+
+        // Header
+        echo '<tr>';
+        echo '<th>STT</th>';
+        echo '<th>Họ tên</th>';
+        echo '<th>Số điện thoại</th>';
+        echo '<th>Email</th>';
+        echo '<th>Địa chỉ</th>';
+        echo '<th>Ngày đăng ký</th>';
+        echo '</tr>';
+
+        // Dữ liệu
+        $stt = 1;
+        foreach ($danhSachDangKy as $dangKy) {
+            $ngayDangKy = '';
+            if (!empty($dangKy['created_at'])) {
+                $date = new DateTime($dangKy['created_at']);
+                $ngayDangKy = $date->format('d/m/Y H:i');
+            }
+
+            echo '<tr>';
+            echo '<td>' . htmlspecialchars($stt++, ENT_QUOTES, 'UTF-8') . '</td>';
+            echo '<td>' . htmlspecialchars($dangKy['HoTen'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>';
+            echo '<td>' . htmlspecialchars($dangKy['SDT'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>';
+            echo '<td>' . htmlspecialchars($dangKy['Email'] ?? 'N/A', ENT_QUOTES, 'UTF-8') . '</td>';
+            echo '<td>' . htmlspecialchars($dangKy['DiaChi'] ?? 'Chưa có', ENT_QUOTES, 'UTF-8') . '</td>';
+            echo '<td>' . htmlspecialchars($ngayDangKy, ENT_QUOTES, 'UTF-8') . '</td>';
+            echo '</tr>';
+        }
+
+        echo '</table>';
+        echo '</body>';
+        echo '</html>';
+        exit;
     }
     // Cấu hình lịch học----------------------------------------------------------------------------------------------------------
     public function indexCauhinhlichhoc()
@@ -713,6 +843,24 @@ class AdminController
         $hoiVien = $this->hoiVienModel->getAllHoiVien();
         $goiTap = $this->goitapModel->getGoiTaps();
 
+        // Thêm thông tin thanh toán vào mỗi hội viên
+        foreach ($hoiVien as $hv) {
+            $currentPackage = $this->ctgtModel->getActiveByMaHV((int)$hv->MaHV);
+            // Nếu không có gói chưa hủy, tìm gói đã thanh toán
+            if (!$currentPackage) {
+                $allPackages = $this->ctgtModel->getAllByMaHV((int)$hv->MaHV);
+                foreach ($allPackages as $package) {
+                    $daThanhToan = (int)($package['DaThanhToan'] ?? 0);
+                    if ($daThanhToan === 1) {
+                        $currentPackage = $package;
+                        break;
+                    }
+                }
+            }
+            // Thêm thông tin thanh toán vào object hội viên
+            $hv->DaThanhToan = $currentPackage ? (int)($currentPackage['DaThanhToan'] ?? 0) : 0;
+        }
+
         // Bắt đầu output buffering để chèn sidebar vào đúng vị trí
         ob_start();
         require_once __DIR__ . '/../views/admin/hoivien/adminHoiVien.php';
@@ -844,6 +992,9 @@ class AdminController
                 exit;
             }
             $goiTap = $this->goitapModel->getGoiTaps();
+            
+            // Lấy gói tập hiện tại của hội viên để hiển thị thông tin hủy gói
+            $currentCtgt = $this->ctgtModel->getCurrentByMaHV((int)$maHV);
 
             ob_start();
             require_once __DIR__ . '/../views/admin/hoivien/editHoiVien.php';
@@ -934,10 +1085,53 @@ class AdminController
     }
 
     public function deleteUser($maHV) {
-        if ($this->hoiVienModel->deleteHoiVien($maHV)) {
-            header('Location: /gym/admin/user');
+        // Kiểm tra quyền admin
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
             exit;
         }
+
+        try {
+            // Kiểm tra hội viên có tồn tại không
+            $hoiVien = $this->hoiVienModel->getHoiVienById($maHV);
+            if (!$hoiVien) {
+                $_SESSION['error'] = 'Hội viên không tồn tại.';
+                header('Location: /gym/admin/user');
+                exit;
+            }
+
+            // Bắt đầu transaction để đảm bảo xóa an toàn
+            $this->db->beginTransaction();
+
+            // Xóa các bảng liên quan trước (nếu có)
+            // 1. Xóa YeuCauThanhToan (không có CASCADE)
+            $stmtYeuCau = $this->db->prepare("DELETE FROM YeuCauThanhToan WHERE MaHV = :maHV");
+            $stmtYeuCau->bindParam(':maHV', $maHV, PDO::PARAM_INT);
+            $stmtYeuCau->execute();
+
+            // 2. Xóa Account liên kết với hội viên
+            $stmtAccount = $this->db->prepare("DELETE FROM Account WHERE MaHV = :maHV");
+            $stmtAccount->bindParam(':maHV', $maHV, PDO::PARAM_INT);
+            $stmtAccount->execute();
+
+            // 3. Xóa hội viên (ChiTiet_GoiTap và DangKyLopHoc sẽ tự động xóa do CASCADE)
+            $ok = $this->hoiVienModel->deleteOnlyHoiVien($maHV);
+            if (!$ok) {
+                throw new Exception('Không thể xóa hội viên. Có thể có ràng buộc dữ liệu.');
+            }
+
+            $this->db->commit();
+            $_SESSION['success'] = 'Xóa hội viên thành công!';
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            $_SESSION['error'] = 'Lỗi khi xóa hội viên: ' . $e->getMessage();
+            error_log('AdminController::deleteUser error - ' . $e->getMessage());
+        }
+
+        header('Location: /gym/admin/user');
+        exit;
     }
 
     public function indexDangky()
@@ -1077,20 +1271,38 @@ class AdminController
         try {
             $this->db->beginTransaction();
 
-            // 1. Cập nhật trạng thái yêu cầu
+            // 1. Lấy thông tin chi tiết gói tập để có MaGoiTap
+            $chiTietArr = $this->ctgtModel->getChiTietById($id_ctgt);
+            if (empty($chiTietArr)) {
+                throw new Exception('Không tìm thấy chi tiết gói tập.');
+            }
+            $chiTiet = $chiTietArr[0];
+            $maGoiTap = (int)($chiTiet['MaGoiTap'] ?? 0);
+            
+            if ($maGoiTap <= 0) {
+                throw new Exception('Dữ liệu gói tập không hợp lệ.');
+            }
+
+            // 2. Cập nhật MaGoiTap vào HoiVien (chỉ khi admin xác nhận)
+            $okUpdateHoiVien = $this->hoiVienModel->updateGoiTap($maHV, $maGoiTap);
+            if (!$okUpdateHoiVien) {
+                throw new Exception('Không thể cập nhật gói tập cho hội viên.');
+            }
+
+            // 3. Cập nhật trạng thái yêu cầu
             $okYc = $this->yeuCauThanhToanModel->markConfirmed((int)$id);
             if (!$okYc) {
                 throw new Exception('Không thể cập nhật trạng thái yêu cầu thanh toán.');
             }
 
-            // 2. Cập nhật chi tiết gói tập: set ngày bắt đầu/kết thúc, trạng thái, thanh toán
+            // 4. Cập nhật chi tiết gói tập: set ngày bắt đầu/kết thúc, trạng thái, thanh toán
             $okCtgt = $this->ctgtModel->confirmPayment($id_ctgt);
             if (!$okCtgt) {
                 throw new Exception('Không thể cập nhật chi tiết gói tập hoặc đã được xác nhận trước đó.');
             }
 
             $this->db->commit();
-            $_SESSION['success'] = 'Xác nhận yêu cầu thanh toán thành công.';
+            $_SESSION['success'] = 'Xác nhận yêu cầu thanh toán thành công. Gói tập đã được kích hoạt cho hội viên.';
         } catch (Exception $e) {
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
@@ -1151,6 +1363,71 @@ class AdminController
         }
 
         header('Location: /gym/admin/showUser/' . $maHV);
+        exit;
+    }
+
+    public function cancelPackage($maHV)
+    {
+        // Chỉ admin mới được hủy gói tập
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /gym/admin/user/editUser/' . $maHV);
+            exit;
+        }
+
+        // Kiểm tra hội viên có tồn tại không
+        $hoiVien = $this->hoiVienModel->getHoiVienById($maHV);
+        if (!$hoiVien) {
+            $_SESSION['error'] = 'Hội viên không tồn tại.';
+            header('Location: /gym/admin/user');
+            exit;
+        }
+
+        // Lấy gói tập hiện tại của hội viên
+        $currentCtgt = $this->ctgtModel->getCurrentByMaHV((int)$maHV);
+        if (!$currentCtgt) {
+            $_SESSION['error'] = 'Hội viên không có gói tập nào để hủy.';
+            header('Location: /gym/admin/user/editUser/' . $maHV);
+            exit;
+        }
+
+        $id_ctgt = (int)($currentCtgt['id_ctgt'] ?? 0);
+        $trangThai = $currentCtgt['TrangThai'] ?? '';
+
+        // Kiểm tra xem gói tập đã bị hủy chưa
+        if ($trangThai === 'Đã hủy' || $trangThai === 'Hết hạn') {
+            $_SESSION['error'] = 'Gói tập này đã bị hủy hoặc hết hạn rồi.';
+            header('Location: /gym/admin/user/editUser/' . $maHV);
+            exit;
+        }
+
+        try {
+            $this->db->beginTransaction();
+
+            // Hủy gói tập
+            $ok = $this->ctgtModel->cancelPackage($id_ctgt);
+            if (!$ok) {
+                throw new Exception('Không thể hủy gói tập. Có thể gói tập đã bị hủy trước đó.');
+            }
+
+            // Cập nhật MaGoiTap của hội viên về NULL
+            $this->hoiVienModel->updateGoiTap($maHV, null);
+
+            $this->db->commit();
+            $_SESSION['success'] = 'Hủy gói tập thành công.';
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            $_SESSION['error'] = 'Lỗi khi hủy gói tập: ' . $e->getMessage();
+            error_log('AdminController::cancelPackage error - ' . $e->getMessage());
+        }
+
+        header('Location: /gym/admin/user/editUser/' . $maHV);
         exit;
     }
 
@@ -1521,9 +1798,27 @@ class AdminController
                 throw new Exception('Tài khoản không tồn tại');
             }
 
-            // Nếu là hội viên (role_id = 1), xóa hồ sơ HoiVien trước
+            // Nếu là hội viên (role_id = 1), xóa tất cả các bảng liên quan đến MaHV
             if ((int)$links->role_id === 1 && !empty($links->MaHV)) {
-                $ok = $this->hoiVienModel->deleteOnlyHoiVien((int)$links->MaHV);
+                $maHV = (int)$links->MaHV;
+                
+                // 1. Xóa YeuCauThanhToan (không có CASCADE)
+                $stmtYeuCau = $this->db->prepare("DELETE FROM YeuCauThanhToan WHERE MaHV = :maHV");
+                $stmtYeuCau->bindParam(':maHV', $maHV, PDO::PARAM_INT);
+                $stmtYeuCau->execute();
+
+                // 2. Xóa ChiTiet_GoiTap (có CASCADE nhưng xóa thủ công để đảm bảo)
+                $stmtChiTiet = $this->db->prepare("DELETE FROM ChiTiet_GoiTap WHERE MaHV = :maHV");
+                $stmtChiTiet->bindParam(':maHV', $maHV, PDO::PARAM_INT);
+                $stmtChiTiet->execute();
+
+                // 3. Xóa DangKyLopHoc (có CASCADE nhưng xóa thủ công để đảm bảo)
+                $stmtDangKy = $this->db->prepare("DELETE FROM DangKyLopHoc WHERE MaHV = :maHV");
+                $stmtDangKy->bindParam(':maHV', $maHV, PDO::PARAM_INT);
+                $stmtDangKy->execute();
+
+                // 4. Xóa hồ sơ HoiVien
+                $ok = $this->hoiVienModel->deleteOnlyHoiVien($maHV);
                 if (!$ok) {
                     throw new Exception('Không thể xóa hồ sơ hội viên');
                 }
@@ -1545,12 +1840,13 @@ class AdminController
             }
 
             $this->db->commit();
-            $_SESSION['success'] = 'Xóa tài khoản và hồ sơ liên quan thành công!';
+            $_SESSION['success'] = 'Xóa tài khoản và tất cả dữ liệu liên quan thành công!';
         } catch (Exception $e) {
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
             }
-            $_SESSION['error'] = 'Lỗi: ' . $e->getMessage();
+            $_SESSION['error'] = 'Lỗi khi xóa tài khoản: ' . $e->getMessage();
+            error_log('AdminController::deleteAccount error - ' . $e->getMessage());
         }
 
         header('Location: /gym/admin/account');

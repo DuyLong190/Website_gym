@@ -330,6 +330,24 @@
             box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
         }
 
+        .btn-danger {
+            background: #ef4444;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            color: white;
+        }
+
         .form-actions {
             display: flex;
             justify-content: space-between;
@@ -587,6 +605,77 @@
                         </button>
                     </div>
                 </form>
+
+                <!-- Thông tin gói tập hiện tại và nút hủy -->
+                <?php if (isset($currentCtgt) && $currentCtgt && ($currentCtgt['TrangThai'] ?? '') !== 'Đã hủy' && ($currentCtgt['TrangThai'] ?? '') !== 'Hết hạn'): ?>
+                    <div class="card admin-card mt-3" style="border: 2px solid #fecaca;">
+                        <div class="card-header" style="background: #fee2e2; color: #991b1b;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Thông tin gói tập đang hoạt động
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <strong><i class="fas fa-ticket-alt me-2" style="color: var(--primary-color);"></i>Gói tập:</strong> 
+                                        <span class="ms-2">
+                                            <?php 
+                                            // Chỉ hiển thị tên gói tập nếu đã thanh toán
+                                            $daThanhToan = (int)($currentCtgt['DaThanhToan'] ?? 0);
+                                            if ($daThanhToan === 1 && !empty($currentCtgt['TenGoiTap'] ?? '')) {
+                                                echo htmlspecialchars($currentCtgt['TenGoiTap']);
+                                            } else {
+                                                echo 'N/A';
+                                            }
+                                            ?>
+                                        </span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong><i class="fas fa-info-circle me-2" style="color: var(--primary-color);"></i>Trạng thái:</strong> 
+                                        <span class="badge bg-success ms-2"><?= htmlspecialchars($currentCtgt['TrangThai'] ?? 'N/A') ?></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <?php if (!empty($currentCtgt['NgayBatDau'])): ?>
+                                        <div class="mb-3">
+                                            <strong><i class="fas fa-calendar-check me-2" style="color: var(--primary-color);"></i>Ngày bắt đầu:</strong> 
+                                            <span class="ms-2"><?= date('d/m/Y', strtotime($currentCtgt['NgayBatDau'])) ?></span>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php 
+                                    // Tính lại ngày kết thúc dựa trên ngày bắt đầu + thời hạn (tháng) nếu có
+                                    $ngayKT = $currentCtgt['NgayKetThuc'] ?? '';
+                                    if (!empty($currentCtgt['NgayBatDau']) && !empty($currentCtgt['ThoiHan'])) {
+                                        $thoiHan = (int)($currentCtgt['ThoiHan'] ?? 0);
+                                        if ($thoiHan > 0) {
+                                            // Tính lại ngày kết thúc: ngày bắt đầu + thời hạn (tháng)
+                                            $ngayBatDauObj = new DateTime($currentCtgt['NgayBatDau']);
+                                            $ngayBatDauObj->modify('+' . $thoiHan . ' months');
+                                            $ngayKT = $ngayBatDauObj->format('Y-m-d');
+                                        }
+                                    }
+                                    if (!empty($ngayKT)): ?>
+                                        <div class="mb-3">
+                                            <strong><i class="fas fa-calendar-times me-2" style="color: var(--primary-color);"></i>Ngày kết thúc:</strong> 
+                                            <span class="ms-2"><?= date('d/m/Y', strtotime($ngayKT)) ?></span>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-top">
+                                <div class="alert alert-warning mb-3" role="alert">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <strong>Lưu ý:</strong> Hủy gói tập sẽ vô hiệu hóa quyền truy cập của hội viên vào các dịch vụ của gói tập. Hành động này không thể hoàn tác.
+                                </div>
+                                <form id="cancelPackageForm" action="/gym/admin/user/cancelPackage/<?= $hoiVien->MaHV ?>" method="POST">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirmCancelPackage(event, '<?= htmlspecialchars(addslashes($currentCtgt['TenGoiTap'] ?? '')) ?>');">
+                                        <i class="fas fa-times-circle me-2"></i>Hủy gói tập
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -605,6 +694,22 @@
                 reader.readAsDataURL(file);
             }
         });
+
+        // Confirm cancel package
+        function confirmCancelPackage(event, tenGoiTap) {
+            event.preventDefault();
+            const message = 'Bạn có chắc chắn muốn hủy gói tập "' + tenGoiTap + '" của hội viên này?\n\n' +
+                          'Hành động này sẽ:\n' +
+                          '- Đánh dấu gói tập là "Đã hủy"\n' +
+                          '- Xóa gói tập khỏi hồ sơ hội viên\n' +
+                          '- Không thể hoàn tác\n\n' +
+                          'Bạn có muốn tiếp tục?';
+            
+            if (confirm(message)) {
+                document.getElementById('cancelPackageForm').submit();
+            }
+            return false;
+        }
     </script>
 </body>
 

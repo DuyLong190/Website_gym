@@ -22,42 +22,56 @@ class ChiTiet_Goitap_Controller {
         }
 
         $chiTiet = [];
-
         if ($id_ctgt !== null) {
             $chiTiet = $this->ctgtModel->getChiTietById($id_ctgt);
+            // Kiểm tra nếu gói tập đã bị hủy, không hiển thị
+            if (!empty($chiTiet)) {
+                $item = $chiTiet[0];
+                $trangThai = $item['TrangThai'] ?? '';
+                if ($trangThai === 'Đã hủy' || $trangThai === 'Hết hạn') {
+                    $chiTiet = [];
+                }
+            }
         } else {
             $username = $_SESSION['username'];
             $hoiVien = $this->hoiVienModel->getHoiVienByUsername($username);
             if ($hoiVien && isset($hoiVien->MaHV)) {
-                $current = $this->ctgtModel->getCurrentByMaHV((int)$hoiVien->MaHV);
+                // Lấy gói tập chưa bị hủy
+                $current = $this->ctgtModel->getActiveByMaHV((int)$hoiVien->MaHV);
                 if ($current) {
                     $chiTiet = [$current];
+                } else {
+                    // Nếu không có gói chưa hủy, lấy gói mới nhất để hiển thị
+                    $allPackages = $this->ctgtModel->getAllByMaHV((int)$hoiVien->MaHV);
+                    foreach ($allPackages as $package) {
+                        $trangThai = $package['TrangThai'] ?? '';
+                        if ($trangThai !== 'Đã hủy' && $trangThai !== 'Hết hạn') {
+                            $chiTiet = [$package];
+                            break;
+                        }
+                    }
                 }
             }
         }
 
-        if (!empty($chiTiet)) {
-            ob_start();
-            require __DIR__ . '/../views/user/chitiet_goitap/show.php';
-            $content = ob_get_clean();
+        // Luôn render view với sidebar, dù có hay không có dữ liệu
+        ob_start();
+        require __DIR__ . '/../views/user/chitiet_goitap/show.php';
+        $content = ob_get_clean();
 
-            ob_start();
-            require __DIR__ . '/../views/user/sidebarUser.php';
-            $sidebar = ob_get_clean();
-            if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
-                $headContent = $headMatches[1];
-                $content = preg_replace('/(<\/head>)/i', $headContent . '$1', $content, 1);
-            }
-
-            if (preg_match('/<body[^>]*>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
-                $sidebarBodyContent = $bodyMatches[1];
-                $content = preg_replace('/(<body[^>]*>)/i', '$1' . $sidebarBodyContent, $content, 1);
-            }
-
-            echo $content;
-        } else {
-            echo "Chi tiết gói tập không tồn tại hoặc bạn chưa đăng ký gói tập nào.";
+        ob_start();
+        require __DIR__ . '/../views/user/sidebarUser.php';
+        $sidebar = ob_get_clean();
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/i', $headContent . '$1', $content, 1);
         }
+
+        if (preg_match('/<body[^>]*>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $sidebarBodyContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/i', '$1' . $sidebarBodyContent, $content, 1);
+        }
+        echo $content;
     }
 
     public function purchase($id_ctgt)

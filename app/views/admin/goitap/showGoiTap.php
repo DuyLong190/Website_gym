@@ -349,7 +349,7 @@
                     </div>
                 </h1>
             </div>
-            <div class="card user-detail-card">
+            <div class="card user-detail-card"> 
                 <div class="user-detail-header">
                     <h4>
                         <i class="fas fa-ticket-alt"></i>
@@ -359,9 +359,6 @@
                 <div class="card-body">
                     <!-- Thông tin cơ bản -->
                     <div class="info-section">
-                        <div class="section-title">
-                            <i class="fas fa-info-circle"></i>
-                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="info-item">

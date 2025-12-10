@@ -31,7 +31,7 @@ class ChiTiet_Goitap_Model {
 
     public function getChiTietById($id_ctgt)
     {
-        $sql = "SELECT ct.*, g.TenGoiTap
+        $sql = "SELECT ct.*, g.TenGoiTap, g.ThoiHan
                 FROM " . $this->table_name . " ct
                 LEFT JOIN GoiTap g ON ct.MaGoiTap = g.MaGoiTap
                 WHERE ct.id_ctgt = :id_ctgt";
@@ -46,7 +46,7 @@ class ChiTiet_Goitap_Model {
     public function getCurrentByMaHV($maHV)
     {
         // Ưu tiên gói đang hoạt động, nếu không có thì lấy bản ghi mới nhất
-        $sql = "SELECT ct.*, g.TenGoiTap FROM " . $this->table_name . " ct
+        $sql = "SELECT ct.*, g.TenGoiTap, g.ThoiHan FROM " . $this->table_name . " ct
                 LEFT JOIN GoiTap g ON ct.MaGoiTap = g.MaGoiTap
                 WHERE ct.MaHV = :maHV 
                 ORDER BY 
@@ -101,7 +101,8 @@ class ChiTiet_Goitap_Model {
             $soTien = (float)($goiTap['GiaTien'] ?? 0);
             $okYc = $ycModel->createForChiTiet($id_ctgt, (int)$maHV, $soTien);
 
-            return $okYc;
+            // Trả về id_ctgt nếu thành công, false nếu thất bại
+            return $okYc ? $id_ctgt : false;
         } catch (PDOException $e) {
             error_log('Error in ChiTiet_Goitap_Model::createForHoiVien - ' . $e->getMessage());
             return false;
@@ -111,11 +112,11 @@ class ChiTiet_Goitap_Model {
     public function confirmPayment($id_ctgt)
     {
         try {
-            // Cập nhật NgayBatDau, NgayKetThuc dựa trên ThoiHan của gói tập
+            // Cập nhật NgayBatDau, NgayKetThuc dựa trên ThoiHan của gói tập (tính theo tháng)
             $sql = "UPDATE " . $this->table_name . " ct
                     JOIN GoiTap g ON ct.MaGoiTap = g.MaGoiTap
                     SET ct.NgayBatDau = CURRENT_DATE,
-                        ct.NgayKetThuc = DATE_ADD(CURRENT_DATE, INTERVAL g.ThoiHan day),
+                        ct.NgayKetThuc = DATE_ADD(CURRENT_DATE, INTERVAL g.ThoiHan MONTH),
                         ct.TrangThai = 'Đang hoạt động',
                         ct.DaThanhToan = 1
                     WHERE ct.id_ctgt = :id_ctgt AND ct.DaThanhToan = 0";
@@ -147,5 +148,59 @@ class ChiTiet_Goitap_Model {
             error_log('Error in ChiTiet_Goitap_Model::requestPayment - ' . $e->getMessage());
             return false;
         }
+    }
+
+    // Hủy gói tập của hội viên
+    public function cancelPackage($id_ctgt)
+    {
+        try {
+            // Kiểm tra xem trạng thái 'Đã hủy' có được hỗ trợ không
+            $status = $this->supportsStatusValue('Đã hủy') ? 'Đã hủy' : 'Hết hạn';
+            
+            $sql = "UPDATE " . $this->table_name . "
+                    SET TrangThai = :status, updated_at = NOW()
+                    WHERE id_ctgt = :id_ctgt AND TrangThai != :status";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id_ctgt', $id_ctgt, PDO::PARAM_INT);
+            $stmt->bindParam(':status', $status);
+            $stmt->execute();
+
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log('Error in ChiTiet_Goitap_Model::cancelPackage - ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Lấy tất cả gói tập của một hội viên (bao gồm cả đã hủy)
+    public function getAllByMaHV($maHV)
+    {
+        $sql = "SELECT ct.*, g.TenGoiTap, g.ThoiHan FROM " . $this->table_name . " ct
+                LEFT JOIN GoiTap g ON ct.MaGoiTap = g.MaGoiTap
+                WHERE ct.MaHV = :maHV 
+                ORDER BY ct.id_ctgt DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':maHV', $maHV, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Lấy gói tập chưa bị hủy của một hội viên (không bao gồm "Đã hủy" và "Hết hạn")
+    public function getActiveByMaHV($maHV)
+    {
+        $sql = "SELECT ct.*, g.TenGoiTap, g.ThoiHan FROM " . $this->table_name . " ct
+                LEFT JOIN GoiTap g ON ct.MaGoiTap = g.MaGoiTap
+                WHERE ct.MaHV = :maHV 
+                AND ct.TrangThai != 'Đã hủy' 
+                AND ct.TrangThai != 'Hết hạn'
+                ORDER BY ct.id_ctgt DESC
+                LIMIT 1";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':maHV', $maHV, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

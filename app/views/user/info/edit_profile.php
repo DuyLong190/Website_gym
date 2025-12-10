@@ -41,14 +41,14 @@
         }
 
         .edit-card {
-            background: rgba(0, 0, 0, 0.7);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 25px;
+            border-radius: 15px;
+            padding: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
             width: 90%;
-            max-width: 900px;
+            max-width: 1000px;
             position: relative;
             z-index: 1;
             opacity: 0;
@@ -71,18 +71,26 @@
         }
 
         .edit-header h2 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             color: #fff;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .edit-header h2 i {
+            color: #d4a02fff;
         }
 
         .edit-header::after {
             content: '';
             position: absolute;
-            bottom: -15px;
+            bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
             width: 100px;
@@ -95,10 +103,16 @@
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             padding: 15px;
-            border-radius: 20px;
+            border-radius: 10px;
             margin-bottom: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             animation: slideInRight 0.6s ease backwards;
+            transition: all 0.3s ease;
+        }
+
+        .form-section:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(143, 33, 33, 0.3);
         }
 
         .form-section:nth-child(1) {
@@ -126,25 +140,28 @@
         }
 
         .form-section-title {
-            color: #df1f1fff;
-            font-weight: 600;
-            font-size: 18px;
-            margin-bottom: 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             padding-bottom: 10px;
-            border-bottom: 2px solid rgba(143, 33, 33, 0.3);
+            border-bottom: 2px solid rgba(143, 33, 33, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .form-section-title i {
-            font-size: 20px;
+            font-size: 22px;
+            color: #d4a02fff;
         }
 
         .form-label {
             font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 5px;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -153,14 +170,16 @@
 
         .form-label i {
             font-size: 14px;
-            color: #df1f1fff;
+            color: #d4a02fff;
+            width: 18px;
+            text-align: center;
         }
 
         .form-control,
         .form-select {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
             padding: 8px 12px;
             color: #fff;
             transition: all 0.3s ease;
@@ -173,16 +192,22 @@
 
         .form-control:focus,
         .form-select:focus {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.12);
             border-color: #8f2121;
             box-shadow: 0 0 0 3px rgba(143, 33, 33, 0.3);
             color: #fff;
             outline: none;
+            transform: translateY(-1px);
         }
 
         .form-control option {
-            background: #1a1a2e;
-            color: #fff;
+            background: #fff;
+            color: #000;
+        }
+
+        .form-select option {
+            background: #fff;
+            color: #000;
         }
 
         .form-select {
@@ -197,12 +222,16 @@
             margin-bottom: 12px;
         }
 
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
         .btn-save {
             background: linear-gradient(135deg, #8f2121 0%, #b82e2e 100%);
             color: white;
             border: none;
             padding: 10px 25px;
-            border-radius: 25px;
+            border-radius: 12px;
             font-weight: 600;
             font-size: 15px;
             transition: all 0.3s ease;
@@ -224,7 +253,7 @@
             color: rgba(255, 255, 255, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 10px 25px;
-            border-radius: 25px;
+            border-radius: 12px;
             font-weight: 600;
             font-size: 15px;
             transition: all 0.3s ease;
@@ -245,7 +274,7 @@
             background: rgba(220, 53, 69, 0.2);
             border: 1px solid rgba(220, 53, 69, 0.5);
             color: #fff;
-            border-radius: 15px;
+            border-radius: 8px;
             padding: 10px 15px;
             margin-bottom: 15px;
             backdrop-filter: blur(10px);
@@ -258,38 +287,57 @@
         .button-group {
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
+            gap: 12px;
             margin-top: 20px;
             padding-top: 15px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
         @media only screen and (max-width: 768px) {
             body {
-                padding: 5px;
+                padding: 10px;
             }
 
             .edit-card {
                 width: 100%;
                 padding: 15px 12px;
+                border-radius: 12px;
             }
 
             .edit-header h2 {
-                font-size: 24px;
+                font-size: 22px;
+                flex-direction: column;
+                gap: 8px;
             }
 
             .form-section {
-                padding: 12px;
+                padding: 15px;
+                border-radius: 8px;
+            }
+
+            .form-section-title {
+                font-size: 18px;
             }
 
             .button-group {
                 flex-direction: column;
+                gap: 10px;
             }
 
             .btn-save,
             .btn-cancel {
                 width: 100%;
                 justify-content: center;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 8px 10px;
             }
         }
     </style>
@@ -298,7 +346,10 @@
 <body>
     <div class="edit-card">
         <div class="edit-header">
-            <h2><i class="fas fa-edit me-2"></i>Chỉnh sửa thông tin cá nhân</h2>
+            <h2>
+                <i class="fas fa-edit"></i>
+                <span>Chỉnh sửa thông tin cá nhân</span>
+            </h2>
         </div>
 
         <?php if (isset($_SESSION['error'])): ?>
@@ -422,7 +473,6 @@
                 </a>
                 <button type="submit" class="btn btn-save">
                     <i class="fas fa-save"></i>
-                    <span>Lưu</span>
                 </button>
             </div>
         </form>

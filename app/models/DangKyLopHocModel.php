@@ -93,7 +93,7 @@ class DangKyLopHocModel
     public function getActiveMembersByLop($MaLop)
     {
         try {
-            $sql = "SELECT d.*, h.HoTen, h.SDT, h.Email, h.TrangThai AS TrangThaiHoiVien,
+            $sql = "SELECT d.*, h.HoTen, h.SDT, h.Email, h.DiaChi, h.TrangThai AS TrangThaiHoiVien,
                            g.TenGoiTap
                     FROM {$this->table_name} d
                     INNER JOIN HoiVien h ON d.MaHV = h.MaHV

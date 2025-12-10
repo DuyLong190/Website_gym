@@ -422,7 +422,7 @@
                     <?php endif; ?>
 
                     <div class="action-buttons">
-                        <a href="/gym/admin/DvThuGian" class="btn btn-secondary">
+                        <a href="/gym/admin/dichvu" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-2"></i>
                         </a>
                     </div>
@@ -444,7 +444,7 @@
                     <div class="text-center text-muted py-4">
                         <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
                         <p>Vui lòng quay lại danh sách để chọn dịch vụ khác.</p>
-                        <a href="/gym/admin/DvThuGian" class="btn btn-secondary">
+                        <a href="/gym/admin/dichvu" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
                         </a>
                     </div>

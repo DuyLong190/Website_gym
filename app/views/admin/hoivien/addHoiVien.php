@@ -261,7 +261,7 @@
                                                 Ảnh đại diện
                                             </label>
                                             <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                                            <small class="text-muted">Chấp nhận: JPG, PNG, GIF (tối đa 5MB)</small>
+                                            <small class="text-muted">Chọn file: JPG, PNG, GIF (tối đa 5MB)</small>
                                             <div class="mt-2" id="image_preview" style="display: none;">
                                                 <img id="image_preview_img" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #e5e7eb;">
                                             </div>

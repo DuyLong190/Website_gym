@@ -462,7 +462,6 @@
                                 <div class="input-group-icon">
                                     <input type="text" name="TenGoiTap" id="TenGoiTap" class="form-control" 
                                            value="<?php echo htmlspecialchars($goiTap->TenGoiTap, ENT_QUOTES, 'UTF-8'); ?>" required placeholder="Nhập tên gói tập">
-                                    <i class="fas fa-tag"></i>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
@@ -473,7 +472,6 @@
                                 <div class="input-group-icon">
                                     <input type="number" name="GiaTien" id="GiaTien" class="form-control" 
                                            step="0.01" value="<?php echo htmlspecialchars($goiTap->GiaTien); ?>" required placeholder="Nhập giá tiền">
-                                    <i class="fas fa-money-bill-wave"></i>
                                 </div>
                             </div>
                         </div>
@@ -486,7 +484,6 @@
                                 <div class="input-group-icon">
                                     <input type="number" name="ThoiHan" id="ThoiHan" class="form-control" 
                                            value="<?php echo htmlspecialchars($goiTap->ThoiHan); ?>" required placeholder="Nhập thời hạn">
-                                    <i class="fas fa-calendar-alt"></i>
                                 </div>
                             </div>
                         </div>

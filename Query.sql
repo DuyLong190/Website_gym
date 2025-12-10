@@ -4,24 +4,24 @@ CREATE TABLE GoiTap (
 	MaGoiTap int AUTO_CREMENT PRIMARY KEY,
 	TenGoiTap VARCHAR() CHARACTER SET utf8mb4 NOT NULL,
 	GiaTien DECIMAL(10) CHECK (GiaTien >= 0),
-	ThoiHan int CHECK hoiHan > 0),
-	MoTa VARCHAR(200) ARACTER SET utf8mb4
+	ThoiHan int CHECK ThoiHan > 0),
+	MoTa VARCHAR(200) CHARACTER SET utf8mb4
 );                   
                 
 CREATE TABLE ACCOUNT (
 	id INT AUTO_INCREMT PRIMARY KEY,
-	username VARCHAR(2) NOT NULL UNIQUE,
-	PASSWORD VARCHAR(2) NOT NULL,
-	created_at TIMESTA DEFAULT current_timestamp
+	username VARCHAR(255) NOT NULL UNIQUE,
+	PASSWORD VARCHAR(255) NOT NULL,
+	created_at TIMESTAMP DEFAULT current_timestamp
 	);                
 	ALTER TABLE accounadd role TINYINT(1) NOT NULL DEFAULT 0;
                      
 CREATE TABLE DichVuThuGian (
 	id int AUTO_INCREMT PRIMARY KEY,
-	TenTG VARCHAR(255)HARACTER SET utf8mb4 NOT NULL,
-	GiaTG DECIMAL(10,2CHECK (GiaTG >= 0),
-	ThoiGianTG int CHE (ThoiGianTG > 0),
-	MoTaTG VARCHAR(200CHARACTER SET utf8mb4
+	TenTG VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+	GiaTG DECIMAL(10,2) CHECK (GiaTG >= 0),
+	ThoiGianTG int CHECK (ThoiGianTG > 0),
+	MoTaTG VARCHAR(200) CHARACTER SET utf8mb4
 );                                                     
                      
 CREATE TABLE HoiVien (
@@ -108,7 +108,7 @@ CREATE TABLE ChiTiet_GoiTap (
    GhiChu VARCHAR(255) CHARACTER SET utf8mb4,
    DaThanhToan BOOLEAN DEFAULT FALSE,
    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   updated_at DATETIME 
    FOREIGN KEY (MaHV) REFERENCES HoiVien(MaHV) ON DELETE CASCADE ON UPDATE CASCADE,
    FOREIGN KEY (MaGoiTap) REFERENCES GoiTap(MaGoiTap) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -186,3 +186,28 @@ CREATE TABLE CauHinhLichHoc (
 
 ALTER TABLE pt ADD COLUMN image VARCHAR(255) DEFAULT NULL;
 ALTER TABLE hoivien ADD COLUMN image VARCHAR(255) DEFAULT NULL;
+
+CREATE TABLE ThanhToan_GoiTap (
+    id INT AUTO_INCREMENT PRIMARY KEY,          -- Khóa chính
+    customer_id INT NOT NULL,                   -- Hội viên thanh toán
+    goitap_id INT NOT NULL,                        -- Mã gói tập hoặc lớp học
+    amount DECIMAL(10,2) NOT NULL,              -- Số tiền thanh toán
+    momo_status ENUM('Chờ duyệt','Thành công','Thất bại') DEFAULT 'Chờ duyệt',
+    link_data TEXT,                             -- Dữ liệu trả về từ MoMo (JSON)
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (customer_id) REFERENCES HoiVien(MaHV) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (goitap_id) REFERENCES GoiTap(MaGoiTap) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+ALTER TABLE ThanhToan_GoiTap 
+ADD COLUMN id_ctgt INT NULL AFTER goitap_id,
+ADD COLUMN order_id VARCHAR(255) NULL AFTER link_data;
+
+ALTER TABLE ThanhToan_GoiTap
+ADD CONSTRAINT fk_thanhtoan_chitiet_goitap 
+FOREIGN KEY (id_ctgt) REFERENCES chitiet_goitap(id_ctgt) 
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+CREATE INDEX idx_order_id ON ThanhToan_GoiTap(order_id);

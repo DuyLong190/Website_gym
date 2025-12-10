@@ -562,6 +562,16 @@
             color: white;
         }
 
+        .alert-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
         @media (max-width: 768px) {
             body {
                 margin-left: 0;
@@ -599,6 +609,29 @@
 
 <body>
     <div class="main-content">
+        <div class="alert-container" style="margin-bottom: 1.5rem;">
+            <?php if (isset($_SESSION['success'])): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <?php
+                    echo $_SESSION['success'];
+                    unset($_SESSION['success']);
+                    ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <?php
+                    echo $_SESSION['error'];
+                    unset($_SESSION['error']);
+                    ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
+        </div>
         <div class="page-header">
             <h1>
                 <div class="icon-wrapper">
@@ -669,7 +702,15 @@
                                         <?= $hv->SDT ? htmlspecialchars($hv->SDT) : '' ?>
                                     </td>
                                     <td class="profile-value">
-                                        <?= !empty($hv->TenGoiTap) ? htmlspecialchars($hv->TenGoiTap) : '' ?>
+                                        <?php 
+                                        // Chỉ hiển thị tên gói tập nếu đã thanh toán
+                                        $daThanhToan = isset($hv->DaThanhToan) ? (int)$hv->DaThanhToan : 0;
+                                        if ($daThanhToan === 1 && !empty($hv->TenGoiTap)) {
+                                            echo htmlspecialchars($hv->TenGoiTap);
+                                        } else {
+                                            echo '';
+                                        }
+                                        ?>
                                     </td>
                                     <td>
                                         <span class="status-badge 

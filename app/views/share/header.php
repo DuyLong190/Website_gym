@@ -43,7 +43,7 @@ $bodyClassAttr = isset($bodyClass) && $bodyClass !== ''
                                 aria-expanded="false">Dịch vụ
                             </a>
                             <ul class="dichvu-dropdown-menu" aria-labelledby="dichvuDropdown">
-                                <li><a class="dichvu-dropdown-item" href="/gym/DvThuGian">Thư giãn</a></li>
+                                <li><a class="dichvu-dropdown-item" href="/gym/dichvu">Thư giãn</a></li>
                                 <li><a class="dichvu-dropdown-item" href="/gym/lophoc">Lớp học</a></li>
                             </ul>
                         </li>
@@ -75,13 +75,21 @@ $bodyClassAttr = isset($bodyClass) && $bodyClass !== ''
                             </a>
                             <ul class="user-dropdown-menu" aria-labelledby="userDropdown">
                                 <?php if (SessionHelper::isAdmin()): ?>
-                                    <li><a class="user-dropdown-item" href="/gym/admin">Quản lý</a></li>
+                                    <li>
+                                        <a class="user-dropdown-item" href="/gym/admin">Quản lý</a>
+                                    </li>
                                 <?php elseif (SessionHelper::isPT()): ?>
-                                    <li><a class="user-dropdown-item" href="/gym/pt/lichday">Xem lịch dạy</a></li>
+                                    <li>
+                                        <a class="user-dropdown-item" href="/gym/pt/lichday">Xem lịch dạy</a>
+                                    </li>
+                                    <li>
+                                        <a class="user-dropdown-item" href="/gym/pt">Thông tin cá nhân</a>
+                                    </li>
+                                <?php else: ?>
+                                    <li>
+                                        <a class="user-dropdown-item" href="/gym/user">Thông tin cá nhân</a>
+                                    </li>
                                 <?php endif; ?>
-                                <li>
-                                    <a class="user-dropdown-item" href="<?php echo SessionHelper::isPT() ? '/gym/pt' : '/gym/user'; ?>">Thông tin cá nhân</a>
-                                </li>
                                 <li>
                                     <hr class="user-dropdown-divider">
                                 </li>

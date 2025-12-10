@@ -663,13 +663,21 @@
                         <span>Gói tập:</span>
                     </div>
                     <div class="info-value">
-                        <?php echo !empty($hoiVien->TenGoiTap) ? htmlspecialchars($hoiVien->TenGoiTap) : '<span class="empty-value">Chưa đăng ký</span>'; ?>
+                        <?php 
+                        // Chỉ hiển thị tên gói tập nếu đã thanh toán
+                        $daThanhToan = isset($currentCtgt) && is_array($currentCtgt) ? (int)($currentCtgt['DaThanhToan'] ?? 0) : 0;
+                        if ($daThanhToan === 1 && !empty($hoiVien->TenGoiTap)) {
+                            echo htmlspecialchars($hoiVien->TenGoiTap);
+                        } else {
+                            echo '<span class="empty-value">Chưa đăng ký</span>';
+                        }
+                        ?>
                     </div>
                 </div>
                 <div class="info-row">
                     <div class="info-label">
                         <i class="fas fa-calendar-check"></i>
-                        <span>Ngày đăng ký:</span>
+                        <span>Ngày gia nhập:</span>
                     </div>
                     <div class="info-value">
                         <?php echo isset($hoiVien->NgayDangKy) ? date('d/m/Y H:i', strtotime($hoiVien->NgayDangKy)) : 'N/A'; ?>

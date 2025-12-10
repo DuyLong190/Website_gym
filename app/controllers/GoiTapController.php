@@ -141,13 +141,6 @@ class GoiTapController
             exit;
         }
 
-        // Kiểm tra nếu hội viên đã có gói tập
-        if (!empty($hoiVien->MaGoiTap)) {
-            $_SESSION['error'] = "Bạn đã đăng ký gói tập. Vui lòng liên hệ admin để thay đổi gói tập.";
-            header('Location: /gym/goitap');
-            exit;
-        }
-
         // Kiểm tra gói tập có tồn tại không
         $goiTap = $this->goitapModel->getByMaGoiTap($MaGoiTap);
         if (!$goiTap) {
@@ -159,27 +152,26 @@ class GoiTapController
         try {
             $this->db->beginTransaction();
 
-            $okUpdateHoiVien = $this->hoiVienModel->updateGoiTap($hoiVien->MaHV, $MaGoiTap);
-            if (!$okUpdateHoiVien) {
-                throw new Exception('Không thể cập nhật gói tập cho hội viên');
-            }
-
-            $okCreateCtgt = $this->ctgtModel->createForHoiVien((int)$hoiVien->MaHV, (int)$MaGoiTap);
-            if (!$okCreateCtgt) {
+            // Chỉ tạo chi tiết gói tập, KHÔNG cập nhật MaGoiTap vào HoiVien
+            // MaGoiTap sẽ được cập nhật sau khi admin xác nhận thanh toán
+            $id_ctgt = $this->ctgtModel->createForHoiVien((int)$hoiVien->MaHV, (int)$MaGoiTap);
+            if (!$id_ctgt) {
                 throw new Exception('Không thể tạo chi tiết gói tập');
             }
 
             $this->db->commit();
-            $_SESSION['success'] = "Đăng ký gói tập thành công";
+            $_SESSION['success'] = "Đăng ký gói tập thành công. Vui lòng thanh toán và chờ admin xác nhận.";
+            
+            // Chuyển đến trang chi tiết gói tập
+            header('Location: /gym/user/chitiet_goitap/' . $id_ctgt);
         } catch (Exception $e) {
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
             }
-            error_log('GoiTapController::register error - ' . $e->getMessage());
-            $_SESSION['error'] = "Đăng ký gói tập thất bại";
+            error_log('GoiTapController::select error - ' . $e->getMessage());
+            $_SESSION['error'] = "Đăng ký gói tập thất bại: " . $e->getMessage();
+            header('Location: /gym/goitap');
         }
-
-        header('Location: /gym/user/profile');
         exit;
     }
 }

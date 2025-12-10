@@ -36,7 +36,7 @@
                                     </a>
                                     
                                     <!-- Nút chi tiết  -->
-                                    <!-- <a href="/gym/DvThuGian/show/<?php echo $DVTG->id; ?>" class="btn-detail">
+                                    <!-- <a href="/gym/dichvu/show/<?php echo $DVTG->id; ?>" class="btn-detail">
                                         <i class="fa fa-arrow-right"></i>
                                     </a> -->
                                 </div>

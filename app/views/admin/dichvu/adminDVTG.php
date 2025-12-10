@@ -836,7 +836,7 @@
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="/gym/admin/dvtg/saveDVTG" method="POST" id="addDvThuGianForm">
+                <form action="/gym/admin/dichvu/saveDVTG" method="POST" id="addDvThuGianForm">
                     <div class="modal-body">
                         <div class="form-group-enhanced">
                             <label class="form-label">
@@ -951,11 +951,11 @@
         });
 
         function showDvThuGian(id) {
-            window.location.href = `/gym/admin/dvtg/showDVTG/${id}`;
+            window.location.href = `/gym/admin/dichvu/showDVTG/${id}`;
         }
 
         function editDvThuGian(id) {
-            window.location.href = `/gym/admin/dvtg/editDVTG/${id}`;
+            window.location.href = `/gym/admin/dichvu/editDVTG/${id}`;
         }
 
         let dvtgIdToDelete = null;
@@ -974,7 +974,7 @@
         // Xử lý khi click nút xác nhận xóa
         document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
             if (dvtgIdToDelete) {
-                window.location.href = '/gym/admin/dvtg/deleteDVTG/' + dvtgIdToDelete;
+                window.location.href = '/gym/admin/dichvu/deleteDVTG/' + dvtgIdToDelete;
             }
         });
 

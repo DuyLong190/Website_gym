@@ -144,7 +144,7 @@
                             <?php endif; ?>
 
                             <div class="d-flex justify-content-end mt-4 pt-3 border-top">
-                                <a href="/gym/DvThuGian" class="btn btn-outline-secondary btn-back">
+                                <a href="/gym/dichvu" class="btn btn-outline-secondary btn-back">
                                     <i class="fas fa-arrow-left me-1"></i>
                                 </a>
                             </div>

@@ -478,7 +478,6 @@
                                 </label>
                                 <div class="input-group-icon">
                                     <input type="text" name="TenLop" id="TenLop" class="form-control" value="<?php echo htmlspecialchars($lophoc->TenLop, ENT_QUOTES, 'UTF-8'); ?>" required placeholder="Nhập tên lớp học">
-                                    <i class="fas fa-tag"></i>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
@@ -488,7 +487,6 @@
                                 </label>
                                 <div class="input-group-icon">
                                     <input type="number" name="GiaTien" id="GiaTien" class="form-control" step="100000" value="<?php echo htmlspecialchars($lophoc->GiaTien); ?>" required placeholder="Nhập giá tiền">
-                                    <i class="fas fa-money-bill-wave"></i>
                                 </div>
                             </div>
                         </div>
@@ -508,7 +506,6 @@
                                 </label>
                                 <div class="input-group-icon">
                                     <input type="date" name="NgayBatDau" id="NgayBatDau" class="form-control" value="<?php echo $ngayBatDauValue; ?>" required>
-                                    <i class="fas fa-calendar-check"></i>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
@@ -518,7 +515,6 @@
                                 </label>
                                 <div class="input-group-icon">
                                     <input type="date" name="NgayKetThuc" id="NgayKetThuc" class="form-control" value="<?php echo $ngayKetThucValue; ?>" required>
-                                    <i class="fas fa-calendar-times"></i>
                                 </div>
                             </div>
                         </div>
@@ -538,7 +534,6 @@
                                 </label>
                                 <div class="input-group-icon">
                                     <input type="number" name="SoLuongToiDa" id="SoLuongToiDa" class="form-control" value="<?php echo htmlspecialchars($lophoc->SoLuongToiDa); ?>" required placeholder="Nhập số lượng tối đa">
-                                    <i class="fas fa-users"></i>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
@@ -552,7 +547,6 @@
                                         <option value="Đã kết thúc" <?php echo ($lophoc->TrangThai ?? '') === 'Đã kết thúc' ? 'selected' : '' ?>>Đã kết thúc</option>
                                         <option value="Tạm ngưng" <?php echo ($lophoc->TrangThai ?? '') === 'Tạm ngưng' ? 'selected' : '' ?>>Tạm ngưng</option>
                                     </select>
-                                    <i class="fas fa-toggle-on"></i>
                                 </div>
                             </div>
                         </div>

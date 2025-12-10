@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once 'app/controllers/AccountController.php';
 require_once 'app/controllers/GoiTapController.php';
 require_once 'app/controllers/DvThuGianController.php';
@@ -8,6 +9,7 @@ require_once 'app/controllers/AdminController.php';
 require_once 'app/controllers/UserController.php';
 require_once 'app/controllers/PtApiController.php';
 require_once 'app/controllers/ChiTiet_Goitap_Controller.php';
+require_once 'app/controllers/ThanhToanGoiTapController.php';
 require_once 'app/models/GoiTapModel.php';
 require_once 'app/models/DvThuGianModel.php';
 require_once 'app/models/LopHoc_Model.php';
@@ -17,6 +19,7 @@ require_once 'app/helpers/SessionHelper.php';
 require_once 'app/models/RoleModel.php';
 require_once 'app/models/AccountModel.php';
 require_once 'app/models/ChiTiet_Goitap_Model.php';
+require_once 'app/models/ThanhToanGoiTapModel.php';
 require_once 'app/config/Database.php';
 
 $url = $_GET['url'] ?? '';
@@ -85,12 +88,18 @@ else if (isset($url[0]) && $url[0] === 'admin') {
     } 
     // Mặc định 
     else {
-        $action = 'indexGoiTap';
+        $action = 'indexUser';
         $params = [];
     }
 } else {
+    // Route đặc biệt: Thanh toán MoMo
+    if (isset($url[0]) && strtolower($url[0]) === 'thanhtoangoitap') {
+        $controllerName = 'ThanhToanGoiTapController';
+        $action = isset($url[1]) && $url[1] != '' ? $url[1] : '';
+        $params = [];
+    }
     // Route đặc biệt: trang "Gói tập của tôi" và thanh toán cho user
-    if (isset($url[0], $url[1]) && $url[0] === 'user' && $url[1] === 'chitiet_goitap') {
+    else if (isset($url[0], $url[1]) && $url[0] === 'user' && $url[1] === 'chitiet_goitap') {
         $controllerName = 'ChiTiet_Goitap_Controller';
 
         // /user/chitiet_goitap/purchase/{id_ctgt}
@@ -129,7 +138,7 @@ else if (isset($url[0]) && $url[0] === 'admin') {
             // Xử lý routing thông thường
             $controllerMap = [
                 'lophoc' => 'LopHocController',
-                'dvthugian' => 'DvThuGianController',
+                'dichvu' => 'DvThuGianController',
                 'goitap' => 'GoiTapController',
                 'user' => 'UserController',
                 'pt' => 'PtApiController',
@@ -182,7 +191,7 @@ else if (isset($url[0]) && $url[0] === 'admin') {
                 $params = [];
                 break;
             default:
-                $action = 'indexGoiTap';
+                $action = 'indexHoiVien';
                 $params = [];
         }
     } else {

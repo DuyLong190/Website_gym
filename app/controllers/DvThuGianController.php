@@ -60,7 +60,7 @@ class DvThuGianController
                 require_once __DIR__ . '/../views/share/footer.php';
             } else if ($result === true) {
                 // Nếu thêm thành công, chuyển hướng về danh sách
-                header('Location: /gym/DvThuGian');
+                header('Location: /gym/dichvu');
                 exit();
             } else {
                 // Nếu có lỗi khác
@@ -90,7 +90,7 @@ class DvThuGianController
 
             $edit = $this->dvtgModel->updateDVTG($id, $TenTG, $GiaTG, $ThoiGianTG, $MoTaTG);
             if ($edit) {
-                header('Location: /gym/DvThuGian');
+                header('Location: /gym/dichvu');
             } else {
                 echo "Cập nhật dịch vụ không thành công.";
             }
@@ -101,7 +101,7 @@ class DvThuGianController
     public function delete($id)
     {
         if ($this->dvtgModel->deleteDVTG($id)) {
-            header('Location: /gym/DvThuGian');
+            header('Location: /gym/dichvu');
         } else {
             echo "Xóa dịch vụ không thành công.";
         }

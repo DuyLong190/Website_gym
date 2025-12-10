@@ -560,17 +560,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="info-item">
-                                    <div class="info-label form-label">
-                                        <i class="fas fa-chart-line"></i>
-                                        Độ đầy
-                                    </div>
-                                    <div class="info-value">
-                                        <?php echo $max ? $fillPercent . '%' : '0%'; ?>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <?php if ($max > 0): ?>
                             <div class="progress-bar-container mt-3">

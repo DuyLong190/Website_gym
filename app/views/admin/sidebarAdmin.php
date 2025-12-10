@@ -48,7 +48,7 @@
                 <a href="/gym/admin/goitap" class="navbar__link"><i data-feather="layers"></i><span>Gói tập</span></a>
             </li>
             <li class="navbar__item">
-                <a href="/gym/admin/DvThuGian" class="navbar__link"><i class="fas fa-clover"></i><span>Dịch vụ</span></a>
+                <a href="/gym/admin/dichvu" class="navbar__link"><i class="fas fa-clover"></i><span>Dịch vụ</span></a>
             </li>
             <li class="navbar__item">
                 <a href="/gym/admin/lophoc" class="navbar__link"><i class="fas fa-people-roof"></i><span>Lớp học</span></a>

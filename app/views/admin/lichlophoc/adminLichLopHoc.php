@@ -423,6 +423,11 @@
             box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
         }
 
+        .btn-view-registration:hover {
+            background: rgba(255, 255, 255, 0.3) !important;
+            transform: scale(1.1);
+        }
+
         .calendar-event-title {
             font-weight: 700;
             margin-bottom: 4px;
@@ -1200,6 +1205,10 @@
             }
         }
 
+        function viewDangKy(maLop) {
+            window.location.href = '/gym/admin/lophoc/danhSachDangKy/' + maLop;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             var selectLop = document.getElementById('add-MaLop');
             var infoEl = document.getElementById('add-lop-date-range');
@@ -1400,19 +1409,29 @@
                     ev.style.margin = '4px';
 
                     ev.innerHTML = '' +
+                        '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">' +
+                        '<div style="flex: 1;">' +
                         '<div class="calendar-event-title">' + tenLop + '</div>' +
                         '<div class="calendar-event-time">' + gioBatDau + ' - ' + gioKetThuc + '</div>' +
-                        (phong ? '<div class="calendar-event-room">📍 ' + phong + '</div>' : '');
+                        (phong ? '<div class="calendar-event-room">📍 ' + phong + '</div>' : '') +
+                        '</div>' +
+                        '<button class="btn-view-registration" onclick="event.stopPropagation(); viewDangKy(' + maLop + ');" title="Xem danh sách đăng ký" style="background: rgba(255, 255, 255, 0.2); border: none; border-radius: 6px; padding: 0.25rem 0.5rem; color: white; cursor: pointer; transition: all 0.2s; font-size: 0.75rem; flex-shrink: 0;">' +
+                        '<i class="fas fa-users"></i>' +
+                        '</button>' +
+                        '</div>';
 
-                    ev.onclick = function() {
-                        openEditModal(
-                            item.id,
-                            maLop,
-                            item.NgayHoc || item['NgayHoc'],
-                            gioBatDau,
-                            gioKetThuc,
-                            phong
-                        );
+                    ev.onclick = function(e) {
+                        // Chỉ mở modal edit nếu không click vào nút xem đăng ký
+                        if (!e.target.closest('.btn-view-registration')) {
+                            openEditModal(
+                                item.id,
+                                maLop,
+                                item.NgayHoc || item['NgayHoc'],
+                                gioBatDau,
+                                gioKetThuc,
+                                phong
+                            );
+                        }
                     };
 
                     eventsOverlay.appendChild(ev);
@@ -1448,19 +1467,29 @@
                     var phong = item.PhongHoc || item['PhongHoc'] || '';
 
                     ev.innerHTML = '' +
+                        '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">' +
+                        '<div style="flex: 1;">' +
                         '<div class="calendar-event-title">' + tenLop + '</div>' +
                         '<div class="calendar-event-time">' + gioBatDau + ' - ' + gioKetThuc + '</div>' +
-                        (phong ? '<div class="calendar-event-room">📍 ' + phong + '</div>' : '');
+                        (phong ? '<div class="calendar-event-room">📍 ' + phong + '</div>' : '') +
+                        '</div>' +
+                        '<button class="btn-view-registration" onclick="event.stopPropagation(); viewDangKy(' + maLop + ');" title="Xem danh sách đăng ký" style="background: rgba(255, 255, 255, 0.2); border: none; border-radius: 6px; padding: 0.25rem 0.5rem; color: white; cursor: pointer; transition: all 0.2s; font-size: 0.75rem; flex-shrink: 0;">' +
+                        '<i class="fas fa-users"></i>' +
+                        '</button>' +
+                        '</div>';
 
-                    ev.onclick = function() {
-                        openEditModal(
-                            item.id,
-                            maLop,
-                            item.NgayHoc || item['NgayHoc'],
-                            gioBatDau,
-                            gioKetThuc,
-                            phong
-                        );
+                    ev.onclick = function(e) {
+                        // Chỉ mở modal edit nếu không click vào nút xem đăng ký
+                        if (!e.target.closest('.btn-view-registration')) {
+                            openEditModal(
+                                item.id,
+                                maLop,
+                                item.NgayHoc || item['NgayHoc'],
+                                gioBatDau,
+                                gioKetThuc,
+                                phong
+                            );
+                        }
                     };
 
                     eventsWrapper.appendChild(ev);

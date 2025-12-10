@@ -80,7 +80,7 @@
                         <ul>
                             <li><a href="/gym/goitap"><i class="fas fa-dumbbell link-icon"></i> Gói tập</a></li>
                             <li><a href="/gym/lophoc"><i class="fas fa-users link-icon"></i> Lớp học</a></li>
-                            <li><a href="/gym/DvThuGian"><i class="fas fa-spa link-icon"></i> Dịch vụ thư giãn</a></li>
+                            <li><a href="/gym/dichvu"><i class="fas fa-spa link-icon"></i> Dịch vụ thư giãn</a></li>
                             <li><a href="#"><i class="fas fa-question-circle link-icon"></i> Câu hỏi thường gặp</a></li>
                             <li><a href="#"><i class="fas fa-shield-alt link-icon"></i> Chính sách bảo mật</a></li>
                         </ul>

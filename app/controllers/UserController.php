@@ -4,6 +4,7 @@ require_once __DIR__ . '/../models/GoiTapModel.php';
 require_once __DIR__ . '/../models/AccountModel.php';
 require_once __DIR__ . '/../models/DangKyLopHocModel.php';
 require_once __DIR__ . '/../models/LichLopHocModel.php';
+require_once __DIR__ . '/../models/ChiTiet_Goitap_Model.php';
 require_once __DIR__ . '/../config/database.php';
 class UserController
 {
@@ -12,6 +13,7 @@ class UserController
     private $accountModel;
     private $dangKyLopHocModel;
     private $lichLopHocModel;
+    private $chiTietGoiTapModel;
     private $db;
 
     public function __construct() 
@@ -22,6 +24,7 @@ class UserController
         $this->accountModel = new AccountModel($this->db);
         $this->dangKyLopHocModel = new DangKyLopHocModel($this->db);
         $this->lichLopHocModel = new LichLopHocModel($this->db);
+        $this->chiTietGoiTapModel = new ChiTiet_Goitap_Model($this->db);
     }
     public function profile()
     {
@@ -37,6 +40,24 @@ class UserController
         if (!$hoiVien) {
             error_log("Không tìm thấy thông tin hội viên cho username: " . $username);
         }
+        
+        // Lấy thông tin gói tập đã thanh toán để kiểm tra hiển thị TenGoiTap
+        $currentPackage = null;
+        if ($hoiVien && isset($hoiVien->MaHV)) {
+            $currentPackage = $this->chiTietGoiTapModel->getActiveByMaHV((int)$hoiVien->MaHV);
+            // Nếu không có gói chưa hủy, tìm gói đã thanh toán
+            if (!$currentPackage) {
+                $allPackages = $this->chiTietGoiTapModel->getAllByMaHV((int)$hoiVien->MaHV);
+                foreach ($allPackages as $package) {
+                    $daThanhToan = (int)($package['DaThanhToan'] ?? 0);
+                    if ($daThanhToan === 1) {
+                        $currentPackage = $package;
+                        break;
+                    }
+                }
+            }
+        }
+        
         ob_start();
         require_once __DIR__ . '/../views/user/info/profile.php';
         $content = ob_get_clean();
@@ -308,5 +329,54 @@ class UserController
                 @unlink($fullPath);
             }
         }
+    }
+
+    public function lichsuhoatdong()
+    {
+        if (!isset($_SESSION['username'])) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        $username = $_SESSION['username'];
+        $hoiVien = $this->hoivienModel->getHoiVienByUsername($username);
+
+        if (!$hoiVien) {
+            $_SESSION['error'] = "Không tìm thấy thông tin hội viên";
+            header('Location: /gym/user/profile');
+            exit;
+        }
+
+        $MaHV = (int)$hoiVien->MaHV;
+        
+        // Lấy tất cả gói tập của hội viên
+        $allPackages = $this->chiTietGoiTapModel->getAllByMaHV($MaHV);
+        
+        // Lọc chỉ lấy các gói tập đã bị hủy
+        $canceledPackages = [];
+        foreach ($allPackages as $package) {
+            $trangThai = $package['TrangThai'] ?? '';
+            if ($trangThai === 'Đã hủy' || $trangThai === 'Hết hạn') {
+                $canceledPackages[] = $package;
+            }
+        }
+
+        ob_start();
+        require_once __DIR__ . '/../views/user/lichsu_hoatdong.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
     }
 }

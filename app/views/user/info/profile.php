@@ -45,7 +45,7 @@
             flex-direction: row;
             justify-content: space-between;
             align-items: stretch;
-            border-radius: 30px;
+            border-radius: 15px;
             padding: 15px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
             width: 90%;
@@ -116,11 +116,181 @@
             min-height: 470px;
             padding: 25px;
             margin: 15px;
-            border-radius: 25px;
+            border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .right-column {
             display: flex;
             flex-direction: column;
+        }
+
+        .package-section {
+            background: linear-gradient(135deg, rgba(143, 33, 33, 0.3) 0%, rgba(184, 46, 46, 0.3) 100%);
+            border: 2px solid rgba(143, 33, 33, 0.5);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(143, 33, 33, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 8px 25px rgba(143, 33, 33, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                box-shadow: 0 8px 35px rgba(143, 33, 33, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        .package-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+        }
+
+        .package-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .package-title i {
+            color: #d4a02fff;
+            font-size: 24px;
+        }
+
+        .package-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .package-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .package-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .package-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+        }
+
+        .package-detail-item i {
+            width: 20px;
+            color: #d4a02fff;
+        }
+
+        .stats-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .stats-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stats-title i {
+            color: #d4a02fff;
+            font-size: 22px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #8f2121;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(143, 33, 33, 0.3);
+            border-color: rgba(143, 33, 33, 0.5);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            color: #d4a02fff;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .profile-img-wrapper {
@@ -262,7 +432,7 @@
             align-items: center;
             width: 100%;
             padding: 15px 20px;
-            border-radius: 15px;
+            border-radius: 8px;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -359,7 +529,7 @@
         .status-badge {
             display: inline-block;
             padding: 6px 15px;
-            border-radius: 20px;
+            border-radius: 10px;
             font-size: 13px;
             font-weight: 500;
             text-transform: uppercase;
@@ -399,7 +569,7 @@
             text-decoration: none;
             font-weight: 600;
             padding: 12px 30px;
-            border-radius: 25px;
+            border-radius: 12px;
             background: linear-gradient(135deg, #8f2121 0%, #b82e2e 100%);
             display: inline-flex;
             align-items: center;
@@ -429,12 +599,18 @@
                 max-width: 100%;
                 min-height: auto;
                 margin: 10px;
+                grid-template-columns: 1fr;
+                gap: 15px;
             }
 
             .profile-img,
             .profile-img-placeholder {
                 width: 150px;
                 height: 150px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
 
@@ -452,6 +628,11 @@
             .right-container {
                 margin: 10px;
                 padding: 20px;
+            }
+
+            .right-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
             }
 
             .profile-img,
@@ -489,6 +670,39 @@
 
             .info-row {
                 padding: 12px 15px;
+            }
+
+            .package-section {
+                padding: 20px;
+            }
+
+            .package-name {
+                font-size: 22px;
+            }
+
+            .package-title {
+                font-size: 18px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 12px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .stat-icon {
+                font-size: 20px;
+            }
+
+            .stats-title {
+                font-size: 18px;
             }
         }
     </style>
@@ -540,134 +754,185 @@
 
             <!-- Right Container - Detailed Info -->
             <div class="right-container">
-                <div class="info-table">
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-id-card"></i>
-                            <span>Họ và tên:</span>
-                        </div>
-                        <div class="info-value"><?php echo !empty($hoiVien->HoTen ?? '') ? htmlspecialchars($hoiVien->HoTen) : '<span class="empty-value">N/A</span>'; ?></div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-venus-mars"></i>
-                            <span>Giới tính:</span>
-                        </div>
-                        <div class="info-value"><?php echo !empty($hoiVien->GioiTinh ?? '') ? htmlspecialchars($hoiVien->GioiTinh) : '<span class="empty-value">Chưa cập nhật</span>'; ?></div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-birthday-cake"></i>
-                            <span>Ngày sinh:</span>
-                        </div>
-                        <div class="info-value">
-                            <?php 
-                            $ngaySinh = $hoiVien->NgaySinh ?? '';
-                            echo !empty($ngaySinh) ? date('d/m/Y', strtotime($ngaySinh)) : '<span class="empty-value">Chưa cập nhật</span>'; 
-                            ?>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-phone"></i>
-                            <span>Số điện thoại:</span>
-                        </div>
-                        <div class="info-value">
-                            <?php if (!empty($hoiVien->SDT ?? '')): ?>
-                                <a href="tel:<?php echo htmlspecialchars($hoiVien->SDT); ?>">
-                                    <?php echo htmlspecialchars($hoiVien->SDT); ?>
-                                </a>
-                            <?php else: ?>
-                                <span class="empty-value">Chưa cập nhật</span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-envelope"></i>
-                            <span>Email:</span>
-                        </div>
-                        <div class="info-value">
-                            <?php if (!empty($hoiVien->Email ?? '')): ?>
-                                <a href="mailto:<?php echo htmlspecialchars($hoiVien->Email); ?>">
-                                    <?php echo htmlspecialchars($hoiVien->Email); ?>
-                                </a>
-                            <?php else: ?>
-                                <span class="empty-value">Chưa cập nhật</span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Địa chỉ:</span>
-                        </div>
-                        <div class="info-value"><?php echo !empty($hoiVien->DiaChi ?? '') ? htmlspecialchars($hoiVien->DiaChi) : '<span class="empty-value">Chưa cập nhật</span>'; ?></div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-ruler-vertical"></i>
-                            <span>Chiều cao:</span>
-                        </div>
-                        <div class="info-value">
-                            <?php
-                            if (!empty($hoiVien->ChieuCao ?? '')) {
-                                echo htmlspecialchars($hoiVien->ChieuCao) . ' cm';
-                            } else {
-                                echo '<span class="empty-value">Chưa cập nhật</span>';
-                            }
-                            ?>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-weight"></i>
-                            <span>Cân nặng:</span>
-                        </div>
-                        <div class="info-value">
-                            <?php
-                            if (!empty($hoiVien->CanNang ?? '')) {
-                                echo htmlspecialchars($hoiVien->CanNang) . ' kg';
-                            } else {
-                                echo '<span class="empty-value">Chưa cập nhật</span>';
-                            }
-                            ?>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">
+                <!-- Left Column -->
+                <div class="right-column">
+                    <!-- Package Section - Highlighted -->
+                    <div class="package-section">
+                        <div class="package-title">
                             <i class="fas fa-ticket-alt"></i>
-                            <span>Gói tập:</span>
+                            Gói tập hiện tại
                         </div>
-                        <div class="info-value">
-                            <?php echo !empty($hoiVien->TenGoiTap ?? '') ? htmlspecialchars($hoiVien->TenGoiTap) : '<span class="empty-value">Chưa đăng ký</span>'; ?>
+                        <div class="package-content">
+                            <div class="package-name">
+                                <?php echo !empty($hoiVien->TenGoiTap ?? '') ? htmlspecialchars($hoiVien->TenGoiTap) : 'Chưa đăng ký'; ?>
+                            </div>
+                            <div class="package-details">
+                                <?php if (!empty($hoiVien->NgayDangKy ?? '')): ?>
+                                    <div class="package-detail-item">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <span>Ngày gia nhập: <?php echo date('d/m/Y', strtotime($hoiVien->NgayDangKy)); ?></span>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if (!empty($hoiVien->NgayHetHan ?? '')): ?>
+                                    <div class="package-detail-item">
+                                        <i class="fas fa-calendar-times"></i>
+                                        <span>Ngày hết hạn: <?php echo date('d/m/Y', strtotime($hoiVien->NgayHetHan)); ?></span>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if (!empty($hoiVien->TrangThai ?? '')): ?>
+                                    <div class="package-detail-item">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>Trạng thái: <?php echo htmlspecialchars($hoiVien->TrangThai); ?></span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-calendar-check"></i>
-                            <span>Ngày đăng ký:</span>
+
+                    <!-- Statistics Section -->
+                    <div class="stats-section">
+                        <div class="stats-title">
+                            <i class="fas fa-chart-line"></i>
+                            Thống kê
                         </div>
-                        <div class="info-value">
-                            <?php 
-                            $ngayDangKy = $hoiVien->NgayDangKy ?? '';
-                            echo !empty($ngayDangKy) ? date('d/m/Y H:i', strtotime($ngayDangKy)) : '<span class="empty-value">Chưa cập nhật</span>'; 
+                        <div class="stats-grid">
+                            <?php
+                            // Calculate BMI if height and weight are available
+                            $bmi = 'N/A';
+                            $bmiStatus = '';
+                            if (!empty($hoiVien->ChieuCao ?? '') && !empty($hoiVien->CanNang ?? '')) {
+                                $height = floatval($hoiVien->ChieuCao) / 100; // Convert cm to m
+                                $weight = floatval($hoiVien->CanNang);
+                                if ($height > 0) {
+                                    $bmi = number_format($weight / ($height * $height), 1);
+                                    if ($bmi < 18.5) {
+                                        $bmiStatus = 'Gầy';
+                                    } elseif ($bmi < 25) {
+                                        $bmiStatus = 'Bình thường';
+                                    } elseif ($bmi < 30) {
+                                        $bmiStatus = 'Thừa cân';
+                                    } else {
+                                        $bmiStatus = 'Béo phì';
+                                    }
+                                }
+                            }
                             ?>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calculator"></i>
+                                </div>
+                                <div class="stat-value"><?php echo $bmi; ?></div>
+                                <div class="stat-label">BMI</div>
+                                <?php if ($bmi !== 'N/A'): ?>
+                                    <div class="stat-label" style="font-size: 10px; margin-top: 3px;"><?php echo $bmiStatus; ?></div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-ruler-vertical"></i>
+                                </div>
+                                <div class="stat-value">
+                                    <?php echo !empty($hoiVien->ChieuCao ?? '') ? htmlspecialchars($hoiVien->ChieuCao) : 'N/A'; ?>
+                                    <?php if (!empty($hoiVien->ChieuCao ?? '')): ?>cm<?php endif; ?>
+                                </div>
+                                <div class="stat-label">Chiều cao</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-weight"></i>
+                                </div>
+                                <div class="stat-value">
+                                    <?php echo !empty($hoiVien->CanNang ?? '') ? htmlspecialchars($hoiVien->CanNang) : 'N/A'; ?>
+                                    <?php if (!empty($hoiVien->CanNang ?? '')): ?>kg<?php endif; ?>
+                                </div>
+                                <div class="stat-label">Cân nặng</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-dumbbell"></i>
+                                </div>
+                                <div class="stat-value">
+                                    <?php echo !empty($hoiVien->SoBuoiTap ?? '') ? htmlspecialchars($hoiVien->SoBuoiTap) : '0'; ?>
+                                </div>
+                                <div class="stat-label">Số buổi tập</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="edit-btn">
-                    <a href="/gym/user/edit_profile">
-                        <i class="fas fa-edit"></i>
-                        Cập nhật
-                    </a>
+
+                <!-- Right Column -->
+                <div class="right-column">
+                    <div class="info-table">
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-venus-mars"></i>
+                                <span>Giới tính:</span>
+                            </div>
+                            <div class="info-value"><?php echo !empty($hoiVien->GioiTinh ?? '') ? htmlspecialchars($hoiVien->GioiTinh) : '<span class="empty-value">Chưa cập nhật</span>'; ?></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-birthday-cake"></i>
+                                <span>Ngày sinh:</span>
+                            </div>
+                            <div class="info-value">
+                                <?php 
+                                $ngaySinh = $hoiVien->NgaySinh ?? '';
+                                echo !empty($ngaySinh) ? date('d/m/Y', strtotime($ngaySinh)) : '<span class="empty-value">Chưa cập nhật</span>'; 
+                                ?>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-phone"></i>
+                                <span>Số điện thoại:</span>
+                            </div>
+                            <div class="info-value">
+                                <?php if (!empty($hoiVien->SDT ?? '')): ?>
+                                    <a href="tel:<?php echo htmlspecialchars($hoiVien->SDT); ?>">
+                                        <?php echo htmlspecialchars($hoiVien->SDT); ?>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="empty-value">Chưa cập nhật</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email:</span>
+                            </div>
+                            <div class="info-value">
+                                <?php if (!empty($hoiVien->Email ?? '')): ?>
+                                    <a href="mailto:<?php echo htmlspecialchars($hoiVien->Email); ?>">
+                                        <?php echo htmlspecialchars($hoiVien->Email); ?>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="empty-value">Chưa cập nhật</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Địa chỉ:</span>
+                            </div>
+                            <div class="info-value"><?php echo !empty($hoiVien->DiaChi ?? '') ? htmlspecialchars($hoiVien->DiaChi) : '<span class="empty-value">Chưa cập nhật</span>'; ?></div>
+                        </div>
+                    </div>
+                    <div class="edit-btn">
+                        <a href="/gym/user/edit_profile">
+                            <i class="fas fa-edit"></i>
+                            Cập nhật
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     <?php else: ?>
         <div class="card">
             <div class="right-container" style="max-width: 100%;">
-                <div class="alert alert-warning" style="background: rgba(255, 193, 7, 0.2); border: 1px solid rgba(255, 193, 7, 0.5); color: #fff; padding: 20px; border-radius: 15px;">
+                <div class="alert alert-warning" style="background: rgba(255, 193, 7, 0.2); border: 1px solid rgba(255, 193, 7, 0.5); color: #fff; padding: 20px; border-radius: 8px;">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     Không tìm thấy thông tin người dùng.
                 </div>

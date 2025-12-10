@@ -445,7 +445,7 @@
                         </ul>
                     </div>
                 <?php endif; ?>
-                <form method="POST" action="/gym/admin/dvtg/updateDVTG">
+                <form method="POST" action="/gym/admin/dichvu/updateDVTG">
                     <input type="hidden" name="id" value="<?php echo $DVTG->id; ?>">
 
                     <!-- Thông tin cơ bản -->
@@ -462,7 +462,6 @@
                                 </label>
                                 <div class="input-group-icon">
                                     <input type="text" name="TenTG" id="TenTG" class="form-control" value="<?php echo htmlspecialchars($DVTG->TenTG, ENT_QUOTES, 'UTF-8'); ?>" required placeholder="Nhập tên dịch vụ">
-                                    <i class="fas fa-tag"></i>
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
@@ -472,7 +471,6 @@
                                 </label>
                                 <div class="input-group-icon">
                                     <input type="number" name="GiaTG" id="GiaTG" class="form-control" step="0.01" value="<?php echo htmlspecialchars($DVTG->GiaTG); ?>" required placeholder="Nhập giá tiền">
-                                    <i class="fas fa-money-bill-wave"></i>
                                 </div>
                             </div>
                         </div>
@@ -484,7 +482,6 @@
                                 </label>
                                 <div class="input-group-icon">
                                     <input type="text" name="ThoiGianTG" id="ThoiGianTG" class="form-control" value="<?php echo htmlspecialchars($DVTG->ThoiGianTG); ?>" required placeholder="Nhập thời gian">
-                                    <i class="fas fa-clock"></i>
                                 </div>
                             </div>
                         </div>
@@ -510,7 +507,7 @@
                     </div>
 
                     <div class="form-actions">
-                        <a href="/gym/admin/DvThuGian" class="btn btn-secondary">
+                        <a href="/gym/admin/dichvu" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-2"></i>
                         </a>
                         <button type="submit" class="btn btn-primary">

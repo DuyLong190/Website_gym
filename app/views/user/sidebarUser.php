@@ -136,7 +136,7 @@
                 <a href="/gym/user/lophoc" class="navbar__link"><i class="fas fa-people-roof "></i><span>Lớp học</span></a>
             </li>
             <li class="navbar__item">
-                <a href="#" class="navbar__link"><i class="fas fa-clock-rotate-left "></i><span>Lịch sử hoạt động</span></a>
+                <a href="/gym/user/lichsuhoatdong" class="navbar__link"><i class="fas fa-clock-rotate-left "></i><span>Lịch sử hoạt động</span></a>
             </li>
             <li class="navbar__item">
                 <a href="/gym" class="navbar__link"><i data-feather="home"></i><span>Trang chủ</span></a>
