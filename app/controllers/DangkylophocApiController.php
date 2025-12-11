@@ -1,18 +1,24 @@
 <?php
 
 require_once __DIR__ . '/../models/DangKyLopHocModel.php';
+require_once __DIR__ . '/../models/YeuCauThanhToanModel.php';
+require_once __DIR__ . '/../models/LopHoc_Model.php';
 require_once __DIR__ . '/../helpers/SessionHelper.php';
 require_once 'app/config/Database.php';
 
 class DangkylophocApiController
 {
     private $dkModel;
+    private $yeuCauThanhToanModel;
+    private $lopHocModel;
     private $db;
 
     public function __construct()
     {
         $this->db = (new Database())->getConnection();
         $this->dkModel = new DangKyLopHocModel($this->db);
+        $this->yeuCauThanhToanModel = new YeuCauThanhToanModel($this->db);
+        $this->lopHocModel = new LopHoc_Model($this->db);
     }
 
     private function ensureUser()
@@ -66,30 +72,59 @@ class DangkylophocApiController
         ];
     }
 
-    // POST /api/dangkylophoc - hội viên đăng ký lớp
+    // POST /api/dangkylophoc - hội viên đăng ký lớp (tạo YeuCauThanhToan thay vì DangKyLopHoc)
     public function store()
     {
         $this->ensureUser();
 
         $payload = $this->getJsonInput();
-        $MaLop = $payload['MaLop'] ?? null;
+        $MaLop = isset($payload['MaLop']) ? (int)$payload['MaLop'] : null;
         $MaHV = (int)$_SESSION['MaHV'];
 
-        $result = $this->dkModel->create($MaHV, $MaLop);
+        // Validate
+        if (empty($MaLop) || $MaLop <= 0) {
+            http_response_code(422);
+            return ['success' => false, 'message' => 'Lớp học không hợp lệ'];
+        }
 
-        if ($result === true) {
-            $remaining = $this->dkModel->getRemainingSlotsByLop($MaLop);
+        // Kiểm tra lớp học có tồn tại không
+        $lopHoc = $this->lopHocModel->getLopHoc_ByID($MaLop);
+        if (!$lopHoc) {
+            http_response_code(404);
+            return ['success' => false, 'message' => 'Lớp học không tồn tại'];
+        }
+
+        // Kiểm tra đã đăng ký chưa (kiểm tra trong YeuCauThanhToan chờ xác nhận)
+        $existing = $this->dkModel->getActiveByHoiVienAndLop($MaHV, $MaLop);
+        if ($existing) {
+            http_response_code(422);
+            return ['success' => false, 'message' => 'Bạn đã đăng ký lớp học này rồi.'];
+        }
+
+        // Kiểm tra số lượng còn lại
+        $remaining = $this->dkModel->getRemainingSlotsByLop($MaLop);
+        if ($remaining !== null && $remaining <= 0) {
+            http_response_code(422);
+            return ['success' => false, 'message' => 'Lớp học đã đủ số lượng, không thể đăng ký thêm.'];
+        }
+
+        // Lấy giá tiền
+        $soTien = (float)($lopHoc->GiaTien ?? 0);
+        if ($soTien <= 0) {
+            http_response_code(422);
+            return ['success' => false, 'message' => 'Giá lớp học không hợp lệ'];
+        }
+
+        // Tạo yêu cầu thanh toán (tương tự như gói tập)
+        $result = $this->yeuCauThanhToanModel->createForLopHoc($MaHV, $soTien, $MaLop);
+
+        if ($result) {
             http_response_code(201);
             return [
                 'success' => true,
-                'message' => 'Đăng ký lớp học thành công',
+                'message' => 'Đăng ký lớp học thành công. Vui lòng thanh toán và chờ admin xác nhận.',
                 'remaining_slots' => $remaining,
             ];
-        }
-
-        if (is_array($result)) {
-            http_response_code(422);
-            return ['success' => false, 'errors' => $result];
         }
 
         http_response_code(500);

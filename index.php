@@ -10,6 +10,7 @@ require_once 'app/controllers/UserController.php';
 require_once 'app/controllers/PtApiController.php';
 require_once 'app/controllers/ChiTiet_Goitap_Controller.php';
 require_once 'app/controllers/ThanhToanGoiTapController.php';
+require_once 'app/controllers/ThanhToanHoaDonController.php';
 require_once 'app/models/GoiTapModel.php';
 require_once 'app/models/DvThuGianModel.php';
 require_once 'app/models/LopHoc_Model.php';
@@ -92,15 +93,21 @@ else if (isset($url[0]) && $url[0] === 'admin') {
         $params = [];
     }
 } else {
-    // Route đặc biệt: Thanh toán MoMo
+    // Route đặc biệt: Thanh toán MoMo cho gói tập
     if (isset($url[0]) && strtolower($url[0]) === 'thanhtoangoitap') {
         $controllerName = 'ThanhToanGoiTapController';
         $action = isset($url[1]) && $url[1] != '' ? $url[1] : '';
         $params = [];
     }
+    // Route đặc biệt: Thanh toán MoMo cho dịch vụ và lớp học
+    else if (isset($url[0]) && strtolower($url[0]) === 'thanhtoanhoadon') {
+        $controllerName = 'ThanhToanHoaDonController';
+        $action = isset($url[1]) && $url[1] != '' ? $url[1] : '';
+        $params = [];
+    }
     // Route đặc biệt: trang "Gói tập của tôi" và thanh toán cho user
     else if (isset($url[0], $url[1]) && $url[0] === 'user' && $url[1] === 'chitiet_goitap') {
-        $controllerName = 'ChiTiet_Goitap_Controller';
+$controllerName = 'ChiTiet_Goitap_Controller';
 
         // /user/chitiet_goitap/purchase/{id_ctgt}
         if (isset($url[2]) && $url[2] === 'purchase' && isset($url[3]) && is_numeric($url[3])) {
@@ -115,6 +122,18 @@ else if (isset($url[0]) && $url[0] === 'admin') {
                 $params = [];
             }
         }
+    }
+    // Route đặc biệt: đăng ký dịch vụ cho user
+    else if (isset($url[0], $url[1], $url[2]) && $url[0] === 'user' && $url[1] === 'dichvu' && $url[2] === 'dangky_dichvu') {
+        $controllerName = 'UserController';
+        $action = 'dangky_dichvu';
+        $params = [];
+    }
+    // Route đặc biệt: hủy đăng ký dịch vụ cho user
+    else if (isset($url[0], $url[1], $url[2], $url[3]) && $url[0] === 'user' && $url[1] === 'dichvu' && $url[2] === 'huy_dangky_dichvu' && is_numeric($url[3])) {
+        $controllerName = 'UserController';
+        $action = 'huy_dangky_dichvu';
+        $params = [(int)$url[3]];
     } else {
         if (isset($url[0]) && strtolower($url[0]) === 'pt') {
             $controllerName = 'PtApiController';

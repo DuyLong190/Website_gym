@@ -2,6 +2,7 @@
 class ThanhToanGoiTapModel
 {
     private $db;
+    private $table_name = 'thanhtoan_goitap';
 
     public function __construct($db)
     {
@@ -37,19 +38,19 @@ class ThanhToanGoiTapModel
             $link_data = json_encode($linkDataArray);
             
             // Kiểm tra xem bảng có cột id_ctgt và order_id không
-            $columnsQuery = "SHOW COLUMNS FROM ThanhToan_GoiTap LIKE 'id_ctgt'";
+            $columnsQuery = "SHOW COLUMNS FROM {$this->table_name} LIKE 'id_ctgt'";
             $columnsStmt = $this->db->prepare($columnsQuery);
             $columnsStmt->execute();
             $hasIdCtgt = $columnsStmt->fetch() !== false;
             
-            $columnsQuery2 = "SHOW COLUMNS FROM ThanhToan_GoiTap LIKE 'order_id'";
+            $columnsQuery2 = "SHOW COLUMNS FROM {$this->table_name} LIKE 'order_id'";
             $columnsStmt2 = $this->db->prepare($columnsQuery2);
             $columnsStmt2->execute();
             $hasOrderId = $columnsStmt2->fetch() !== false;
             
             if ($hasIdCtgt && $hasOrderId) {
                 // Bảng đã có các cột mới
-                $query = "INSERT INTO ThanhToan_GoiTap (customer_id, goitap_id, id_ctgt, amount, momo_status, link_data, order_id)
+                $query = "INSERT INTO {$this->table_name} (customer_id, goitap_id, id_ctgt, amount, momo_status, link_data, order_id)
                           VALUES (:customer_id, :goitap_id, :id_ctgt, :amount, :momo_status, :link_data, :order_id)";
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':customer_id', $customer_id, PDO::PARAM_INT);
@@ -61,7 +62,7 @@ class ThanhToanGoiTapModel
                 $stmt->bindParam(':order_id', $orderId);
             } else {
                 // Bảng chưa có các cột mới, chỉ lưu vào link_data
-                $query = "INSERT INTO ThanhToan_GoiTap (customer_id, goitap_id, amount, momo_status, link_data)
+                $query = "INSERT INTO {$this->table_name} (customer_id, goitap_id, amount, momo_status, link_data)
                           VALUES (:customer_id, :goitap_id, :amount, :momo_status, :link_data)";
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':customer_id', $customer_id, PDO::PARAM_INT);
@@ -81,7 +82,7 @@ class ThanhToanGoiTapModel
     // Lấy danh sách giao dịch của hội viên
     public function getTransactionsByCustomer($customer_id)
     {
-        $query = "SELECT * FROM ThanhToan_GoiTap WHERE customer_id = :customer_id ORDER BY created_at DESC";
+        $query = "SELECT * FROM {$this->table_name} WHERE customer_id = :customer_id ORDER BY created_at DESC";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':customer_id', $customer_id, PDO::PARAM_INT);
         $stmt->execute();
@@ -91,7 +92,7 @@ class ThanhToanGoiTapModel
     // Cập nhật trạng thái giao dịch (Admin duyệt)
     public function updateStatus($id, $status)
     {
-        $query = "UPDATE ThanhToan_GoiTap SET momo_status = :status WHERE id = :id";
+        $query = "UPDATE {$this->table_name} SET momo_status = :status WHERE id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);

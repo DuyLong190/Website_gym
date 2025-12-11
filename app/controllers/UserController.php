@@ -5,6 +5,10 @@ require_once __DIR__ . '/../models/AccountModel.php';
 require_once __DIR__ . '/../models/DangKyLopHocModel.php';
 require_once __DIR__ . '/../models/LichLopHocModel.php';
 require_once __DIR__ . '/../models/ChiTiet_Goitap_Model.php';
+require_once __DIR__ . '/../models/DvThuGianModel.php';
+require_once __DIR__ . '/../models/DangKyDichVuModel.php';
+require_once __DIR__ . '/../models/ThanhToanHoaDonModel.php';
+require_once __DIR__ . '/../models/YeuCauThanhToanModel.php';
 require_once __DIR__ . '/../config/database.php';
 class UserController
 {
@@ -14,6 +18,10 @@ class UserController
     private $dangKyLopHocModel;
     private $lichLopHocModel;
     private $chiTietGoiTapModel;
+    private $dvtgModel;
+    private $dangKyDichVuModel;
+    private $thanhToanHoaDonModel;
+    private $yeuCauThanhToanModel;
     private $db;
 
     public function __construct() 
@@ -25,6 +33,10 @@ class UserController
         $this->dangKyLopHocModel = new DangKyLopHocModel($this->db);
         $this->lichLopHocModel = new LichLopHocModel($this->db);
         $this->chiTietGoiTapModel = new ChiTiet_Goitap_Model($this->db);
+        $this->dvtgModel = new DvThuGianModel($this->db);
+        $this->dangKyDichVuModel = new DangKyDichVuModel($this->db);
+        $this->thanhToanHoaDonModel = new ThanhToanHoaDonModel($this->db);
+        $this->yeuCauThanhToanModel = new YeuCauThanhToanModel($this->db);
     }
     public function profile()
     {
@@ -366,6 +378,234 @@ class UserController
 
         ob_start();
         require_once __DIR__ . '/../views/user/lichsu_hoatdong.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
+    }
+
+    public function dichvu()
+    {
+        if (!isset($_SESSION['username'])) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        $username = $_SESSION['username'];
+        $hoiVien = $this->hoivienModel->getHoiVienByUsername($username);
+
+        if (!$hoiVien) {
+            $_SESSION['error'] = "Không tìm thấy thông tin hội viên";
+            header('Location: /gym/user/profile');
+            exit;
+        }
+
+        $MaHV = (int)$hoiVien->MaHV;
+        $dichVus = $this->dvtgModel->getDVTGs();
+        $dangKys = $this->dangKyDichVuModel->getDangKyByMaHV($MaHV);
+
+        ob_start();
+        require_once __DIR__ . '/../views/user/dichvu/indexDichVu.php';
+        $content = ob_get_clean();
+
+        ob_start();
+        require_once __DIR__ . '/../views/user/sidebarUser.php';
+        $sidebar = ob_get_clean();
+
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
+    }
+
+    public function dangky_dichvu()
+    {
+        error_log("dangky_dichvu called - Method: " . $_SERVER['REQUEST_METHOD']);
+        error_log("POST data: " . print_r($_POST, true));
+        
+        if (!isset($_SESSION['username'])) {
+            error_log("dangky_dichvu: User not logged in");
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            error_log("dangky_dichvu: Not POST method, redirecting");
+            header('Location: /gym/user/dichvu');
+            exit;
+        }
+
+        $username = $_SESSION['username'];
+        $hoiVien = $this->hoivienModel->getHoiVienByUsername($username);
+
+        if (!$hoiVien) {
+            $_SESSION['error'] = "Không tìm thấy thông tin hội viên";
+            header('Location: /gym/user/dichvu');
+            exit;
+        }
+
+        $MaHV = (int)$hoiVien->MaHV;
+        $id_dv = isset($_POST['id_dv']) ? (int)$_POST['id_dv'] : 0;
+        $ngaySuDung = isset($_POST['NgaySuDung']) ? $_POST['NgaySuDung'] : '';
+        $gioSuDung = isset($_POST['GioSuDung']) ? $_POST['GioSuDung'] : '';
+        $ghiChu = isset($_POST['GhiChu']) ? $_POST['GhiChu'] : null;
+
+        // Validate
+        if ($id_dv <= 0) {
+            $_SESSION['error'] = 'Vui lòng chọn dịch vụ';
+            header('Location: /gym/user/dichvu');
+            exit;
+        }
+
+        if (empty($ngaySuDung) || empty($gioSuDung)) {
+            $_SESSION['error'] = 'Vui lòng nhập đầy đủ ngày và giờ sử dụng';
+            header('Location: /gym/user/dichvu');
+            exit;
+        }
+
+        // Kiểm tra ngày sử dụng không được trong quá khứ
+        $ngaySuDungObj = new DateTime($ngaySuDung);
+        $today = new DateTime();
+        $today->setTime(0, 0, 0);
+        
+        if ($ngaySuDungObj < $today) {
+            $_SESSION['error'] = 'Ngày sử dụng không được trong quá khứ';
+            header('Location: /gym/user/dichvu');
+            exit;
+        }
+
+        // Lấy thông tin dịch vụ để lấy giá tiền
+        $dichVu = $this->dvtgModel->getDVTG_ByID($id_dv);
+        if (!$dichVu) {
+            $_SESSION['error'] = 'Dịch vụ không tồn tại';
+            header('Location: /gym/user/dichvu');
+            exit;
+        }
+
+        $soTien = (float)($dichVu->GiaTG ?? 0);
+        if ($soTien <= 0) {
+            $_SESSION['error'] = 'Giá dịch vụ không hợp lệ';
+            header('Location: /gym/user/dichvu');
+            exit;
+        }
+
+        // Tạo yêu cầu thanh toán (tương tự như gói tập)
+        $thongTinDichVu = [
+            'id_dv' => $id_dv,
+            'NgaySuDung' => $ngaySuDung,
+            'GioSuDung' => $gioSuDung,
+            'GhiChu' => $ghiChu
+        ];
+
+        $result = $this->yeuCauThanhToanModel->createForDichVu($MaHV, $soTien, $thongTinDichVu);
+        
+        if ($result) {
+            $_SESSION['success'] = 'Đăng ký dịch vụ thành công. Vui lòng thanh toán và chờ admin xác nhận.';
+        } else {
+            $_SESSION['error'] = 'Đăng ký dịch vụ không thành công. Vui lòng thử lại.';
+            error_log("Failed to create YeuCauThanhToan for DichVu - MaHV: $MaHV, id_dv: $id_dv, NgaySuDung: $ngaySuDung, GioSuDung: $gioSuDung");
+        }
+
+        // Redirect về trang trước đó hoặc trang dịch vụ
+        $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/gym/dichvu';
+        // Nếu referer là trang user/dichvu thì giữ nguyên, nếu không thì về trang public
+        if (strpos($redirectUrl, '/gym/user/dichvu') !== false) {
+            $redirectUrl = '/gym/user/dichvu';
+        } else {
+            $redirectUrl = '/gym/dichvu';
+        }
+        
+        header('Location: ' . $redirectUrl);
+        exit;
+    }
+
+    public function huy_dangky_dichvu($id)
+    {
+        if (!isset($_SESSION['username'])) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /gym/user/dichvu');
+            exit;
+        }
+
+        $username = $_SESSION['username'];
+        $hoiVien = $this->hoivienModel->getHoiVienByUsername($username);
+
+        if (!$hoiVien) {
+            $_SESSION['error'] = "Không tìm thấy thông tin hội viên";
+            header('Location: /gym/user/dichvu');
+            exit;
+        }
+
+        // Kiểm tra đăng ký có thuộc về hội viên này không
+        $dangKy = $this->dangKyDichVuModel->getDangKyById($id);
+        if (!$dangKy || (int)$dangKy->MaHV !== (int)$hoiVien->MaHV) {
+            $_SESSION['error'] = 'Không tìm thấy đăng ký dịch vụ';
+            header('Location: /gym/user/dichvu');
+            exit;
+        }
+
+        // Chỉ cho phép hủy nếu đang ở trạng thái "Chờ xác nhận" hoặc "Đã xác nhận"
+        if ($dangKy->TrangThai !== 'Chờ xác nhận' && $dangKy->TrangThai !== 'Đã xác nhận') {
+            $_SESSION['error'] = 'Không thể hủy đăng ký dịch vụ này';
+            header('Location: /gym/user/dichvu');
+            exit;
+        }
+
+        if ($this->dangKyDichVuModel->cancelDangKy($id)) {
+            $_SESSION['success'] = 'Hủy đăng ký dịch vụ thành công';
+        } else {
+            $_SESSION['error'] = 'Hủy đăng ký dịch vụ không thành công';
+        }
+
+        header('Location: /gym/user/dichvu');
+        exit;
+    }
+
+    public function hoadon()
+    {
+        // Kiểm tra đăng nhập
+        if (!isset($_SESSION['username']) || !isset($_SESSION['MaHV'])) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        $maHV = (int)$_SESSION['MaHV'];
+        
+        // Lấy danh sách hóa đơn với thông tin chi tiết
+        $hoaDons = [];
+        $allHoaDons = $this->thanhToanHoaDonModel->getByMaHV($maHV);
+        
+        foreach ($allHoaDons as $hd) {
+            $hoaDonWithDetails = $this->thanhToanHoaDonModel->getWithDetails($hd['id']);
+            if ($hoaDonWithDetails) {
+                $hoaDons[] = $hoaDonWithDetails;
+            } else {
+                $hoaDons[] = $hd; // Fallback nếu không lấy được chi tiết
+            }
+        }
+
+        ob_start();
+        require_once __DIR__ . '/../views/user/hoadon/indexHoaDon.php';
         $content = ob_get_clean();
 
         ob_start();

@@ -323,7 +323,9 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Hội viên</th>
-                                    <th>Gói tập</th>
+                                    <th>Loại</th>
+                                    <th>Tên dịch vụ/Gói tập/Lớp học</th>
+                                    <th>Số tiền</th>
                                     <th>Ngày yêu cầu</th>
                                     <th>Trạng thái</th>
                                     <th class="text-center">Hành động</th>
@@ -354,6 +356,32 @@
                                             $formattedDate = $ngayYeuCau;
                                         }
                                     }
+
+                                    // Xác định loại và tên hiển thị
+                                    $loai = $yc['Loai'] ?? 'GoiTap';
+                                    $tenHienThi = 'N/A';
+                                    $loaiText = 'Gói tập';
+                                    $loaiIcon = 'fa-ticket-alt';
+                                    $loaiColor = 'text-primary';
+
+                                    if ($loai === 'GoiTap') {
+                                        $tenHienThi = $yc['TenGoiTap'] ?? 'N/A';
+                                        $loaiText = 'Gói tập';
+                                        $loaiIcon = 'fa-ticket-alt';
+                                        $loaiColor = 'text-primary';
+                                    } elseif ($loai === 'DichVu') {
+                                        $tenHienThi = $yc['TenDichVu'] ?? 'N/A';
+                                        $loaiText = 'Dịch vụ';
+                                        $loaiIcon = 'fa-spa';
+                                        $loaiColor = 'text-success';
+                                    } elseif ($loai === 'LopHoc') {
+                                        $tenHienThi = $yc['TenLop'] ?? 'N/A';
+                                        $loaiText = 'Lớp học';
+                                        $loaiIcon = 'fa-chalkboard-teacher';
+                                        $loaiColor = 'text-info';
+                                    }
+
+                                    $soTien = isset($yc['SoTien']) ? number_format((float)$yc['SoTien'], 0, ',', '.') : '0';
                                     ?>
                                     <tr>
                                         <td>
@@ -366,9 +394,20 @@
                                             </span>
                                         </td>
                                         <td>
+                                            <span class="<?= $loaiColor ?>">
+                                                <i class="fas <?= $loaiIcon ?> me-2"></i>
+                                                <?= htmlspecialchars($loaiText) ?>
+                                            </span>
+                                        </td>
+                                        <td>
                                             <span class="package-name">
-                                                <i class="fas fa-ticket-alt me-2"></i>
-                                                <?= htmlspecialchars($yc['TenGoiTap'] ?? 'N/A') ?>
+                                                <i class="fas fa-tag me-2"></i>
+                                                <?= htmlspecialchars($tenHienThi) ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold text-danger">
+                                                <?= $soTien ?> đ
                                             </span>
                                         </td>
                                         <td>

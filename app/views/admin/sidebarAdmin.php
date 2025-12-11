@@ -69,6 +69,9 @@
                 <a href="/gym/admin/yeucau" class="navbar__link"><i data-feather="check-circle"></i><span>Yêu cầu xác nhận</span></a>
             </li>
             <li class="navbar__item">
+                <a href="/gym/admin/dangky_dichvu" class="navbar__link"><i class="fas fa-spa"></i><span>Đăng ký dịch vụ</span></a>
+            </li>
+            <li class="navbar__item">
                 <a href="/gym" class="navbar__link"><i data-feather="home"></i><span>Về trang chủ</span></a>
             </li>
         </ul>

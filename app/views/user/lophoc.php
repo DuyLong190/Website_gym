@@ -102,18 +102,37 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <?php if ($isActive && $id > 0): ?>
-                                        <button type="button" class="btn btn-sm btn-outline-danger me-1" onclick="cancelRegisterClass(<?= $id; ?>)">
-                                            <i class="fa-solid fa-xmark me-1"></i>Hủy đăng ký
-                                        </button>
-                                        <?php if ($maLop > 0): ?>
-                                            <a href="/gym/user/lichlophoc?MaLop=<?= $maLop; ?>" class="btn btn-sm btn-outline-info">
-                                                <i class="fa-solid fa-calendar-days me-1"></i>Chi tiết
-                                            </a>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <?php 
+                                        $daThanhToan = isset($row['DaThanhToan']) ? (int)$row['DaThanhToan'] : 0;
+                                        if ($isActive && $id > 0): ?>
+                                            <?php if ($daThanhToan === 0): ?>
+                                                <form method="post" action="/gym/ThanhToanHoaDon/confirm_momo" style="display:inline-block;">
+                                                    <input type="hidden" name="loai" value="LopHoc">
+                                                    <input type="hidden" name="id_dangky" value="<?= htmlspecialchars((string)$id) ?>">
+                                                    <button type="submit" class="btn btn-sm btn-warning">
+                                                        <i class="fas fa-money-bill-wave me-1"></i>Thanh toán
+                                                    </button>
+                                                </form>
+                                            <?php else: ?>
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Đã thanh toán
+                                                </span>
+                                            <?php endif; ?>
+                                            
+                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="cancelRegisterClass(<?= $id; ?>)">
+                                                <i class="fa-solid fa-xmark me-1"></i>Hủy đăng ký
+                                            </button>
+                                            
+                                            <?php if ($maLop > 0): ?>
+                                                <a href="/gym/user/lichlophoc?MaLop=<?= $maLop; ?>" class="btn btn-sm btn-outline-info">
+                                                    <i class="fa-solid fa-calendar-days me-1"></i>Chi tiết
+                                                </a>
+                                            <?php endif; ?>
+                                        <?php else: ?>
+                                            <span class="text-secondary small">-</span>
                                         <?php endif; ?>
-                                    <?php else: ?>
-                                        <span class="text-secondary small">-</span>
-                                    <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

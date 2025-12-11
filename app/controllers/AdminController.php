@@ -10,7 +10,10 @@ require_once __DIR__ . '/../models/AccountModel.php';
 require_once __DIR__ . '/../models/ChiTiet_Goitap_Model.php';
 require_once __DIR__ . '/../models/YeuCauThanhToanModel.php';
 require_once __DIR__ . '/../models/DangKyLopHocModel.php';
+require_once __DIR__ . '/../models/DangKyDichVuModel.php';
+require_once __DIR__ . '/../models/ThanhToanHoaDonModel.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../helpers/SessionHelper.php';
 
 class AdminController
 {
@@ -26,6 +29,8 @@ class AdminController
     private $ctgtModel;
     private $yeuCauThanhToanModel;
     private $dangKyLopHocModel;
+    private $dangKyDichVuModel;
+    private $thanhToanHoaDonModel;
 
     public function __construct()
     {
@@ -42,6 +47,8 @@ class AdminController
         $this->ctgtModel = new ChiTiet_Goitap_Model($this->db);
         $this->yeuCauThanhToanModel = new YeuCauThanhToanModel($this->db);
         $this->dangKyLopHocModel = new DangKyLopHocModel($this->db);
+        $this->dangKyDichVuModel = new DangKyDichVuModel($this->db);
+        $this->thanhToanHoaDonModel = new ThanhToanHoaDonModel($this->db);
     }
     //Gói tập----------------------------------------------------------------------------------------------------------------------
     public function indexGoitap()
@@ -1252,17 +1259,17 @@ class AdminController
             exit;
         }
 
-        $yc = $this->yeuCauThanhToanModel->getById((int)$id);
+        $yc = $this->yeuCauThanhToanModel->getDetailById((int)$id);
         if (!$yc) {
             $_SESSION['error'] = 'Không tìm thấy yêu cầu thanh toán.';
             header('Location: /gym/admin/yeucau');
             exit;
         }
 
-        $id_ctgt = (int)($yc['id_ctgt'] ?? 0);
-        $maHV    = (int)($yc['MaHV'] ?? 0);
+        $loai = $yc['Loai'] ?? '';
+        $maHV = (int)($yc['MaHV'] ?? 0);
 
-        if ($id_ctgt <= 0 || $maHV <= 0) {
+        if (empty($loai) || $maHV <= 0) {
             $_SESSION['error'] = 'Dữ liệu yêu cầu thanh toán không hợp lệ.';
             header('Location: /gym/admin/yeucau');
             exit;
@@ -1271,38 +1278,154 @@ class AdminController
         try {
             $this->db->beginTransaction();
 
-            // 1. Lấy thông tin chi tiết gói tập để có MaGoiTap
-            $chiTietArr = $this->ctgtModel->getChiTietById($id_ctgt);
-            if (empty($chiTietArr)) {
-                throw new Exception('Không tìm thấy chi tiết gói tập.');
-            }
-            $chiTiet = $chiTietArr[0];
-            $maGoiTap = (int)($chiTiet['MaGoiTap'] ?? 0);
-            
-            if ($maGoiTap <= 0) {
-                throw new Exception('Dữ liệu gói tập không hợp lệ.');
+            // Xử lý theo từng loại
+            if ($loai === 'GoiTap') {
+                // Xử lý yêu cầu thanh toán cho gói tập
+                $id_ctgt = (int)($yc['id_ctgt'] ?? 0);
+                if ($id_ctgt <= 0) {
+                    throw new Exception('Không tìm thấy chi tiết gói tập.');
+                }
+
+                // Lấy thông tin chi tiết gói tập để có MaGoiTap
+                $chiTietArr = $this->ctgtModel->getChiTietById($id_ctgt);
+                if (empty($chiTietArr)) {
+                    throw new Exception('Không tìm thấy chi tiết gói tập.');
+                }
+                $chiTiet = $chiTietArr[0];
+                $maGoiTap = (int)($chiTiet['MaGoiTap'] ?? 0);
+                
+                if ($maGoiTap <= 0) {
+                    throw new Exception('Dữ liệu gói tập không hợp lệ.');
+                }
+
+                // Cập nhật MaGoiTap vào HoiVien (chỉ khi admin xác nhận)
+                $okUpdateHoiVien = $this->hoiVienModel->updateGoiTap($maHV, $maGoiTap);
+                if (!$okUpdateHoiVien) {
+                    throw new Exception('Không thể cập nhật gói tập cho hội viên.');
+                }
+
+                // Cập nhật chi tiết gói tập: set ngày bắt đầu/kết thúc, trạng thái, thanh toán
+                $okCtgt = $this->ctgtModel->confirmPayment($id_ctgt);
+                if (!$okCtgt) {
+                    throw new Exception('Không thể cập nhật chi tiết gói tập hoặc đã được xác nhận trước đó.');
+                }
+
+                $successMessage = 'Xác nhận yêu cầu thanh toán thành công. Gói tập đã được kích hoạt cho hội viên.';
+
+            } elseif ($loai === 'DichVu') {
+                // Xử lý yêu cầu thanh toán cho dịch vụ - tạo DangKyDichVu từ thông tin trong GhiChu
+                $id_dv = (int)($yc['id_dv'] ?? 0);
+                $ngaySuDung = $yc['NgaySuDung'] ?? '';
+                $gioSuDung = $yc['GioSuDung'] ?? '';
+                $ghiChuDichVu = $yc['GhiChuDichVu'] ?? null;
+
+                if ($id_dv <= 0 || empty($ngaySuDung) || empty($gioSuDung)) {
+                    throw new Exception('Thông tin dịch vụ không đầy đủ.');
+                }
+
+                // Tạo đăng ký dịch vụ với trạng thái đã xác nhận và đã thanh toán
+                $id_dangky_dv = $this->dangKyDichVuModel->createDangKy($maHV, $id_dv, $ngaySuDung, $gioSuDung, $ghiChuDichVu);
+                if (!$id_dangky_dv) {
+                    throw new Exception('Không thể tạo đăng ký dịch vụ.');
+                }
+
+                // Cập nhật trạng thái đã xác nhận và đã thanh toán
+                $query = "UPDATE DangKyDichVu 
+                         SET DaThanhToan = 1, TrangThai = 'Đã xác nhận', updated_at = NOW()
+                         WHERE id = :id_dangky";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':id_dangky', $id_dangky_dv, PDO::PARAM_INT);
+                $stmt->execute();
+
+                // Cập nhật id_dangky_dv vào YeuCauThanhToan để liên kết
+                $updateYc = "UPDATE YeuCauThanhToan 
+                            SET id_dangky_dv = :id_dangky_dv 
+                            WHERE id = :id_yc";
+                $stmtYc = $this->db->prepare($updateYc);
+                $stmtYc->bindParam(':id_dangky_dv', $id_dangky_dv, PDO::PARAM_INT);
+                $stmtYc->bindParam(':id_yc', $id, PDO::PARAM_INT);
+                $stmtYc->execute();
+
+                $successMessage = 'Xác nhận yêu cầu thanh toán thành công. Dịch vụ đã được kích hoạt cho hội viên.';
+
+            } elseif ($loai === 'LopHoc') {
+                // Xử lý yêu cầu thanh toán cho lớp học - tạo DangKyLopHoc từ thông tin trong GhiChu
+                $maLop = (int)($yc['MaLop'] ?? 0);
+                if ($maLop <= 0) {
+                    throw new Exception('Thông tin lớp học không hợp lệ.');
+                }
+
+                // Kiểm tra lớp học có tồn tại không
+                $lopHocStmt = $this->db->prepare("SELECT MaLop, SoLuongToiDa FROM LopHoc WHERE MaLop = :MaLop");
+                $lopHocStmt->bindParam(':MaLop', $maLop, PDO::PARAM_INT);
+                $lopHocStmt->execute();
+                $lopHoc = $lopHocStmt->fetch(PDO::FETCH_ASSOC);
+                if (!$lopHoc) {
+                    throw new Exception('Lớp học không tồn tại.');
+                }
+
+                // Kiểm tra số lượng còn lại
+                $soLuongToiDa = (int)($lopHoc['SoLuongToiDa'] ?? 0);
+                if ($soLuongToiDa > 0) {
+                    $currentCount = $this->dangKyLopHocModel->getActiveCountByLop($maLop);
+                    if ($currentCount >= $soLuongToiDa) {
+                        throw new Exception('Lớp học đã đủ số lượng, không thể đăng ký thêm.');
+                    }
+                }
+
+                // Kiểm tra đã đăng ký chưa
+                $existing = $this->dangKyLopHocModel->getActiveByHoiVienAndLop($maHV, $maLop);
+                if ($existing) {
+                    throw new Exception('Hội viên đã đăng ký lớp học này rồi.');
+                }
+
+                // Tạo đăng ký lớp học với trạng thái đã đăng ký và đã thanh toán
+                $result = $this->dangKyLopHocModel->create($maHV, $maLop);
+                if ($result !== true) {
+                    if (is_array($result)) {
+                        throw new Exception(implode(', ', $result));
+                    }
+                    throw new Exception('Không thể tạo đăng ký lớp học.');
+                }
+
+                // Lấy ID đăng ký vừa tạo
+                $dangKy = $this->dangKyLopHocModel->getActiveByHoiVienAndLop($maHV, $maLop);
+                if (!$dangKy) {
+                    throw new Exception('Không thể lấy thông tin đăng ký lớp học vừa tạo.');
+                }
+                $id_dangky_lh = (int)($dangKy['id'] ?? 0);
+
+                // Cập nhật DaThanhToan = 1
+                $query = "UPDATE DangKyLopHoc 
+                         SET DaThanhToan = 1, updated_at = NOW()
+                         WHERE id = :id_dangky";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':id_dangky', $id_dangky_lh, PDO::PARAM_INT);
+                $stmt->execute();
+
+                // Cập nhật id_dangky_lh vào YeuCauThanhToan để liên kết
+                $updateYc = "UPDATE YeuCauThanhToan 
+                            SET id_dangky_lh = :id_dangky_lh 
+                            WHERE id = :id_yc";
+                $stmtYc = $this->db->prepare($updateYc);
+                $stmtYc->bindParam(':id_dangky_lh', $id_dangky_lh, PDO::PARAM_INT);
+                $stmtYc->bindParam(':id_yc', $id, PDO::PARAM_INT);
+                $stmtYc->execute();
+
+                $successMessage = 'Xác nhận yêu cầu thanh toán thành công. Lớp học đã được kích hoạt cho hội viên.';
+
+            } else {
+                throw new Exception('Loại yêu cầu thanh toán không hợp lệ.');
             }
 
-            // 2. Cập nhật MaGoiTap vào HoiVien (chỉ khi admin xác nhận)
-            $okUpdateHoiVien = $this->hoiVienModel->updateGoiTap($maHV, $maGoiTap);
-            if (!$okUpdateHoiVien) {
-                throw new Exception('Không thể cập nhật gói tập cho hội viên.');
-            }
-
-            // 3. Cập nhật trạng thái yêu cầu
+            // Cập nhật trạng thái yêu cầu thanh toán (chung cho tất cả các loại)
             $okYc = $this->yeuCauThanhToanModel->markConfirmed((int)$id);
             if (!$okYc) {
                 throw new Exception('Không thể cập nhật trạng thái yêu cầu thanh toán.');
             }
 
-            // 4. Cập nhật chi tiết gói tập: set ngày bắt đầu/kết thúc, trạng thái, thanh toán
-            $okCtgt = $this->ctgtModel->confirmPayment($id_ctgt);
-            if (!$okCtgt) {
-                throw new Exception('Không thể cập nhật chi tiết gói tập hoặc đã được xác nhận trước đó.');
-            }
-
             $this->db->commit();
-            $_SESSION['success'] = 'Xác nhận yêu cầu thanh toán thành công. Gói tập đã được kích hoạt cho hội viên.';
+            $_SESSION['success'] = $successMessage;
         } catch (Exception $e) {
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
@@ -1310,7 +1433,7 @@ class AdminController
             $_SESSION['error'] = 'Lỗi khi xác nhận yêu cầu: ' . $e->getMessage();
         }
 
-        // Quay lại danh sách yêu cầu, hoặc có thể chuyển về chi tiết hội viên nếu muốn
+        // Quay lại danh sách yêu cầu
         header('Location: /gym/admin/yeucau');
         exit;
     }
@@ -1910,5 +2033,143 @@ class AdminController
                 @unlink($fullPath);
             }
         }
+    }
+
+    // Đăng ký dịch vụ---------------------------------------------------------------------------------------------------------------
+    public function indexDangky_dichvu()
+    {
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        $dangKys = $this->dangKyDichVuModel->getAllDangKy();
+        $countChoXacNhan = $this->dangKyDichVuModel->countByStatus('Chờ xác nhận');
+        $countDaXacNhan = $this->dangKyDichVuModel->countByStatus('Đã xác nhận');
+        $countDaHuy = $this->dangKyDichVuModel->countByStatus('Đã hủy');
+        $countDaHoanThanh = $this->dangKyDichVuModel->countByStatus('Đã hoàn thành');
+
+        ob_start();
+        require_once __DIR__ . '/../views/admin/dangky_dichvu/indexDangKyDichVu.php';
+        $content = ob_get_clean();
+        
+        ob_start();
+        require_once __DIR__ . '/../views/admin/sidebarAdmin.php';
+        $sidebar = ob_get_clean();
+        
+        if (preg_match('/<head>(.*?)<\/head>/s', $sidebar, $headMatches)) {
+            $headContent = $headMatches[1];
+            $content = preg_replace('/(<\/head>)/', $headContent . '$1', $content, 1);
+        }
+        
+        if (preg_match('/<body>(.*?)<\/body>/s', $sidebar, $bodyMatches)) {
+            $navbarContent = $bodyMatches[1];
+            $content = preg_replace('/(<body[^>]*>)/', '$1' . $navbarContent, $content, 1);
+        }
+        echo $content;
+    }
+
+    public function confirmDangky_dichvu($id)
+    {
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /gym/admin/dangky_dichvu');
+            exit;
+        }
+
+        if ($this->dangKyDichVuModel->confirmDangKy($id)) {
+            $_SESSION['success'] = 'Xác nhận đăng ký dịch vụ thành công.';
+        } else {
+            $_SESSION['error'] = 'Xác nhận đăng ký dịch vụ không thành công.';
+        }
+
+        header('Location: /gym/admin/dangky_dichvu');
+        exit;
+    }
+
+    public function cancelDangky_dichvu($id)
+    {
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /gym/admin/dangky_dichvu');
+            exit;
+        }
+
+        if ($this->dangKyDichVuModel->cancelDangKy($id)) {
+            $_SESSION['success'] = 'Hủy đăng ký dịch vụ thành công.';
+        } else {
+            $_SESSION['error'] = 'Hủy đăng ký dịch vụ không thành công.';
+        }
+
+        header('Location: /gym/admin/dangky_dichvu');
+        exit;
+    }
+
+    public function completeDangky_dichvu($id)
+    {
+        if (!SessionHelper::isAdmin()) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /gym/admin/dangky_dichvu');
+            exit;
+        }
+
+        if ($this->dangKyDichVuModel->completeDangKy($id)) {
+            $_SESSION['success'] = 'Đánh dấu hoàn thành dịch vụ thành công.';
+        } else {
+            $_SESSION['error'] = 'Đánh dấu hoàn thành dịch vụ không thành công.';
+        }
+
+        header('Location: /gym/admin/dangky_dichvu');
+        exit;
+    }
+
+    // Quản lý hóa đơn
+    public function indexHoadon()
+    {
+        // Kiểm tra đăng nhập và quyền admin
+        if (!isset($_SESSION['username']) || !isset($_SESSION['role_id']) || $_SESSION['role_id'] != 0) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        // Lấy danh sách hóa đơn chờ xác nhận
+        $hoaDons = $this->thanhToanHoaDonModel->getPendingPayments();
+
+        require_once __DIR__ . '/../views/admin/hoadon/indexHoaDon.php';
+    }
+
+    public function confirmPayment($id)
+    {
+        // Kiểm tra đăng nhập và quyền admin
+        if (!isset($_SESSION['username']) || !isset($_SESSION['role_id']) || $_SESSION['role_id'] != 0) {
+            header('Location: /gym/account/login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /gym/admin/hoadon');
+            exit;
+        }
+
+        if ($this->thanhToanHoaDonModel->confirmPayment($id)) {
+            $_SESSION['success'] = 'Xác nhận thanh toán thành công.';
+        } else {
+            $_SESSION['error'] = 'Xác nhận thanh toán không thành công.';
+        }
+
+        header('Location: /gym/admin/hoadon');
+        exit;
     }
 }
