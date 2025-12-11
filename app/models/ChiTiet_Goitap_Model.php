@@ -113,12 +113,14 @@ class ChiTiet_Goitap_Model {
     {
         try {
             // Cập nhật NgayBatDau, NgayKetThuc dựa trên ThoiHan của gói tập (tính theo tháng)
+            // updated_at sẽ là ngày admin xác nhận thanh toán
             $sql = "UPDATE " . $this->table_name . " ct
                     JOIN GoiTap g ON ct.MaGoiTap = g.MaGoiTap
                     SET ct.NgayBatDau = CURRENT_DATE,
                         ct.NgayKetThuc = DATE_ADD(CURRENT_DATE, INTERVAL g.ThoiHan MONTH),
                         ct.TrangThai = 'Đang hoạt động',
-                        ct.DaThanhToan = 1
+                        ct.DaThanhToan = 1,
+                        ct.updated_at = NOW()
                     WHERE ct.id_ctgt = :id_ctgt AND ct.DaThanhToan = 0";
 
             $stmt = $this->conn->prepare($sql);
@@ -157,6 +159,8 @@ class ChiTiet_Goitap_Model {
             // Kiểm tra xem trạng thái 'Đã hủy' có được hỗ trợ không
             $status = $this->supportsStatusValue('Đã hủy') ? 'Đã hủy' : 'Hết hạn';
             
+            // Cập nhật trạng thái khi hủy (giữ nguyên DaThanhToan để lưu lịch sử thanh toán)
+            // Nếu đã thanh toán trước khi hủy, vẫn giữ DaThanhToan = 1 để hiển thị đúng trong lịch sử
             $sql = "UPDATE " . $this->table_name . "
                     SET TrangThai = :status, updated_at = NOW()
                     WHERE id_ctgt = :id_ctgt AND TrangThai != :status";

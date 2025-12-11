@@ -132,21 +132,43 @@ class DangkylophocApiController
         return ['success' => false, 'message' => 'Không thể cập nhật đăng ký lớp học'];
     }
 
-    // DELETE /api/dangkylophoc/{id}
+    // DELETE /api/dangkylophoc/{id} - Hủy đăng ký (chỉ cập nhật trạng thái, không xóa)
     public function delete($id)
     {
+        $this->ensureUser();
+        
         if (!is_numeric($id)) {
             http_response_code(400);
             return ['success' => false, 'message' => 'ID không hợp lệ'];
         }
 
-        $ok = $this->dkModel->deleteById((int)$id);
+        // Kiểm tra quyền: chỉ hội viên sở hữu mới được hủy
+        $item = $this->dkModel->getById((int)$id);
+        if (!$item) {
+            http_response_code(404);
+            return ['success' => false, 'message' => 'Không tìm thấy đăng ký lớp học'];
+        }
+
+        $maHV = (int)($_SESSION['MaHV'] ?? 0);
+        if ((int)($item['MaHV'] ?? 0) !== $maHV) {
+            http_response_code(403);
+            return ['success' => false, 'message' => 'Bạn không có quyền hủy đăng ký này'];
+        }
+
+        // Chỉ hủy nếu đang ở trạng thái DangKy
+        if (($item['TrangThai'] ?? '') !== 'DangKy') {
+            http_response_code(400);
+            return ['success' => false, 'message' => 'Đăng ký này đã được hủy hoặc không thể hủy'];
+        }
+
+        // Hủy đăng ký (chỉ cập nhật trạng thái, không xóa)
+        $ok = $this->dkModel->cancelById((int)$id);
         if ($ok) {
-            return ['success' => true, 'message' => 'Xóa đăng ký lớp học thành công'];
+            return ['success' => true, 'message' => 'Hủy đăng ký lớp học thành công'];
         }
 
         http_response_code(500);
-        return ['success' => false, 'message' => 'Không thể xóa đăng ký lớp học'];
+        return ['success' => false, 'message' => 'Không thể hủy đăng ký lớp học'];
     }
 
     private function getJsonInput()

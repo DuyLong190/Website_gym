@@ -251,8 +251,16 @@ if (isset($chiTiet) && is_array($chiTiet) && count($chiTiet) > 0) {
                                     <div class="col-6">
                                         <div class="small meta-label">Ngày chấp nhận</div>
                                         <div class="fw-medium">
-                                            <?php $updated = $item['updated_at'] ?? '';
-                                            echo $updated ? date('d/m/Y H:i', strtotime($updated)) : '-'; ?>
+                                            <?php 
+                                            $daThanhToan = (int)($item['DaThanhToan'] ?? 0);
+                                            $updated = $item['updated_at'] ?? '';
+                                            // Chỉ hiển thị ngày chấp nhận khi đã thanh toán và có updated_at
+                                            if ($daThanhToan === 1 && !empty($updated)) {
+                                                echo date('d/m/Y H:i', strtotime($updated));
+                                            } else {
+                                                echo '-';
+                                            }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>

@@ -361,6 +361,9 @@ class UserController
             }
         }
 
+        // Lấy các lớp học đã hủy của hội viên
+        $canceledClasses = $this->dangKyLopHocModel->getCanceledByHoiVien($MaHV);
+
         ob_start();
         require_once __DIR__ . '/../views/user/lichsu_hoatdong.php';
         $content = ob_get_clean();

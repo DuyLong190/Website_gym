@@ -266,63 +266,6 @@
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: slideInRight 0.6s ease backwards;
-        }
-
-        .info-row:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .info-row:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .info-row:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        .info-row:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-        .info-row:nth-child(5) {
-            animation-delay: 0.5s;
-        }
-
-        .info-row:nth-child(6) {
-            animation-delay: 0.6s;
-        }
-
-        .info-row:nth-child(7) {
-            animation-delay: 0.7s;
-        }
-
-        .info-row:nth-child(8) {
-            animation-delay: 0.8s;
-        }
-
-        .info-row:nth-child(9) {
-            animation-delay: 0.9s;
-        }
-
-        .info-row:nth-child(10) {
-            animation-delay: 1.0s;
-        }
-
-        .info-row:nth-child(11) {
-            animation-delay: 1.1s;
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
         }
 
         .info-label {
@@ -685,36 +628,41 @@
                 </div>
                 
                 <?php if (isset($currentCtgt) && is_array($currentCtgt)): ?>
-                    <div class="info-row">
-                        <div class="info-label">
-                            <i class="fas fa-money-bill-wave"></i>
-                            <span>Thanh toán:</span>
-                        </div>
-                        <div class="info-value">
-                            <?php
-                            $daThanhToan = (int)($currentCtgt['DaThanhToan'] ?? 0);
-                            $trangThaiCt = $currentCtgt['TrangThai'] ?? '';
-                            if ($daThanhToan === 1) {
-                                echo '<span class="badge bg-success"><i class="fas fa-check-circle"></i> Đã thanh toán</span>';
-                            } else {
-                                if ($trangThaiCt === 'Chờ xác minh') {
-                                    echo '<span class="badge bg-warning"><i class="fas fa-clock"></i> Chờ xác minh</span>';
+                    <?php
+                    $daThanhToan = (int)($currentCtgt['DaThanhToan'] ?? 0);
+                    $trangThaiCt = $currentCtgt['TrangThai'] ?? '';
+                    $isCancelled = ($trangThaiCt === 'Đã hủy' || $trangThaiCt === 'Hết hạn');
+                    // Chỉ hiển thị trường thanh toán khi gói tập chưa bị hủy
+                    if (!$isCancelled): ?>
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Thanh toán:</span>
+                            </div>
+                            <div class="info-value">
+                                <?php
+                                if ($daThanhToan === 1) {
+                                    echo '<span class="badge bg-success"><i class="fas fa-check-circle"></i> Đã thanh toán</span>';
                                 } else {
-                                    echo '<span class="badge bg-secondary"><i class="fas fa-times-circle"></i> Chưa thanh toán</span>';
-                                }
+                                    if ($trangThaiCt === 'Chờ xác minh') {
+                                        echo '<span class="badge bg-warning"><i class="fas fa-clock"></i> Chờ xác minh</span>';
+                                    } else {
+                                        echo '<span class="badge bg-secondary"><i class="fas fa-times-circle"></i> Chưa thanh toán</span>';
+                                    }
 
-                                $id_ctgt = $currentCtgt['id_ctgt'] ?? null;
-                                if ($id_ctgt !== null): ?>
-                                    <form method="post" action="/gym/admin/user/verifyPayment/<?= htmlspecialchars((string)$id_ctgt) ?>" style="display:inline-block; margin-left: 10px;">
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-check me-1"></i>Xác minh thanh toán
-                                        </button>
-                                    </form>
-                                <?php endif;
-                            }
-                            ?>
+                                    $id_ctgt = $currentCtgt['id_ctgt'] ?? null;
+                                    if ($id_ctgt !== null): ?>
+                                        <form method="post" action="/gym/admin/user/verifyPayment/<?= htmlspecialchars((string)$id_ctgt) ?>" style="display:inline-block; margin-left: 10px;">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-check me-1"></i>Xác minh thanh toán
+                                            </button>
+                                        </form>
+                                    <?php endif;
+                                }
+                                ?>
+                            </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
             <div class="back-btn">

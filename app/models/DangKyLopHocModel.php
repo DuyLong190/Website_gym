@@ -222,6 +222,43 @@ class DangKyLopHocModel
         }
     }
 
+    // Hủy đăng ký dựa trên ID (chỉ cập nhật trạng thái, không xóa)
+    public function cancelById($id)
+    {
+        try {
+            $sql = "UPDATE {$this->table_name}
+                    SET TrangThai = 'Huy', updated_at = NOW()
+                    WHERE id = :id AND TrangThai = 'DangKy'";
+            $stmt = $this->conn->prepare($sql);
+            $id = (int)$id;
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute() && $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log('DangKyLopHocModel::cancelById - ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Lấy các lớp học đã hủy của hội viên
+    public function getCanceledByHoiVien($MaHV)
+    {
+        try {
+            $sql = "SELECT d.*, l.TenLop, l.NgayBatDau, l.NgayKetThuc, l.GiaTien
+                    FROM {$this->table_name} d
+                    INNER JOIN LopHoc l ON d.MaLop = l.MaLop
+                    WHERE d.MaHV = :MaHV AND d.TrangThai = 'Huy'
+                    ORDER BY d.updated_at DESC";
+            $stmt = $this->conn->prepare($sql);
+            $MaHV = (int)$MaHV;
+            $stmt->bindParam(':MaHV', $MaHV, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('DangKyLopHocModel::getCanceledByHoiVien - ' . $e->getMessage());
+            return [];
+        }
+    }
+
     public function deleteById($id)
     {
         try {
