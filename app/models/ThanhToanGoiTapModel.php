@@ -12,8 +12,8 @@ class ThanhToanGoiTapModel
     public function storeTransaction($customer_id, $id_ctgt, $amount, $momo_status, $link_data, $orderId = null)
     {
         try {
-            // Lấy MaGoiTap từ id_ctgt
-            $ctgtQuery = "SELECT MaGoiTap FROM chitiet_goitap WHERE id_ctgt = :id_ctgt LIMIT 1";
+            // Kiểm tra id_ctgt có tồn tại không
+            $ctgtQuery = "SELECT id_ctgt FROM chitiet_goitap WHERE id_ctgt = :id_ctgt LIMIT 1";
             $ctgtStmt = $this->db->prepare($ctgtQuery);
             $ctgtStmt->bindParam(':id_ctgt', $id_ctgt, PDO::PARAM_INT);
             $ctgtStmt->execute();
@@ -23,8 +23,6 @@ class ThanhToanGoiTapModel
                 error_log('ThanhToanGoiTapModel::storeTransaction - Không tìm thấy id_ctgt: ' . $id_ctgt);
                 return false;
             }
-            
-            $goitap_id = (int)$ctgt['MaGoiTap'];
             
             // Lưu orderId và id_ctgt vào link_data nếu cần
             $linkDataArray = json_decode($link_data, true);
@@ -49,24 +47,23 @@ class ThanhToanGoiTapModel
             $hasOrderId = $columnsStmt2->fetch() !== false;
             
             if ($hasIdCtgt && $hasOrderId) {
-                // Bảng đã có các cột mới
-                $query = "INSERT INTO {$this->table_name} (customer_id, goitap_id, id_ctgt, amount, momo_status, link_data, order_id)
-                          VALUES (:customer_id, :goitap_id, :id_ctgt, :amount, :momo_status, :link_data, :order_id)";
+                // Bảng đã có các cột mới - chỉ lưu id_ctgt, không cần goitap_id
+                $query = "INSERT INTO {$this->table_name} (customer_id, id_ctgt, amount, momo_status, link_data, order_id)
+                          VALUES (:customer_id, :id_ctgt, :amount, :momo_status, :link_data, :order_id)";
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':customer_id', $customer_id, PDO::PARAM_INT);
-                $stmt->bindParam(':goitap_id', $goitap_id, PDO::PARAM_INT);
                 $stmt->bindParam(':id_ctgt', $id_ctgt, PDO::PARAM_INT);
                 $stmt->bindParam(':amount', $amount);
                 $stmt->bindParam(':momo_status', $momo_status);
                 $stmt->bindParam(':link_data', $link_data);
                 $stmt->bindParam(':order_id', $orderId);
             } else {
-                // Bảng chưa có các cột mới, chỉ lưu vào link_data
-                $query = "INSERT INTO {$this->table_name} (customer_id, goitap_id, amount, momo_status, link_data)
-                          VALUES (:customer_id, :goitap_id, :amount, :momo_status, :link_data)";
+                // Bảng chưa có các cột mới - fallback: chỉ lưu vào link_data
+                // Lưu ý: Trường hợp này không nên xảy ra nếu database đã được cập nhật đúng
+                $query = "INSERT INTO {$this->table_name} (customer_id, amount, momo_status, link_data)
+                          VALUES (:customer_id, :amount, :momo_status, :link_data)";
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':customer_id', $customer_id, PDO::PARAM_INT);
-                $stmt->bindParam(':goitap_id', $goitap_id, PDO::PARAM_INT);
                 $stmt->bindParam(':amount', $amount);
                 $stmt->bindParam(':momo_status', $momo_status);
                 $stmt->bindParam(':link_data', $link_data);

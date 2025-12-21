@@ -372,10 +372,28 @@
                             <?php if (!empty($lophoc->SoLuongToiDa)): ?>
                                 <div class="detail-item">
                                     <div class="detail-label">
-                                        <i class="fas fa-users me-1"></i>Sỹ số tối đa
+                                        <i class="fas fa-users me-1"></i>Số lượng học viên
                                     </div>
                                     <div class="detail-value">
-                                        <?= htmlspecialchars($lophoc->SoLuongToiDa, ENT_QUOTES, 'UTF-8'); ?> học viên
+                                        <?php
+                                        $soLuongHienTai = isset($lophoc->SoDangKy) ? (int)$lophoc->SoDangKy : 0;
+                                        $soLuongToiDa = (int)$lophoc->SoLuongToiDa;
+                                        $conLai = max($soLuongToiDa - $soLuongHienTai, 0);
+                                        ?>
+                                        <div class="mb-2">
+                                            <strong>Đã đăng ký:</strong> <?= $soLuongHienTai; ?> / <?= $soLuongToiDa; ?> học viên
+                                        </div>
+                                        <?php if ($conLai > 0): ?>
+                                            <div class="text-success">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                <strong>Còn lại:</strong> <?= $conLai; ?> chỗ trống
+                                            </div>
+                                        <?php else: ?>
+                                            <div class="text-danger">
+                                                <i class="fas fa-exclamation-circle me-1"></i>
+                                                <strong>Đã đầy</strong>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             <?php endif; ?>

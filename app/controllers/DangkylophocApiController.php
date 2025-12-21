@@ -17,7 +17,7 @@ class DangkylophocApiController
     {
         $this->db = (new Database())->getConnection();
         $this->dkModel = new DangKyLopHocModel($this->db);
-        $this->yeuCauThanhToanModel = new YeuCauThanhToanModel($this->db);
+        $this->yeuCauThanhToanModel = new YeuCauThanhToanModel($this->db);  
         $this->lopHocModel = new LopHoc_Model($this->db);
     }
 
@@ -94,11 +94,18 @@ class DangkylophocApiController
             return ['success' => false, 'message' => 'Lớp học không tồn tại'];
         }
 
-        // Kiểm tra đã đăng ký chưa (kiểm tra trong YeuCauThanhToan chờ xác nhận)
+        // Kiểm tra đã đăng ký chưa (kiểm tra cả đăng ký đã xác nhận và yêu cầu đang chờ)
         $existing = $this->dkModel->getActiveByHoiVienAndLop($MaHV, $MaLop);
         if ($existing) {
             http_response_code(422);
             return ['success' => false, 'message' => 'Bạn đã đăng ký lớp học này rồi.'];
+        }
+
+        // Kiểm tra yêu cầu thanh toán đang chờ xác nhận
+        $pendingRequest = $this->yeuCauThanhToanModel->hasPendingForLopHoc($MaHV, $MaLop);
+        if ($pendingRequest) {
+            http_response_code(422);
+            return ['success' => false, 'message' => 'Bạn đã có yêu cầu đăng ký lớp học này đang chờ xác nhận.'];
         }
 
         // Kiểm tra số lượng còn lại
@@ -116,19 +123,27 @@ class DangkylophocApiController
         }
 
         // Tạo yêu cầu thanh toán (tương tự như gói tập)
-        $result = $this->yeuCauThanhToanModel->createForLopHoc($MaHV, $soTien, $MaLop);
+        try {
+            $result = $this->yeuCauThanhToanModel->createForLopHoc($MaHV, $soTien, $MaLop);
 
-        if ($result) {
-            http_response_code(201);
-            return [
-                'success' => true,
-                'message' => 'Đăng ký lớp học thành công. Vui lòng thanh toán và chờ admin xác nhận.',
-                'remaining_slots' => $remaining,
-            ];
+            if ($result) {
+                http_response_code(201);
+                return [
+                    'success' => true,
+                    'message' => 'Đăng ký lớp học thành công. Vui lòng thanh toán và chờ admin xác nhận.',
+                    'remaining_slots' => $remaining,
+                ];
+            }
+
+            // Nếu createForLopHoc trả về false, có thể có lỗi database
+            error_log('DangkylophocApiController::store - createForLopHoc returned false for MaHV: ' . $MaHV . ', MaLop: ' . $MaLop);
+            http_response_code(500);
+            return ['success' => false, 'message' => 'Không thể tạo yêu cầu thanh toán. Vui lòng thử lại sau.'];
+        } catch (Exception $e) {
+            error_log('DangkylophocApiController::store - Exception: ' . $e->getMessage());
+            http_response_code(500);
+            return ['success' => false, 'message' => 'Có lỗi xảy ra: ' . $e->getMessage()];
         }
-
-        http_response_code(500);
-        return ['success' => false, 'message' => 'Không thể đăng ký lớp học'];
     }
 
     // PUT /api/dangkylophoc/{id} - cập nhật trạng thái (tuỳ chọn)

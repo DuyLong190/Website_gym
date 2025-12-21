@@ -138,6 +138,7 @@
 <script>
     async function registerClass(maLop) {
         try {
+            console.log('Đang đăng ký lớp học với MaLop:', maLop);
             const response = await fetch('/gym/api/dangkylophoc', {
                 method: 'POST',
                 headers: {
@@ -148,16 +149,37 @@
                 })
             });
 
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+
             let result = {};
             try {
-                result = await response.json();
+                const text = await response.text();
+                console.log('Response text:', text);
+                if (text) {
+                    result = JSON.parse(text);
+                    console.log('Parsed result:', result);
+                }
             } catch (e) {
-                result = {};
+                console.error('Error parsing JSON:', e);
+                console.error('Response text was:', text);
+                alert('Có lỗi xảy ra khi xử lý phản hồi từ server. Vui lòng kiểm tra console để xem chi tiết.');
+                return;
             }
 
             if (response.status === 401) {
                 alert(result.message || 'Vui lòng đăng nhập để đăng ký lớp học');
                 window.location.href = '/gym/account/login';
+                return;
+            }
+
+            if (response.status === 400) {
+                alert(result.message || 'Thông tin đăng ký không hợp lệ');
+                return;
+            }
+
+            if (response.status === 422) {
+                alert(result.message || 'Không thể đăng ký lớp học. Vui lòng kiểm tra lại thông tin.');
                 return;
             }
 
@@ -171,6 +193,7 @@
                 return;
             }
 
+            // Xử lý các lỗi khác
             if (result.errors) {
                 if (result.errors.exists) {
                     alert(result.errors.exists);
@@ -182,9 +205,13 @@
                 }
             }
 
-            alert(result.message || 'Đăng ký lớp học thất bại');
+            // Hiển thị thông báo lỗi từ server
+            const errorMsg = result.message || 'Đăng ký lớp học thất bại. Mã lỗi: ' + response.status;
+            console.error('Registration failed:', errorMsg);
+            alert(errorMsg);
         } catch (e) {
-            alert('Có lỗi xảy ra, vui lòng thử lại sau');
+            console.error('Error:', e);
+            alert('Có lỗi xảy ra, vui lòng thử lại sau: ' + e.message);
         }
     }
 </script>

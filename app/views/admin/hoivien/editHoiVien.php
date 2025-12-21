@@ -553,22 +553,6 @@
                                     <input type="email" class="form-control" id="Email" name="Email" value="<?= htmlspecialchars((string)($hoiVien->Email ?? '')) ?>" placeholder="example@email.com">
                                 </div>
                             </div>
-                            <div class="col-md-6 form-group">
-                                <label for="MaGoiTap" class="form-label">
-                                    <i class="fas fa-ticket-alt"></i>
-                                    Gói tập <span class="required-field">*</span>
-                                </label>
-                                <div class="input-group-icon">
-                                    <select class="form-select" id="MaGoiTap" name="MaGoiTap">
-                                        <option value="" <?= empty($hoiVien->MaGoiTap) ? 'selected' : '' ?>>Chọn gói tập</option>
-                                        <?php foreach ($goiTap as $goitap): ?>
-                                            <option value="<?= $goitap['MaGoiTap'] ?>" <?= (!empty($hoiVien->MaGoiTap) && $hoiVien->MaGoiTap == $goitap['MaGoiTap']) ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($goitap['TenGoiTap']) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 form-group">

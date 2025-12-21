@@ -1,24 +1,24 @@
 USE gym_db;          
                      
 CREATE TABLE GoiTap (
-	MaGoiTap int AUTO_CREMENT PRIMARY KEY,
+	MaGoiTap int AUTO_INCREMENT PRIMARY KEY,
 	TenGoiTap VARCHAR(40) CHARACTER SET utf8mb4 NOT NULL,
 	GiaTien DECIMAL(10) CHECK (GiaTien >= 0),
 	ThoiHan int CHECK (ThoiHan > 0),
-	MoTa VARCHAR(1024) CHARACTER SET utf8mb4
+	MoTa VARCHAR(200) CHARACTER SET utf8mb4
 );                   
                 
 CREATE TABLE ACCOUNT (
-	id INT AUTO_INCREMT PRIMARY KEY,
+	id INT AUTO_INCREMENT PRIMARY KEY,
 	username VARCHAR(255) NOT NULL UNIQUE,
 	PASSWORD VARCHAR(255) NOT NULL,
-	created_at TIMESTAMP DEFAULT current_timestamp
-	role TINYINT(1) NOT NULL DEFAULT 0;
-	);                
+	created_at TIMESTAMP DEFAULT current_timestamp,
+	role TINYINT(1) NOT NULL DEFAULT 0
+);                
 	ALTER TABLE account add role TINYINT(1) NOT NULL DEFAULT 0;
                      
 CREATE TABLE DichVuThuGian (
-	id int AUTO_INCREMT PRIMARY KEY,
+	id int AUTO_INCREMENT PRIMARY KEY,
 	TenTG VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
 	GiaTG DECIMAL(10,2) CHECK (GiaTG >= 0),
 	ThoiGianTG int CHECK (ThoiGianTG > 0),
@@ -54,7 +54,7 @@ ADD CONSTRAINT fk_account_role FOREIGN KEY (role_id) REFERENCES Role(role_id);
                      
 ALTER TABLE ACCOUNT  
 ADD COLUMN MaHV INT, 
-ADD CONSTRAINT fk_account_hoivien FOREIGN KEY (MaHV) REFERENCES HoiVien(MaHV);`account`
+ADD CONSTRAINT fk_account_hoivien FOREIGN KEY (MaHV) REFERENCES HoiVien(MaHV);
                      
 ALTER TABLE hoivien  
 ADD COLUMN ChieuCao INT,
@@ -62,16 +62,16 @@ ADD COLUMN CanNang INT
                      
                      
 CREATE TABLE pt (    
-   pt_id INT AUTO_INCREMENT PRIMARY KEY, -- Mã PT tự tăng
-   HoTen VARCHAR(100) CHARACTER SET utf8mb4 NOT NULL, -- Tên PT
+   pt_id INT AUTO_INCREMENT PRIMARY KEY,
+   HoTen VARCHAR(100) CHARACTER SET utf8mb4 NOT NULL,
    NgaySinh DATE,    
    GioiTinh ENUM('Nam', 'Nữ', 'Khác'),
    SDT VARCHAR(15),  
    Email VARCHAR(100),
    DiaChi VARCHAR(200) CHARACTER SET utf8mb4,
-   ChuyenMon VARCHAR(100) CHARACTER SET utf8mb4, -- Chuyên môn: gym, boxing, yoga,...
-   KinhNghiem INT CHECK (KinhNghiem >= 0),       -- Số năm kinh nghiệm
-   Luong DECIMAL(10,2) CHECK (Luong >= 0),        -- Lương cơ bản
+   ChuyenMon VARCHAR(100) CHARACTER SET utf8mb4,
+   KinhNghiem INT CHECK (KinhNghiem >= 0),
+   Luong DECIMAL(10,2) CHECK (Luong >= 0),
    NgayVaoLam DATE DEFAULT (CURRENT_DATE),
    TrangThai ENUM('Đang làm việc', 'Nghỉ tạm thời', 'Đã nghỉ') DEFAULT 'Đang làm việc',
 );
@@ -83,7 +83,6 @@ ADD CONSTRAINT fk_account_pt
     ON DELETE SET NULL
     ON UPDATE CASCADE;
 
-ALTER TABLE account DROP FOREIGN KEY fk_account_hoivien;
 ALTER TABLE hoivien ADD COLUMN account_id INT;
 ALTER TABLE hoivien
 ADD CONSTRAINT fk_hoivien_account FOREIGN KEY (account_id)
@@ -91,7 +90,6 @@ REFERENCES account(id)
 ON DELETE CASCADE
 ON UPDATE CASCADE;
 
-ALTER TABLE account DROP FOREIGN KEY fk_account_pt;
 ALTER TABLE pt ADD COLUMN account_id INT;
 ALTER TABLE pt
 ADD CONSTRAINT fk_pt_account FOREIGN KEY (account_id)
@@ -119,7 +117,6 @@ CREATE TABLE YeuCauThanhToan (
     id_ctgt INT NOT NULL,
     MaHV INT NOT NULL,
     SoTien DECIMAL(10,2) NOT NULL,
-    PhuongThuc ENUM('Tiền mặt', 'Chuyển khoản', 'VNPay', 'Momo'),
     TrangThai ENUM('Chờ xác nhận', 'Đã xác nhận', 'Từ chối') DEFAULT 'Chờ xác nhận',
     GhiChu VARCHAR(255),
     NgayYeuCau DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -141,6 +138,8 @@ CREATE TABLE LopHoc (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+ALTER TABLE lophoc 
+ADD COLUMN SoLuongHienTai INT DEFAULT 0 AFTER ngayketthuc;
 
 CREATE TABLE LichLopHoc (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -163,7 +162,7 @@ CREATE TABLE DangKyLopHoc (
     FOREIGN KEY (MaLop) REFERENCES LopHoc(MaLop) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-gym_dbCREATE TABLE PtDayHoc (
+CREATE TABLE PtDayHoc (
     id INT AUTO_INCREMENT PRIMARY KEY,
     pt_id INT NOT NULL,
     MaLop INT NOT NULL,
@@ -227,7 +226,6 @@ ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE INDEX idx_order_id ON ThanhToan_GoiTap(order_id);
 
--- Bảng Hóa đơn chung cho Dịch vụ và Lớp học
 CREATE TABLE thanhtoan_hoadon (
     id INT AUTO_INCREMENT PRIMARY KEY,
     MaHV INT NOT NULL,
@@ -256,16 +254,6 @@ ADD COLUMN DaThanhToan BOOLEAN DEFAULT FALSE AFTER TrangThai;
 ALTER TABLE dangkylophoc               
 ADD COLUMN DaThanhToan BOOLEAN DEFAULT FALSE AFTER TrangThai;
 
--- ============================================================
--- Mở rộng bảng YeuCauThanhToan để hỗ trợ dịch vụ và lớp học
--- ============================================================
--- HƯỚNG DẪN: 
--- 1. Trước khi chạy script này, cần xóa foreign key constraint cũ của cột id_ctgt
--- 2. Chạy lệnh: SHOW CREATE TABLE YeuCauThanhToan; để xem tên constraint
--- 3. Xóa constraint bằng: ALTER TABLE YeuCauThanhToan DROP FOREIGN KEY [tên_constraint];
--- 4. Sau đó chạy các lệnh ALTER bên dưới
--- ============================================================
-
 -- Bước 1: Thêm cột Loai để phân biệt loại yêu cầu thanh toán
 ALTER TABLE YeuCauThanhToan 
 ADD COLUMN Loai ENUM('GoiTap', 'DichVu', 'LopHoc') NOT NULL DEFAULT 'GoiTap' AFTER id;
@@ -274,37 +262,6 @@ ADD COLUMN Loai ENUM('GoiTap', 'DichVu', 'LopHoc') NOT NULL DEFAULT 'GoiTap' AFT
 ALTER TABLE YeuCauThanhToan 
 ADD COLUMN id_dangky_dv INT NULL AFTER id_ctgt;
 
--- Bước 3: Thêm cột id_dangky_lh để liên kết với DangKyLopHoc
-ALTER TABLE YeuCauThanhToan 
-ADD COLUMN id_dangky_lh INT NULL AFTER id_dangky_dv;
-
--- Bước 4: Xóa foreign key constraint cũ của id_ctgt
--- Lưu ý: Cần kiểm tra tên constraint thực tế bằng lệnh: SHOW CREATE TABLE YeuCauThanhToan;
--- Tên constraint thường là: yeucauthanhtoan_ibfk_1 hoặc tương tự
--- Nếu không chắc, hãy chạy lệnh sau để xem:
--- SHOW CREATE TABLE YeuCauThanhToan;
--- Sau đó thay thế tên constraint trong lệnh DROP FOREIGN KEY bên dưới
-
--- Thử xóa với tên constraint phổ biến (nếu lỗi, cần kiểm tra tên thực tế)
--- ALTER TABLE YeuCauThanhToan DROP FOREIGN KEY yeucauthanhtoan_ibfk_1;
-
--- Hoặc sử dụng cách sau để tự động tìm và xóa (chạy từng dòng):
--- SET @constraint_name = (
---     SELECT CONSTRAINT_NAME 
---     FROM information_schema.KEY_COLUMN_USAGE 
---     WHERE TABLE_SCHEMA = DATABASE() 
---     AND TABLE_NAME = 'YeuCauThanhToan' 
---     AND COLUMN_NAME = 'id_ctgt' 
---     AND REFERENCED_TABLE_NAME IS NOT NULL 
---     LIMIT 1
--- );
--- SELECT @constraint_name; -- Xem tên constraint
--- SET @sql = CONCAT('ALTER TABLE YeuCauThanhToan DROP FOREIGN KEY ', @constraint_name);
--- PREPARE stmt FROM @sql;
--- EXECUTE stmt;
--- DEALLOCATE PREPARE stmt;
-
--- Bước 5: Làm cho id_ctgt có thể NULL (vì giờ có thể là dịch vụ hoặc lớp học)
 ALTER TABLE YeuCauThanhToan 
 MODIFY COLUMN id_ctgt INT NULL;
 
@@ -326,12 +283,9 @@ ADD CONSTRAINT fk_yeucau_dangky_lophoc
 FOREIGN KEY (id_dangky_lh) REFERENCES DangKyLopHoc(id) 
 ON DELETE CASCADE ON UPDATE CASCADE;
 
--- Bước 9: Cập nhật dữ liệu hiện có: set Loai = 'GoiTap' cho các record cũ
-UPDATE YeuCauThanhToan 
-SET Loai = 'GoiTap' 
-WHERE id_ctgt IS NOT NULL;
-
 -- Bước 10: Tạo các index để tối ưu truy vấn
 CREATE INDEX idx_yeucau_loai ON YeuCauThanhToan(Loai);
 CREATE INDEX idx_yeucau_dangky_dv ON YeuCauThanhToan(id_dangky_dv);
 CREATE INDEX idx_yeucau_dangky_lh ON YeuCauThanhToan(id_dangky_lh);
+SHOW CREATE table chitiet_goitap;
+SHOW CREATE table thanhtoan_goitap;

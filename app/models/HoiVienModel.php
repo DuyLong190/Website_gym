@@ -11,9 +11,8 @@ class HoiVienModel
 
     // Lấy tất cả hội viên (chỉ những người có role_id = 1, tức là User)
     public function getAllHoiVien() {
-        $query = "SELECT h.*, g.TenGoiTap, a.username, a.role_id 
+        $query = "SELECT h.*, a.username, a.role_id 
                 FROM HoiVien h 
-                LEFT JOIN GoiTap g ON h.MaGoiTap = g.MaGoiTap 
                 LEFT JOIN Account a ON h.MaHV = a.MaHV
                 WHERE a.role_id = 1 OR a.role_id IS NULL
                 ORDER BY h.MaHV DESC";
@@ -25,9 +24,8 @@ class HoiVienModel
 
     public function getHoiVienById($maHV) {
         try {
-            $query = "SELECT h.*, g.TenGoiTap FROM HoiVien h 
+            $query = "SELECT h.* FROM HoiVien h 
                     LEFT JOIN ACCOUNT a ON h.MaHV = a.MaHV
-                    LEFT JOIN GoiTap g ON h.MaGoiTap = g.MaGoiTap 
                     WHERE h.MaHV = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->execute([$maHV]);
@@ -38,7 +36,7 @@ class HoiVienModel
         }
     }
 
-    public function addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $image = null) {
+    public function addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $image = null) {
         try {
             // Validate required fields
             if (empty($HoTen)) {
@@ -46,8 +44,8 @@ class HoiVienModel
             }
 
             // Chuẩn bị câu query
-            $query = "INSERT INTO HoiVien (HoTen, NgaySinh, GioiTinh, ChieuCao, CanNang, SDT, Email, DiaChi, MaGoiTap, image) 
-                    VALUES (:HoTen, :NgaySinh, :GioiTinh, :ChieuCao, :CanNang, :SDT, :Email, :DiaChi, :MaGoiTap, :image)";
+            $query = "INSERT INTO HoiVien (HoTen, NgaySinh, GioiTinh, ChieuCao, CanNang, SDT, Email, DiaChi, image) 
+                    VALUES (:HoTen, :NgaySinh, :GioiTinh, :ChieuCao, :CanNang, :SDT, :Email, :DiaChi, :image)";
             $stmt = $this->conn->prepare($query);
 
             // Làm sạch dữ liệu
@@ -59,7 +57,6 @@ class HoiVienModel
             $SDT = $SDT ? htmlspecialchars(strip_tags($SDT)) : null;
             $Email = $Email ? htmlspecialchars(strip_tags($Email)) : null;
             $DiaChi = $DiaChi ? htmlspecialchars(strip_tags($DiaChi)) : null;
-            $MaGoiTap = $MaGoiTap ? htmlspecialchars(strip_tags($MaGoiTap)) : null;
             $image = $image ? htmlspecialchars(strip_tags($image)) : null;
 
             // Bind các tham số
@@ -71,7 +68,6 @@ class HoiVienModel
             $stmt->bindParam(':SDT', $SDT);
             $stmt->bindParam(':Email', $Email);
             $stmt->bindParam(':DiaChi', $DiaChi);
-            $stmt->bindParam(':MaGoiTap', $MaGoiTap);
             $stmt->bindParam(':image', $image);
 
             // Thực thi query
@@ -93,7 +89,7 @@ class HoiVienModel
         }
     }
 
-    public function updateHoiVien($MaHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $TrangThai, $image = null) {
+    public function updateHoiVien($MaHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $TrangThai, $image = null) {
         try {
             // Nếu có image mới, cập nhật cả image, nếu không thì giữ nguyên
             if ($image !== null) {
@@ -105,7 +101,6 @@ class HoiVienModel
                             SDT = :SDT, 
                             Email = :Email, 
                             DiaChi = :DiaChi, 
-                            MaGoiTap = :MaGoiTap, 
                             TrangThai = :TrangThai,
                             image = :image
                         WHERE MaHV = :MaHV";
@@ -118,7 +113,6 @@ class HoiVienModel
                             SDT = :SDT, 
                             Email = :Email, 
                             DiaChi = :DiaChi, 
-                            MaGoiTap = :MaGoiTap, 
                             TrangThai = :TrangThai
                         WHERE MaHV = :MaHV";
             }
@@ -134,7 +128,6 @@ class HoiVienModel
             $stmt->bindParam(':SDT', $SDT);
             $stmt->bindParam(':Email', $Email);
             $stmt->bindParam(':DiaChi', $DiaChi);
-            $stmt->bindParam(':MaGoiTap', $MaGoiTap);
             $stmt->bindParam(':TrangThai', $TrangThai);
             if ($image !== null) {
                 $stmt->bindParam(':image', $image);
@@ -174,9 +167,8 @@ class HoiVienModel
     }
 
     public function searchHoiVien($keyword) {
-        $query = "SELECT h.*, g.TenGoiTap, a.username, a.role_id 
+        $query = "SELECT h.*, a.username, a.role_id 
                 FROM HoiVien h 
-                LEFT JOIN GoiTap g ON h.MaGoiTap = g.MaGoiTap 
                 LEFT JOIN Account a ON h.MaHV = a.MaHV
                 WHERE (h.HoTen LIKE ? OR h.SDT LIKE ? OR h.Email LIKE ?)
                 AND (a.role_id = 1 OR a.role_id IS NULL)
@@ -200,9 +192,8 @@ class HoiVienModel
 
     public function getHoiVienByUsername($username) {
         try {
-            $sql = "SELECT h.*, g.TenGoiTap FROM HoiVien h 
+            $sql = "SELECT h.* FROM HoiVien h 
                     INNER JOIN Account a ON h.MaHV = a.MaHV 
-                    LEFT JOIN GoiTap g ON h.MaGoiTap = g.MaGoiTap
                     WHERE a.username = ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([$username]);
@@ -251,14 +242,4 @@ class HoiVienModel
         }
     }
 
-    public function updateGoiTap($maHV, $maGoiTap) {
-        try {
-            $query = "UPDATE HoiVien SET MaGoiTap = ? WHERE MaHV = ?";
-            $stmt = $this->conn->prepare($query);
-            return $stmt->execute([$maGoiTap, $maHV]);
-        } catch (PDOException $e) {
-            error_log("Error in updateGoiTap: " . $e->getMessage());
-            return false;
-        }
-    }
 }

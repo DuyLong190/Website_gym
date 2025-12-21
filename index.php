@@ -11,6 +11,7 @@ require_once 'app/controllers/PtApiController.php';
 require_once 'app/controllers/ChiTiet_Goitap_Controller.php';
 require_once 'app/controllers/ThanhToanGoiTapController.php';
 require_once 'app/controllers/ThanhToanHoaDonController.php';
+require_once 'app/controllers/DangkylophocApiController.php';
 require_once 'app/models/GoiTapModel.php';
 require_once 'app/models/DvThuGianModel.php';
 require_once 'app/models/LopHoc_Model.php';

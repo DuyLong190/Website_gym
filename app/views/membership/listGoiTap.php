@@ -39,7 +39,9 @@
                                 <div class="mt-auto gap-2 d-flex ">
                                     <?php if (isset($_SESSION['username']) && $hoiVien): ?>
                                         <?php
-                                        if (empty($hoiVien->MaGoiTap)):
+                                        // Kiểm tra xem hội viên có gói tập đang hoạt động không
+                                        $hasActivePackage = !empty($currentPackage) && isset($currentPackage['TrangThai']) && $currentPackage['TrangThai'] === 'Đang hoạt động';
+                                        if (!$hasActivePackage):
                                         ?>
                                             <a href="/gym/goitap/select/<?php echo $goiTap['MaGoiTap']; ?>" class="btn ">Chọn
                                             </a>

@@ -934,8 +934,7 @@ class AdminController
             $SDT = $_POST['SDT'];
             $Email = $_POST['Email'];
             $DiaChi = $_POST['DiaChi'];
-            $MaGoiTap = $_POST['MaGoiTap'];
-            if ($this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap)) {
+            if ($this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi)) {
                 header('Location: /gym/admin/user');
                 exit;
             }
@@ -971,9 +970,7 @@ class AdminController
                 $SDT = $_POST['SDT'] ?? null;
                 $Email = $_POST['Email'] ?? null;
                 $DiaChi = $_POST['DiaChi'] ?? null;
-                $MaGoiTap = $_POST['MaGoiTap'] ?? null;
-
-                $result = $this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $imagePath);
+                $result = $this->hoiVienModel->addHoiVien($HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $imagePath);
 
                 if ($result) {
                     $_SESSION['success'] = "Thêm hội viên thành công";
@@ -1059,24 +1056,14 @@ class AdminController
                 $SDT = $_POST['SDT'];
                 $Email = $_POST['Email'];
                 $DiaChi = $_POST['DiaChi'];
-                $MaGoiTap = isset($_POST['MaGoiTap']) && $_POST['MaGoiTap'] !== '' ? $_POST['MaGoiTap'] : null;
                 $TrangThai = $_POST['TrangThai'];
 
                 $this->db->beginTransaction();
 
                 // Chỉ cập nhật image nếu có ảnh mới (nếu $imagePath !== null)
-                $okUpdate = $this->hoiVienModel->updateHoiVien($maHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $MaGoiTap, $TrangThai, $imagePath);
+                $okUpdate = $this->hoiVienModel->updateHoiVien($maHV, $HoTen, $NgaySinh, $GioiTinh, $ChieuCao, $CanNang, $SDT, $Email, $DiaChi, $TrangThai, $imagePath);
                 if (!$okUpdate) {
                     throw new Exception('Không thể cập nhật hội viên');
-                }
-
-                // Nếu gói tập thay đổi và có gói mới thì thêm chi tiết gói tập
-                $oldMaGoiTap = $currentHoiVien ? $currentHoiVien->MaGoiTap : null;
-                if (!empty($MaGoiTap) && $MaGoiTap != $oldMaGoiTap) {
-                    $okCtgt = $this->ctgtModel->createForHoiVien((int)$maHV, (int)$MaGoiTap);
-                    if (!$okCtgt) {
-                        throw new Exception('Không thể tạo chi tiết gói tập');
-                    }
                 }
 
                 $this->db->commit();
@@ -1298,12 +1285,6 @@ class AdminController
                     throw new Exception('Dữ liệu gói tập không hợp lệ.');
                 }
 
-                // Cập nhật MaGoiTap vào HoiVien (chỉ khi admin xác nhận)
-                $okUpdateHoiVien = $this->hoiVienModel->updateGoiTap($maHV, $maGoiTap);
-                if (!$okUpdateHoiVien) {
-                    throw new Exception('Không thể cập nhật gói tập cho hội viên.');
-                }
-
                 // Cập nhật chi tiết gói tập: set ngày bắt đầu/kết thúc, trạng thái, thanh toán
                 $okCtgt = $this->ctgtModel->confirmPayment($id_ctgt);
                 if (!$okCtgt) {
@@ -1356,7 +1337,7 @@ class AdminController
                 }
 
                 // Kiểm tra lớp học có tồn tại không
-                $lopHocStmt = $this->db->prepare("SELECT MaLop, SoLuongToiDa FROM LopHoc WHERE MaLop = :MaLop");
+                $lopHocStmt = $this->db->prepare("SELECT MaLop, SoLuongToiDa, COALESCE(SoLuongHienTai, 0) AS SoLuongHienTai FROM LopHoc WHERE MaLop = :MaLop");
                 $lopHocStmt->bindParam(':MaLop', $maLop, PDO::PARAM_INT);
                 $lopHocStmt->execute();
                 $lopHoc = $lopHocStmt->fetch(PDO::FETCH_ASSOC);
@@ -1364,10 +1345,10 @@ class AdminController
                     throw new Exception('Lớp học không tồn tại.');
                 }
 
-                // Kiểm tra số lượng còn lại
+                // Kiểm tra số lượng còn lại sử dụng SoLuongHienTai
                 $soLuongToiDa = (int)($lopHoc['SoLuongToiDa'] ?? 0);
                 if ($soLuongToiDa > 0) {
-                    $currentCount = $this->dangKyLopHocModel->getActiveCountByLop($maLop);
+                    $currentCount = (int)($lopHoc['SoLuongHienTai'] ?? 0);
                     if ($currentCount >= $soLuongToiDa) {
                         throw new Exception('Lớp học đã đủ số lượng, không thể đăng ký thêm.');
                     }
@@ -1536,9 +1517,6 @@ class AdminController
             if (!$ok) {
                 throw new Exception('Không thể hủy gói tập. Có thể gói tập đã bị hủy trước đó.');
             }
-
-            // Cập nhật MaGoiTap của hội viên về NULL
-            $this->hoiVienModel->updateGoiTap($maHV, null);
 
             $this->db->commit();
             $_SESSION['success'] = 'Hủy gói tập thành công.';
@@ -1753,8 +1731,8 @@ class AdminController
             $query = "SELECT 
                         r.role_name,
                         COUNT(a.id) as total_users,
-                        COUNT(CASE WHEN h.MaGoiTap IS NOT NULL THEN 1 END) as users_with_package,
-                        COUNT(CASE WHEN h.MaGoiTap IS NULL THEN 1 END) as users_without_package
+                        COUNT(CASE WHEN EXISTS(SELECT 1 FROM chitiet_goitap ct WHERE ct.MaHV = h.MaHV AND ct.TrangThai = 'Đang hoạt động') THEN 1 END) as users_with_package,
+                        COUNT(CASE WHEN NOT EXISTS(SELECT 1 FROM chitiet_goitap ct WHERE ct.MaHV = h.MaHV AND ct.TrangThai = 'Đang hoạt động') THEN 1 END) as users_without_package
                     FROM Role r
                     LEFT JOIN Account a ON r.role_id = a.role_id
                     LEFT JOIN HoiVien h ON a.MaHV = h.MaHV
@@ -1768,11 +1746,12 @@ class AdminController
             $query = "SELECT 
                         r.role_name,
                         g.TenGoiTap,
-                        COUNT(h.MaHV) as total_users
+                        COUNT(DISTINCT h.MaHV) as total_users
                     FROM Role r
                     LEFT JOIN Account a ON r.role_id = a.role_id
                     LEFT JOIN HoiVien h ON a.MaHV = h.MaHV
-                    LEFT JOIN GoiTap g ON h.MaGoiTap = g.MaGoiTap
+                    LEFT JOIN chitiet_goitap ct ON h.MaHV = ct.MaHV AND ct.TrangThai = 'Đang hoạt động'
+                    LEFT JOIN GoiTap g ON ct.MaGoiTap = g.MaGoiTap
                     WHERE g.MaGoiTap IS NOT NULL
                     GROUP BY r.role_id, r.role_name, g.MaGoiTap, g.TenGoiTap
                     ORDER BY r.role_id, g.TenGoiTap";

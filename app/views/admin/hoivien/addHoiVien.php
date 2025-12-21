@@ -297,17 +297,6 @@
                                             <label for="Email" class="form-label">Email</label>
                                             <input type="email" class="form-control" id="Email" name="Email" value="<?= htmlspecialchars($_POST['Email'] ?? '') ?>">
                                         </div>
-                                        <div class="col-md-6">
-                                            <label for="MaGoiTap" class="form-label">Gói tập <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="MaGoiTap" name="MaGoiTap">
-                                                <option value="">Chọn gói tập</option>
-                                                <?php foreach ($goiTap as $goitap): ?>
-                                                    <option value="<?= $goitap['MaGoiTap'] ?>" <?= (($_POST['MaGoiTap'] ?? '') == $goitap['MaGoiTap']) ? 'selected' : '' ?>>
-                                                        <?= htmlspecialchars($goitap['TenGoiTap']) ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="DiaChi" class="form-label">Địa chỉ</label>

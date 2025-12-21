@@ -24,10 +24,25 @@ class GoiTapController
     public function indexGoiTap()
     {
         $goiTaps = $this->goitapModel->getGoiTaps();
-        // Lấy thông tin hội viên nếu đã đăng nhập
+        // Lấy thông tin hội viên và gói tập hiện tại nếu đã đăng nhập
         $hoiVien = null;
+        $currentPackage = null;
         if (isset($_SESSION['username'])) {
             $hoiVien = $this->hoiVienModel->getHoiVienByUsername($_SESSION['username']);
+            if ($hoiVien && isset($hoiVien->MaHV)) {
+                $currentPackage = $this->ctgtModel->getActiveByMaHV((int)$hoiVien->MaHV);
+                // Nếu không có gói chưa hủy, tìm gói đã thanh toán
+                if (!$currentPackage) {
+                    $allPackages = $this->ctgtModel->getAllByMaHV((int)$hoiVien->MaHV);
+                    foreach ($allPackages as $package) {
+                        $daThanhToan = (int)($package['DaThanhToan'] ?? 0);
+                        if ($daThanhToan === 1) {
+                            $currentPackage = $package;
+                            break;
+                        }
+                    }
+                }
+            }
         }
         $pageTitle = 'Gói tập';
         $additionalHeadContent = <<<HTML

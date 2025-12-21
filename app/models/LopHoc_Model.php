@@ -36,8 +36,7 @@ class LopHoc_Model
                               ORDER BY pd.created_at DESC
                               LIMIT 1
                           ) AS TenPT,
-                          (SELECT COUNT(*) FROM DangKyLopHoc d 
-                           WHERE d.MaLop = l.MaLop AND d.TrangThai = 'DangKy') AS SoDangKy
+                          COALESCE(l.SoLuongHienTai, 0) AS SoDangKy
                    FROM " . $this->table_name . " l
                    ORDER BY l.MaLop";
         $stmt = $this->conn->prepare($query);
@@ -71,8 +70,7 @@ class LopHoc_Model
                               ORDER BY pd.created_at DESC
                               LIMIT 1
                           ) AS TenPT,
-                          (SELECT COUNT(*) FROM DangKyLopHoc d 
-                           WHERE d.MaLop = l.MaLop AND d.TrangThai = 'DangKy') AS SoDangKy
+                          COALESCE(l.SoLuongHienTai, 0) AS SoDangKy
                    FROM " . $this->table_name . " l
                    WHERE l.TrangThai = :TrangThai
                    ORDER BY l.MaLop";
@@ -94,8 +92,7 @@ class LopHoc_Model
                                ORDER BY pd.created_at DESC
                                LIMIT 1
                            ) AS TenPT,
-                           (SELECT COUNT(*) FROM DangKyLopHoc d 
-                            WHERE d.MaLop = l.MaLop AND d.TrangThai = 'DangKy') AS SoDangKy
+                           COALESCE(l.SoLuongHienTai, 0) AS SoDangKy
                     FROM " . $this->table_name . " l
                     WHERE l.MaLop = :MaLop";
         $stmt  = $this->conn->prepare($query);
@@ -142,8 +139,8 @@ class LopHoc_Model
 
         try {
             $query = "INSERT INTO {$this->table_name}
-                 (TenLop, GiaTien, MoTa, NgayBatDau, NgayKetThuc, SoLuongToiDa, TrangThai, created_at, updated_at)
-                 VALUES (:TenLop, :GiaTien, :MoTa, :NgayBatDau, :NgayKetThuc, :SoLuongToiDa, :TrangThai, NOW(), NOW())";
+                 (TenLop, GiaTien, MoTa, NgayBatDau, NgayKetThuc, SoLuongToiDa, SoLuongHienTai, TrangThai, created_at, updated_at)
+                 VALUES (:TenLop, :GiaTien, :MoTa, :NgayBatDau, :NgayKetThuc, :SoLuongToiDa, 0, :TrangThai, NOW(), NOW())";
 
             $stmt = $this->conn->prepare($query);
 
@@ -196,6 +193,7 @@ class LopHoc_Model
             }
 
             // Không cập nhật pt_id trên bảng LopHoc, PT đứng lớp được quản lý qua PtDayHoc
+            // Lưu ý: SoLuongHienTai không được cập nhật ở đây, chỉ được cập nhật khi đăng ký/hủy
             $query = "UPDATE " . $this->table_name . " SET 
                         TenLop = :TenLop,
                         GiaTien = :GiaTien,
@@ -243,6 +241,38 @@ class LopHoc_Model
             $stmt->bindParam(':MaLop', $MaLop, PDO::PARAM_INT);
             return $stmt->execute();
         } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    // Tăng số lượng hiện tại khi có đăng ký mới
+    public function incrementSoLuongHienTai($MaLop)
+    {
+        try {
+            $query = "UPDATE " . $this->table_name . " 
+                     SET SoLuongHienTai = COALESCE(SoLuongHienTai, 0) + 1, updated_at = NOW()
+                     WHERE MaLop = :MaLop";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':MaLop', $MaLop, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('LopHoc_Model::incrementSoLuongHienTai - ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Giảm số lượng hiện tại khi có hủy đăng ký
+    public function decrementSoLuongHienTai($MaLop)
+    {
+        try {
+            $query = "UPDATE " . $this->table_name . " 
+                     SET SoLuongHienTai = GREATEST(COALESCE(SoLuongHienTai, 0) - 1, 0), updated_at = NOW()
+                     WHERE MaLop = :MaLop";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':MaLop', $MaLop, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('LopHoc_Model::decrementSoLuongHienTai - ' . $e->getMessage());
             return false;
         }
     }

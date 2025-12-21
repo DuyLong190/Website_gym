@@ -63,6 +63,7 @@ class YeuCauThanhToanModel
     // Tạo yêu cầu thanh toán cho lớp học (lưu MaLop vào GhiChu dưới dạng JSON)
     public function createForLopHoc($maHV, $soTien, $maLop, $phuongThuc = 'Tiền mặt')
     {
+        $sql = '';
         try {
             // Lưu MaLop vào GhiChu dưới dạng JSON
             $ghiChuData = [
@@ -70,18 +71,80 @@ class YeuCauThanhToanModel
             ];
             $ghiChu = json_encode($ghiChuData, JSON_UNESCAPED_UNICODE);
 
+            // Thử với PhuongThuc trước
             $sql = "INSERT INTO " . $this->table_name . " (Loai, MaHV, SoTien, PhuongThuc, TrangThai, GhiChu, NgayYeuCau)
                     VALUES ('LopHoc', :MaHV, :SoTien, :PhuongThuc, 'Chờ xác nhận', :GhiChu, NOW())";
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':MaHV', $maHV, PDO::PARAM_INT);
-            $stmt->bindParam(':SoTien', $soTien);
-            $stmt->bindParam(':PhuongThuc', $phuongThuc);
-            $stmt->bindParam(':GhiChu', $ghiChu);
+            if (!$stmt) {
+                $errorInfo = $this->conn->errorInfo();
+                error_log('Error preparing statement (with PhuongThuc) in YeuCauThanhToanModel::createForLopHoc - ' . print_r($errorInfo, true));
+                
+                // Thử lại không có PhuongThuc
+                $sql = "INSERT INTO " . $this->table_name . " (Loai, MaHV, SoTien, TrangThai, GhiChu, NgayYeuCau)
+                        VALUES ('LopHoc', :MaHV, :SoTien, 'Chờ xác nhận', :GhiChu, NOW())";
+                $stmt = $this->conn->prepare($sql);
+                if (!$stmt) {
+                    $errorInfo = $this->conn->errorInfo();
+                    error_log('Error preparing statement (without PhuongThuc) in YeuCauThanhToanModel::createForLopHoc - ' . print_r($errorInfo, true));
+                    return false;
+                }
+                $stmt->bindParam(':MaHV', $maHV, PDO::PARAM_INT);
+                $stmt->bindParam(':SoTien', $soTien);
+                $stmt->bindParam(':GhiChu', $ghiChu);
+            } else {
+                $stmt->bindParam(':MaHV', $maHV, PDO::PARAM_INT);
+                $stmt->bindParam(':SoTien', $soTien);
+                $stmt->bindParam(':PhuongThuc', $phuongThuc);
+                $stmt->bindParam(':GhiChu', $ghiChu);
+            }
 
-            return $stmt->execute();
+            $result = $stmt->execute();
+            if (!$result) {
+                $errorInfo = $stmt->errorInfo();
+                error_log('Error executing statement in YeuCauThanhToanModel::createForLopHoc - ' . print_r($errorInfo, true));
+                error_log('SQL: ' . $sql);
+                error_log('Params: MaHV=' . $maHV . ', SoTien=' . $soTien . ', MaLop=' . $maLop . ', GhiChu=' . $ghiChu);
+                
+                // Nếu lỗi do cột không tồn tại, thử lại không có PhuongThuc
+                if (isset($errorInfo[1]) && $errorInfo[1] == 1054) { // Unknown column error
+                    error_log('Column not found, retrying without PhuongThuc');
+                    $sql = "INSERT INTO " . $this->table_name . " (Loai, MaHV, SoTien, TrangThai, GhiChu, NgayYeuCau)
+                            VALUES ('LopHoc', :MaHV, :SoTien, 'Chờ xác nhận', :GhiChu, NOW())";
+                    $stmt = $this->conn->prepare($sql);
+                    if ($stmt) {
+                        $stmt->bindParam(':MaHV', $maHV, PDO::PARAM_INT);
+                        $stmt->bindParam(':SoTien', $soTien);
+                        $stmt->bindParam(':GhiChu', $ghiChu);
+                        $result = $stmt->execute();
+                    }
+                }
+            }
+            return $result;
         } catch (PDOException $e) {
-            error_log('Error in YeuCauThanhToanModel::createForLopHoc - ' . $e->getMessage());
+            error_log('PDOException in YeuCauThanhToanModel::createForLopHoc - ' . $e->getMessage());
+            error_log('SQL: ' . ($sql ?? 'N/A'));
+            error_log('Params: MaHV=' . $maHV . ', SoTien=' . $soTien . ', MaLop=' . $maLop);
+            
+            // Nếu lỗi do cột không tồn tại, thử lại không có PhuongThuc
+            if ($e->getCode() == '42S22' || strpos($e->getMessage(), 'Unknown column') !== false) {
+                try {
+                    error_log('Retrying without PhuongThuc column');
+                    $sql = "INSERT INTO " . $this->table_name . " (Loai, MaHV, SoTien, TrangThai, GhiChu, NgayYeuCau)
+                            VALUES ('LopHoc', :MaHV, :SoTien, 'Chờ xác nhận', :GhiChu, NOW())";
+                    $stmt = $this->conn->prepare($sql);
+                    $stmt->bindParam(':MaHV', $maHV, PDO::PARAM_INT);
+                    $stmt->bindParam(':SoTien', $soTien);
+                    $stmt->bindParam(':GhiChu', $ghiChu);
+                    return $stmt->execute();
+                } catch (PDOException $e2) {
+                    error_log('Retry also failed: ' . $e2->getMessage());
+                    return false;
+                }
+            }
+            return false;
+        } catch (Exception $e) {
+            error_log('Exception in YeuCauThanhToanModel::createForLopHoc - ' . $e->getMessage());
             return false;
         }
     }
@@ -237,6 +300,27 @@ class YeuCauThanhToanModel
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             error_log('Error in YeuCauThanhToanModel::markRejected - ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Kiểm tra xem hội viên đã có yêu cầu thanh toán đang chờ xác nhận cho lớp học chưa
+    public function hasPendingForLopHoc($maHV, $maLop)
+    {
+        try {
+            $sql = "SELECT id FROM " . $this->table_name . "
+                    WHERE Loai = 'LopHoc' 
+                    AND MaHV = :MaHV 
+                    AND TrangThai = 'Chờ xác nhận'
+                    AND JSON_EXTRACT(GhiChu, '$.MaLop') = :MaLop
+                    LIMIT 1";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':MaHV', $maHV, PDO::PARAM_INT);
+            $stmt->bindParam(':MaLop', $maLop, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
+        } catch (PDOException $e) {
+            error_log('Error in YeuCauThanhToanModel::hasPendingForLopHoc - ' . $e->getMessage());
             return false;
         }
     }

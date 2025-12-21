@@ -1,12 +1,16 @@
 <?php
+require_once __DIR__ . '/LopHoc_Model.php';
+
 class DangKyLopHocModel
 {
     private $conn;
     private $table_name = 'DangKyLopHoc';
+    private $lopHocModel;
 
     public function __construct($db)
     {
         $this->conn = $db;
+        $this->lopHocModel = new LopHoc_Model($db);
     }
 
     public function getAll()
@@ -77,7 +81,8 @@ class DangKyLopHocModel
     public function getActiveCountByLop($MaLop)
     {
         try {
-            $sql = "SELECT COUNT(*) AS total FROM {$this->table_name} WHERE MaLop = :MaLop AND TrangThai = 'DangKy'";
+            // Sử dụng SoLuongHienTai từ bảng LopHoc để hiệu quả hơn
+            $sql = "SELECT COALESCE(SoLuongHienTai, 0) AS total FROM LopHoc WHERE MaLop = :MaLop";
             $stmt = $this->conn->prepare($sql);
             $MaLop = (int)$MaLop;
             $stmt->bindParam(':MaLop', $MaLop, PDO::PARAM_INT);
@@ -97,7 +102,8 @@ class DangKyLopHocModel
                            g.TenGoiTap
                     FROM {$this->table_name} d
                     INNER JOIN HoiVien h ON d.MaHV = h.MaHV
-                    LEFT JOIN GoiTap g ON h.MaGoiTap = g.MaGoiTap
+                    LEFT JOIN chitiet_goitap ct ON h.MaHV = ct.MaHV AND ct.TrangThai = 'Đang hoạt động'
+                    LEFT JOIN GoiTap g ON ct.MaGoiTap = g.MaGoiTap
                     WHERE d.MaLop = :MaLop AND d.TrangThai = 'DangKy'
                     ORDER BY h.HoTen";
             $stmt = $this->conn->prepare($sql);
@@ -115,7 +121,8 @@ class DangKyLopHocModel
     {
         try {
             $MaLop = (int)$MaLop;
-            $sql = "SELECT SoLuongToiDa FROM LopHoc WHERE MaLop = :MaLop";
+            // Lấy cả SoLuongToiDa và SoLuongHienTai từ bảng LopHoc
+            $sql = "SELECT SoLuongToiDa, COALESCE(SoLuongHienTai, 0) AS SoLuongHienTai FROM LopHoc WHERE MaLop = :MaLop";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':MaLop', $MaLop, PDO::PARAM_INT);
             $stmt->execute();
@@ -127,7 +134,7 @@ class DangKyLopHocModel
             if ($max <= 0) {
                 return null;
             }
-            $current = $this->getActiveCountByLop($MaLop);
+            $current = isset($class['SoLuongHienTai']) ? (int)$class['SoLuongHienTai'] : 0;
             $remaining = $max - $current;
             return $remaining > 0 ? $remaining : 0;
         } catch (PDOException $e) {
@@ -162,7 +169,8 @@ class DangKyLopHocModel
 
         try {
             $MaLopInt = (int)$MaLop;
-            $sql = "SELECT SoLuongToiDa FROM LopHoc WHERE MaLop = :MaLop";
+            // Lấy cả SoLuongToiDa và SoLuongHienTai từ bảng LopHoc
+            $sql = "SELECT SoLuongToiDa, COALESCE(SoLuongHienTai, 0) AS SoLuongHienTai FROM LopHoc WHERE MaLop = :MaLop";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':MaLop', $MaLopInt, PDO::PARAM_INT);
             $stmt->execute();
@@ -170,7 +178,7 @@ class DangKyLopHocModel
             if ($class) {
                 $max = isset($class['SoLuongToiDa']) ? (int)$class['SoLuongToiDa'] : 0;
                 if ($max > 0) {
-                    $current = $this->getActiveCountByLop($MaLopInt);
+                    $current = isset($class['SoLuongHienTai']) ? (int)$class['SoLuongHienTai'] : 0;
                     if ($current >= $max) {
                         $errors['full'] = 'Lớp học đã đủ số lượng, không thể đăng ký thêm.';
                         return $errors;
@@ -193,6 +201,8 @@ class DangKyLopHocModel
             $stmt->bindParam(':MaLop', $MaLop, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
+                // Tăng số lượng hiện tại trong bảng LopHoc
+                $this->lopHocModel->incrementSoLuongHienTai($MaLop);
                 return true;
             }
 
@@ -215,7 +225,13 @@ class DangKyLopHocModel
             $MaLop = (int)$MaLop;
             $stmt->bindParam(':MaHV', $MaHV, PDO::PARAM_INT);
             $stmt->bindParam(':MaLop', $MaLop, PDO::PARAM_INT);
-            return $stmt->execute();
+            
+            if ($stmt->execute() && $stmt->rowCount() > 0) {
+                // Giảm số lượng hiện tại trong bảng LopHoc
+                $this->lopHocModel->decrementSoLuongHienTai($MaLop);
+                return true;
+            }
+            return false;
         } catch (PDOException $e) {
             error_log('DangKyLopHocModel::cancelByHoiVienAndLop - ' . $e->getMessage());
             return false;
@@ -226,13 +242,32 @@ class DangKyLopHocModel
     public function cancelById($id)
     {
         try {
+            // Lấy thông tin đăng ký để biết MaLop trước khi hủy
+            $getSql = "SELECT MaLop FROM {$this->table_name} WHERE id = :id AND TrangThai = 'DangKy'";
+            $getStmt = $this->conn->prepare($getSql);
+            $id = (int)$id;
+            $getStmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $getStmt->execute();
+            $registration = $getStmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$registration) {
+                return false;
+            }
+            
+            $MaLop = (int)$registration['MaLop'];
+            
             $sql = "UPDATE {$this->table_name}
                     SET TrangThai = 'Huy', updated_at = NOW()
                     WHERE id = :id AND TrangThai = 'DangKy'";
             $stmt = $this->conn->prepare($sql);
-            $id = (int)$id;
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            return $stmt->execute() && $stmt->rowCount() > 0;
+            
+            if ($stmt->execute() && $stmt->rowCount() > 0) {
+                // Giảm số lượng hiện tại trong bảng LopHoc
+                $this->lopHocModel->decrementSoLuongHienTai($MaLop);
+                return true;
+            }
+            return false;
         } catch (PDOException $e) {
             error_log('DangKyLopHocModel::cancelById - ' . $e->getMessage());
             return false;

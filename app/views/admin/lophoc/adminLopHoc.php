@@ -857,7 +857,17 @@
                                         <td class="profile-value"><?php echo number_format($lophoc->GiaTien, 0, ',', '.'); ?> VNĐ</td>
                                         <td class="profile-value"><?= $lophoc->NgayBatDau ? date('d/m/Y', strtotime($lophoc->NgayBatDau)) : ''; ?></td>
                                         <td class="profile-value"><?= $lophoc->NgayKetThuc ? date('d/m/Y', strtotime($lophoc->NgayKetThuc)) : ''; ?></td>
-                                        <td class="profile-value"><?php echo htmlspecialchars($lophoc->SoLuongToiDa ?? '') ?></td>
+                                        <td class="profile-value">
+                                            <?php
+                                            $soDangKy = isset($lophoc->SoDangKy) ? (int)$lophoc->SoDangKy : 0;
+                                            $soLuongToiDa = isset($lophoc->SoLuongToiDa) ? (int)$lophoc->SoLuongToiDa : 0;
+                                            if ($soLuongToiDa > 0) {
+                                                echo '<span class="badge bg-info">' . $soDangKy . ' / ' . $soLuongToiDa . '</span>';
+                                            } else {
+                                                echo '<span class="text-muted">' . $soDangKy . ' / Không giới hạn</span>';
+                                            }
+                                            ?>
+                                        </td>
                                         
                                         <td>
                                             <?php

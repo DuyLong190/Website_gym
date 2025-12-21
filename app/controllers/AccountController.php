@@ -126,7 +126,7 @@ class AccountController
             $pt_id = null;
 
             if ($role_id == 1) { // User/Hội viên
-                // addHoiVien(HoTen, NgaySinh, GioiTinh, ChieuCao, CanNang, SDT, Email, DiaChi, MaGoiTap)
+                // addHoiVien(HoTen, NgaySinh, GioiTinh, ChieuCao, CanNang, SDT, Email, DiaChi)
                 $maHV = $this->hoiVienModel->addHoiVien(
                     $HoTen,
                     $NgaySinh,
